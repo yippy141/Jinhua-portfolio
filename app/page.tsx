@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 
 type SeaNode = {
@@ -26,7 +27,7 @@ const nodes: SeaNode[] = [
   {
     id: "ir-worldview",
     label: "IR Worldview",
-    note: "Seven dimensions for reading world politics",
+    note: "map your worldview and how you understand international relations",
     href: "/projects/ir-worldview-inventory",
     top: "58%",
     left: "18%",
@@ -37,7 +38,7 @@ const nodes: SeaNode[] = [
   {
     id: "psii",
     label: "PSII",
-    note: "A research system still taking shape",
+    note: "an index that maps the degree of private sector influence in foreign policy",
     href: "/projects/psii",
     top: "34%",
     left: "68%",
@@ -47,8 +48,8 @@ const nodes: SeaNode[] = [
   },
   {
     id: "whales",
-    label: "Whales & Marine Life",
-    note: "Scale, sentience, ecology, the deep",
+    label: "Cetaceans",
+    note: "My favorite animals :)",
     top: "72%",
     left: "78%",
     drift: [-18, -18],
@@ -57,8 +58,8 @@ const nodes: SeaNode[] = [
   },
   {
     id: "aviation",
-    label: "Aviation & Flight Paths",
-    note: "Routes, altitude, risk, horizon",
+    label: "Transportation",
+    note: "planes, trains, and things that go boom",
     top: "24%",
     left: "30%",
     drift: [22, 20],
@@ -67,8 +68,8 @@ const nodes: SeaNode[] = [
   },
   {
     id: "cartography",
-    label: "Cartography",
-    note: "Maps as argument, memory, and power",
+    label: "Geography",
+    note: "atlases are my favorite books",
     top: "76%",
     left: "45%",
     drift: [14, -22],
@@ -77,8 +78,8 @@ const nodes: SeaNode[] = [
   },
   {
     id: "sci-fi-strategy",
-    label: "Sci-Fi/Strategy",
-    note: "Speculation as a way to test futures",
+    label: "Sci-Fi & Strategy",
+    note: "RTS, lore, and sci-fi",
     top: "18%",
     left: "78%",
     drift: [-20, 24],
@@ -89,31 +90,31 @@ const nodes: SeaNode[] = [
 
 const fragments = [
   {
-    text: "order is a habit before it is a theory",
+    text: "Grey",
     top: "20%",
     left: "8%",
     duration: 46,
   },
   {
-    text: "archipelagos / alliances / pressure",
+    text: "Sperm",
     top: "46%",
     left: "62%",
     duration: 52,
   },
   {
-    text: "flight paths cross old maps",
+    text: "Blue",
     top: "84%",
     left: "12%",
     duration: 58,
   },
   {
-    text: "deep time below the surface",
+    text: "Orca",
     top: "64%",
     left: "42%",
     duration: 50,
   },
   {
-    text: "strategy begins where certainty ends",
+    text: "Humpback",
     top: "30%",
     left: "48%",
     duration: 62,
@@ -127,6 +128,19 @@ const signalLines = [
   "left-[71%] top-[27%] w-[14%] rotate-[28deg]",
 ];
 
+const SeaConsciousnessScene = dynamic(
+  () =>
+    import("@/components/sea-consciousness-scene").then(
+      (module) => module.SeaConsciousnessScene,
+    ),
+  {
+    loading: () => null,
+    ssr: false,
+  },
+);
+
+const ENABLE_3D_SCENE = true;
+
 export default function Home() {
   const shouldReduceMotion = useReducedMotion();
   const [activeNode, setActiveNode] = useState<string | null>(null);
@@ -136,10 +150,13 @@ export default function Home() {
       id="main"
       className="relative isolate min-h-screen overflow-hidden bg-[#070807] text-stone-50"
     >
-      <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(7,8,7,1)_0%,rgba(13,25,21,1)_42%,rgba(20,18,25,1)_100%)]" />
-      <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(250,250,248,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(250,250,248,0.035)_1px,transparent_1px)] [background-size:86px_86px]" />
-      <div className="absolute inset-0 opacity-30 [background-image:repeating-linear-gradient(170deg,transparent_0,transparent_36px,rgba(231,229,228,0.05)_37px,transparent_39px)]" />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(0deg,rgba(7,8,7,0.92)_0%,rgba(7,8,7,0)_100%)]" />
+      {ENABLE_3D_SCENE ? (
+        <SeaConsciousnessScene reduceMotion={Boolean(shouldReduceMotion)} />
+      ) : null}
+      <div className="pointer-events-none absolute inset-0 z-[-50] bg-[linear-gradient(115deg,rgba(7,8,7,1)_0%,rgba(13,25,21,0.92)_42%,rgba(20,18,25,0.9)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-[-30] opacity-40 [background-image:linear-gradient(rgba(250,250,248,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(250,250,248,0.035)_1px,transparent_1px)] [background-size:86px_86px]" />
+      <div className="pointer-events-none absolute inset-0 z-[-20] opacity-30 [background-image:repeating-linear-gradient(170deg,transparent_0,transparent_36px,rgba(231,229,228,0.05)_37px,transparent_39px)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[-10] h-1/2 bg-[linear-gradient(0deg,rgba(7,8,7,0.92)_0%,rgba(7,8,7,0)_100%)]" />
 
       <header className="absolute inset-x-0 top-0 z-40">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-10">
@@ -170,15 +187,15 @@ export default function Home() {
         <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[minmax(0,0.78fr)_minmax(24rem,0.42fr)] lg:items-end">
           <div>
             <p className="mb-6 text-sm uppercase leading-none text-stone-400">
-              Sea of Consciousness
+              Yippy&apos;s Sea of Consciousness
             </p>
             <h1 className="max-w-5xl font-serif text-5xl leading-[1.03] text-stone-50 sm:text-7xl lg:text-8xl">
-              Research interests drifting into relation.
+              Welcome to my personal repository
             </h1>
           </div>
           <p className="max-w-xl text-lg leading-8 text-stone-300">
-            A moving surface of projects, questions, and recurring motifs:
-            world politics, strategy, maps, flight, marine life, and speculative
+            A shifting home of my ideas, projects, questions, and interests:
+            international affairs, history, aviation, marine life, and speculative
             futures.
           </p>
         </div>
@@ -213,10 +230,10 @@ export default function Home() {
               shouldReduceMotion
                 ? undefined
                 : {
-                    x: [0, 18, -8, 0],
-                    y: [0, -22, 10, 0],
-                    opacity: [0.2, 0.54, 0.28, 0.2],
-                  }
+                  x: [0, 18, -8, 0],
+                  y: [0, -22, 10, 0],
+                  opacity: [0.2, 0.54, 0.28, 0.2],
+                }
             }
             transition={{
               duration: fragment.duration,
@@ -259,9 +276,9 @@ function SeaNodeMarker({
   const animation = shouldReduceMotion
     ? undefined
     : {
-        x: [0, node.drift[0], node.drift[0] / -2, 0],
-        y: [0, node.drift[1], node.drift[1] / 2, 0],
-      };
+      x: [0, node.drift[0], node.drift[0] / -2, 0],
+      y: [0, node.drift[1], node.drift[1] / 2, 0],
+    };
   const transition = {
     duration: node.duration,
     repeat: Infinity,
@@ -284,23 +301,25 @@ function SeaNodeMarker({
 
   const content = (
     <>
-      <span className="flex h-[clamp(2.75rem,7vw,5.75rem)] w-[clamp(2.75rem,7vw,5.75rem)] items-center justify-center border border-current bg-black/20 backdrop-blur-sm">
-        <span className="h-[clamp(0.375rem,0.95vw,0.75rem)] w-[clamp(0.375rem,0.95vw,0.75rem)] bg-current" />
+      <span className="relative flex h-[clamp(2.5rem,6vw,5rem)] w-[clamp(2.5rem,6vw,5rem)] items-center justify-center">
+        <span className="absolute inset-0 rounded-full border border-stone-100/20 bg-stone-100/[0.03] shadow-[0_0_28px_rgba(210,245,255,0.12)]" />
+        <span className="absolute h-1/2 w-1/2 rounded-full border border-current/25 opacity-70" />
+        <span className="h-[clamp(0.35rem,0.8vw,0.55rem)] w-[clamp(0.35rem,0.8vw,0.55rem)] rounded-full bg-current/80 shadow-[0_0_18px_currentColor]" />
       </span>
       <motion.span
-        className="pointer-events-none absolute left-1/2 top-[clamp(3.5rem,8.5vw,6.75rem)] w-[clamp(10rem,28vw,15rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 border border-stone-100/20 bg-[#070807]/85 px-[clamp(0.875rem,2vw,1.25rem)] py-[clamp(0.625rem,1.5vw,1rem)] text-stone-100 shadow-2xl shadow-black/40 backdrop-blur-md"
+        className="pointer-events-none absolute left-1/2 top-[clamp(3.4rem,8vw,6rem)] w-[clamp(10rem,26vw,15rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 text-center [text-shadow:0_1px_18px_rgba(0,0,0,0.72)]"
         initial={false}
         animate={
           isActive
             ? { opacity: 1, y: 0 }
-            : { opacity: 0, y: shouldReduceMotion ? 0 : -6 }
+            : { opacity: 0, y: shouldReduceMotion ? 0 : -4 }
         }
-        transition={{ duration: 0.24, ease: "easeOut" }}
+        transition={{ duration: 0.28, ease: "easeOut" }}
       >
-        <span className="block font-serif text-[clamp(1rem,2.1vw,1.35rem)] leading-tight">
+        <span className="block font-serif text-[clamp(1rem,2vw,1.3rem)] leading-tight text-stone-50">
           {node.label}
         </span>
-        <span className="mt-2 block text-[clamp(0.75rem,1.45vw,0.9rem)] leading-6 text-stone-300">
+        <span className="mt-2 block text-[clamp(0.75rem,1.35vw,0.88rem)] leading-5 text-stone-300/80">
           {node.note}
         </span>
       </motion.span>
