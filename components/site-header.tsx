@@ -15,7 +15,7 @@ export function SiteHeader() {
           href="/"
           className="w-fit font-serif text-2xl leading-none text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
         >
-          Jinhua Yi
+          Jinhua Yip
         </Link>
         <nav aria-label="Primary navigation">
           <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm uppercase leading-none text-stone-600">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "About Jinhua Yi and the editorial direction of the portfolio.",
+  description: "About Jinhua Yip and the editorial direction of the portfolio.",
 };
 
 export default function AboutPage() {
