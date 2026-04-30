@@ -45,6 +45,24 @@ const guardrails = [
   "The friend trial is part of the method. Feedback is being used to refine wording, reduce false precision, and identify where the experience over-explains or under-explains.",
 ];
 
+const psiiDimensions = [
+  {
+    title: "Governance & Elite Capture",
+    eyebrow: "Dimension 01",
+    body: "Measures how private-sector actors become entangled with political authority, patronage networks, regulatory discretion, and elite bargaining during asymmetric conflict.",
+  },
+  {
+    title: "Economic Structure & FDI",
+    eyebrow: "Dimension 02",
+    body: "Examines whether investment patterns, ownership structures, capital dependence, and sector concentration create leverage that can shape conflict behavior and state choices.",
+  },
+  {
+    title: "Information-Environment Control",
+    eyebrow: "Dimension 03",
+    body: "Tracks influence over media systems, platform infrastructure, public narratives, and commercial information channels that can affect perception, legitimacy, and mobilization.",
+  },
+];
+
 export function generateStaticParams() {
   return projects.map((project) => ({
     slug: project.slug,
@@ -71,6 +89,14 @@ export async function generateMetadata({
     };
   }
 
+  if (project.slug === "psii") {
+    return {
+      title: "PSII",
+      description:
+        "An economic index and framework for understanding private-sector influence in asymmetric conflict.",
+    };
+  }
+
   return {
     title: project.title,
     description: project.dek,
@@ -87,6 +113,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   if (project.slug === "ir-worldview-inventory") {
     return <IrWorldviewInventoryPage project={project} />;
+  }
+
+  if (project.slug === "psii") {
+    return <PsiiPage project={project} />;
   }
 
   return (
@@ -130,6 +160,120 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </p>
         </div>
       </div>
+    </article>
+  );
+}
+
+function PsiiPage({ project }: { project: Project }) {
+  return (
+    <article className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
+      <Link
+        href="/archive"
+        className="text-sm uppercase leading-none text-stone-600 underline underline-offset-4 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+      >
+        Back to archive
+      </Link>
+
+      <header className="mt-10 border-b border-stone-300 pb-12">
+        <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+          <div>
+            <p className="mb-5 text-sm uppercase leading-none text-stone-500">
+              {project.category} / Economic index
+            </p>
+            <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
+              PSII
+            </h1>
+          </div>
+          <div className="max-w-xl">
+            <p className="text-xl leading-8 text-stone-700">
+              The Private Sector Influence Index is a research framework for
+              operationalizing how firms, investors, and commercial networks
+              shape asymmetric conflict.
+            </p>
+            <p className="mt-8 inline-flex w-fit border border-stone-300 px-4 py-3 text-sm uppercase leading-none text-stone-700">
+              Research in Progress / Dashboard Upcoming
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <section className="border-b border-stone-300 py-14">
+        <div className="max-w-3xl">
+          <p className="mb-4 text-sm uppercase leading-none text-stone-500">
+            The framework
+          </p>
+          <h2 className="font-serif text-4xl leading-tight text-stone-950">
+            Three dimensions for reading private-sector influence as a strategic
+            variable.
+          </h2>
+        </div>
+
+        <div className="mt-12 divide-y divide-stone-300 border-y border-stone-300">
+          {psiiDimensions.map((dimension, index) => (
+            <section
+              key={dimension.title}
+              className="grid gap-5 py-8 md:grid-cols-[5rem_16rem_1fr]"
+            >
+              <p className="font-serif text-3xl leading-none text-stone-400">
+                {String(index + 1).padStart(2, "0")}
+              </p>
+              <div>
+                <p className="mb-3 text-sm uppercase leading-none text-stone-500">
+                  {dimension.eyebrow}
+                </p>
+                <h3 className="font-serif text-2xl leading-tight text-stone-950">
+                  {dimension.title}
+                </h3>
+              </div>
+              <p className="max-w-2xl text-lg leading-8 text-stone-700">
+                {dimension.body}
+              </p>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-10 border-b border-stone-300 py-14 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p className="text-sm uppercase leading-none text-stone-500">
+            The goal
+          </p>
+        </div>
+        <div className="max-w-3xl space-y-6 text-lg leading-8 text-stone-700">
+          <p>
+            Asymmetric conflict is often described through military imbalance,
+            state capacity, ideology, or geography. PSII adds another lens: the
+            ways private-sector actors can quietly alter the incentives,
+            information flows, and institutional constraints around conflict.
+          </p>
+          <p>
+            The index matters because economic power does not sit outside
+            geopolitical struggle. Ownership, investment, elite capture, and
+            control over information environments can all become part of how
+            states, firms, and non-state actors compete.
+          </p>
+        </div>
+      </section>
+
+      <section className="grid gap-10 py-14 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p className="text-sm uppercase leading-none text-stone-500">
+            Future roadmap
+          </p>
+        </div>
+        <div className="max-w-3xl">
+          <h2 className="font-serif text-3xl leading-tight text-stone-950">
+            From published research artifact to interactive visual dashboard.
+          </h2>
+          <p className="mt-8 text-lg leading-8 text-stone-700">
+            The next version will translate the paper framework into a dashboard
+            for comparing cases, visualizing dimension scores, and making the
+            index easier to inspect. The dashboard should clarify assumptions
+            and evidence rather than turn a complex political economy problem
+            into a single decorative score.
+          </p>
+        </div>
+      </section>
     </article>
   );
 }
