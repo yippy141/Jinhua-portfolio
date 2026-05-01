@@ -13,12 +13,41 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://jinhuayip.com",
+  ),
   title: {
     default: "Jinhua Yip",
     template: "%s | Jinhua Yip",
   },
   description:
-    "A premium personal portfolio for research, essays, and editorial projects.",
+    "Research, essays, and editorial projects on international relations, technology, and political economy.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Jinhua Yip",
+    title: "Jinhua Yip",
+    description:
+      "Research, essays, and editorial projects on international relations, technology, and political economy.",
+    url: "/",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Jinhua Yip — research, essays, and editorial projects",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jinhua Yip",
+    description:
+      "Research, essays, and editorial projects on international relations, technology, and political economy.",
+    images: ["/og.png"],
+  },
 };
 
 export default function RootLayout({

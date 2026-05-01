@@ -102,6 +102,33 @@ export function generateStaticParams() {
   }));
 }
 
+type ProjectMeta = {
+  title: string;
+  description: string;
+  ogImage: string;
+};
+
+const projectMeta: Partial<Record<string, ProjectMeta>> = {
+  "ir-worldview-inventory": {
+    title: "IR Worldview Inventory",
+    description:
+      "A serious editorial interactive for examining how people read world politics.",
+    ogImage: "/previews/ir-worldview-poster-1.png",
+  },
+  psii: {
+    title: "PSII — Private Sector Influence Index",
+    description:
+      "A comparative lens for reading governance capture, economic leverage, and information control as strategic variables.",
+    ogImage: "/og.png",
+  },
+  "philippines-south-china-sea": {
+    title: "The Philippines in the South China Sea",
+    description:
+      "A published chapter on how private-sector actors shape asymmetric conflict in the shadow of great-power competition.",
+    ogImage: "/og.png",
+  },
+};
+
 export async function generateMetadata({
   params,
 }: ProjectPageProps): Promise<Metadata> {
@@ -109,38 +136,42 @@ export async function generateMetadata({
   const project = getProjectBySlug(slug);
 
   if (!project) {
-    return {
-      title: "Project Not Found",
-    };
+    return { title: "Project Not Found" };
   }
 
-  if (project.slug === "ir-worldview-inventory") {
-    return {
-      title: "IR Worldview Inventory",
-      description:
-        "A serious editorial interactive for examining how people read world politics.",
-    };
-  }
-
-  if (project.slug === "psii") {
-    return {
-      title: "PSII — Private Sector Influence Index",
-      description:
-        "A comparative lens for reading governance capture, economic leverage, and information control as strategic variables.",
-    };
-  }
-
-  if (project.slug === "philippines-south-china-sea") {
-    return {
-      title: "The Philippines in the South China Sea",
-      description:
-        "A published chapter on how private-sector actors shape asymmetric conflict in the shadow of great-power competition.",
-    };
-  }
-
-  return {
+  const meta = projectMeta[slug] ?? {
     title: project.title,
     description: project.dek,
+    ogImage: "/og.png",
+  };
+
+  return {
+    title: meta.title,
+    description: meta.description,
+    alternates: {
+      canonical: `/projects/${slug}`,
+    },
+    openGraph: {
+      type: "article",
+      siteName: "Jinhua Yip",
+      title: meta.title,
+      description: meta.description,
+      url: `/projects/${slug}`,
+      images: [
+        {
+          url: meta.ogImage,
+          width: 1200,
+          height: 630,
+          alt: meta.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.description,
+      images: [meta.ogImage],
+    },
   };
 }
 

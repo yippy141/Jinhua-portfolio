@@ -9,9 +9,12 @@ export type ProjectLink = {
 
 export type ProjectPreview = {
   kind: "image" | "video" | "none";
-  poster: string | null;
+  posters: readonly string[];
   alt: string;
+  video?: string | null;
 };
+
+export type ProjectHomeVariant = "viewport" | "triptych" | "folio" | "note";
 
 export type ProjectHomeNode = {
   coordinates: {
@@ -20,6 +23,7 @@ export type ProjectHomeNode = {
   };
   size: "sm" | "md" | "lg";
   accentColor: string;
+  variant: ProjectHomeVariant;
 };
 
 export type Project = {
@@ -77,8 +81,12 @@ export const projects = [
       },
     ],
     preview: {
-      kind: "image",
-      poster: "/previews/ir-worldview-inventory.svg",
+      kind: "video",
+      posters: [
+        "/previews/ir-worldview-poster-1.png",
+        "/previews/ir-worldview-poster-2.png",
+      ],
+      video: "/previews/ir-worldview-loop.mp4",
       alt: "Archival preview card for the IR Worldview Inventory.",
     },
     homeNode: {
@@ -88,6 +96,7 @@ export const projects = [
       },
       size: "lg",
       accentColor: "amber",
+      variant: "viewport",
     },
   },
   {
@@ -108,7 +117,7 @@ export const projects = [
     links: [],
     preview: {
       kind: "image",
-      poster: "/previews/psii.svg",
+      posters: ["/previews/psii.svg"],
       alt: "Archival preview card for the Private Sector Influence Index.",
     },
     homeNode: {
@@ -118,6 +127,7 @@ export const projects = [
       },
       size: "lg",
       accentColor: "emerald",
+      variant: "triptych",
     },
   },
   {
@@ -138,7 +148,7 @@ export const projects = [
     links: [],
     preview: {
       kind: "image",
-      poster: "/previews/philippines-south-china-sea.svg",
+      posters: ["/previews/philippines-south-china-sea.svg"],
       alt: "Archival preview card for the Philippines in the South China Sea publication.",
     },
     homeNode: {
@@ -148,6 +158,7 @@ export const projects = [
       },
       size: "md",
       accentColor: "stone",
+      variant: "folio",
     },
   },
   {
@@ -166,8 +177,8 @@ export const projects = [
       },
     ],
     preview: {
-      kind: "image",
-      poster: null,
+      kind: "none",
+      posters: [],
       alt: "Archival preview card for the Personal Substack.",
     },
     homeNode: {
@@ -177,6 +188,7 @@ export const projects = [
       },
       size: "sm",
       accentColor: "stone",
+      variant: "note",
     },
   },
 ] as const satisfies readonly Project[];
