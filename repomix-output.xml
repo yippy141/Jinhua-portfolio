@@ -1,0 +1,1678 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/
+  (editorial)/
+    about/
+      page.tsx
+    archive/
+      page.tsx
+    contact/
+      page.tsx
+    projects/
+      [slug]/
+        page.tsx
+    research/
+      page.tsx
+    layout.tsx
+  favicon.ico
+  globals.css
+  layout.tsx
+  page.tsx
+components/
+  sea-consciousness-scene.tsx
+  site-footer.tsx
+  site-header.tsx
+data/
+  projects.ts
+public/
+  file.svg
+  globe.svg
+  next.svg
+  vercel.svg
+  window.svg
+.gitignore
+AGENTS.md
+CLAUDE.md
+eslint.config.mjs
+next.config.ts
+package.json
+postcss.config.mjs
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/(editorial)/about/page.tsx">
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "About Jinhua Yip and the editorial direction of the portfolio.",
+};
+
+export default function AboutPage() {
+  return (
+    <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-18">
+      <p className="mb-4 text-sm uppercase leading-none text-stone-500">About</p>
+      <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
+        A place for careful public thinking.
+      </h1>
+      <div className="mt-10 space-y-6 text-lg leading-8 text-stone-700">
+        <p>
+          This portfolio will collect research, essays, editorial projects, and
+          experiments in public reasoning. The design should feel calm enough to
+          read and structured enough to grow.
+        </p>
+        <p>
+          Sprint 1 keeps this page intentionally spare. Future passes can add a
+          biography, selected affiliations, press links, and a clearer editorial
+          statement.
+        </p>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(editorial)/archive/page.tsx">
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { projects } from "@/data/projects";
+
+export const metadata: Metadata = {
+  title: "Archive",
+  description: "An archive of Jinhua Yi's research and editorial projects.",
+};
+
+export default function ArchivePage() {
+  return (
+    <div className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
+      <div className="max-w-3xl">
+        <p className="mb-4 text-sm uppercase leading-none text-stone-500">
+          Archive
+        </p>
+        <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
+          A working index of projects, publications, and research systems.
+        </h1>
+      </div>
+
+      <div className="mt-12 divide-y divide-stone-300 border-y border-stone-300">
+        {projects.map((project) => (
+          <article
+            key={project.slug}
+            className="grid gap-4 py-7 md:grid-cols-[9rem_1fr_12rem]"
+          >
+            <p className="text-sm leading-6 text-stone-500">{project.year}</p>
+            <div>
+              <h2 className="font-serif text-2xl leading-tight text-stone-950">
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+                >
+                  {project.title}
+                </Link>
+              </h2>
+              <p className="mt-3 max-w-2xl text-base leading-7 text-stone-700">
+                {project.dek}
+              </p>
+            </div>
+            <p className="text-sm leading-6 text-stone-600">{project.status}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(editorial)/contact/page.tsx">
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Contact information for Jinhua Yi.",
+};
+
+export default function ContactPage() {
+  return (
+    <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-18">
+      <p className="mb-4 text-sm uppercase leading-none text-stone-500">
+        Contact
+      </p>
+      <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
+        For correspondence, collaborations, and editorial inquiries.
+      </h1>
+      <div className="mt-10 space-y-6 text-lg leading-8 text-stone-700">
+        <p>
+          Add the preferred email, Substack, and social links here when they are
+          ready. The page is intentionally minimal so the contact path stays
+          direct.
+        </p>
+        <p>
+          Placeholder email:{" "}
+          <a
+            href="mailto:hello@example.com"
+            className="text-stone-950 underline underline-offset-4 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+          >
+            hello@example.com
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(editorial)/research/page.tsx">
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { projects } from "@/data/projects";
+
+export const metadata: Metadata = {
+  title: "Research",
+  description: "Research projects and policy work by Jinhua Yi.",
+};
+
+export default function ResearchPage() {
+  return (
+    <div className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
+      <div className="max-w-3xl">
+        <p className="mb-4 text-sm uppercase leading-none text-stone-500">
+          Research
+        </p>
+        <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
+          Research notes and policy projects with room for depth.
+        </h1>
+        <p className="mt-6 text-lg leading-8 text-stone-700">
+          A simple listing for now, designed to become a more complete research
+          shelf as project material is added.
+        </p>
+      </div>
+
+      <div className="mt-12 grid gap-8 md:grid-cols-2">
+        {projects.map((project) => (
+          <article key={project.slug} className="border-t border-stone-300 pt-5">
+            <p className="mb-4 text-sm leading-none text-stone-500">
+              {project.category} / {project.status}
+            </p>
+            <h2 className="font-serif text-2xl leading-tight text-stone-950">
+              <Link
+                href={`/projects/${project.slug}`}
+                className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+              >
+                {project.title}
+              </Link>
+            </h2>
+            <p className="mt-4 text-base leading-7 text-stone-700">
+              {project.dek}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(editorial)/layout.tsx">
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+
+export default function EditorialLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <div className="flex min-h-screen flex-col bg-stone-50 text-stone-950">
+      <SiteHeader />
+      <main id="main" className="flex-1">
+        {children}
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+</file>
+
+<file path="components/sea-consciousness-scene.tsx">
+"use client";
+
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Component, useMemo, useRef, type ReactNode } from "react";
+import * as THREE from "three";
+
+type SeaConsciousnessSceneProps = {
+  reduceMotion: boolean;
+};
+
+const PARTICLE_COUNT = 360;
+
+export function SeaConsciousnessScene({
+  reduceMotion,
+}: SeaConsciousnessSceneProps) {
+  return (
+    <SceneErrorBoundary>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{ zIndex: -40 }}
+      >
+        <Canvas
+          fallback={null}
+          frameloop={reduceMotion ? "demand" : "always"}
+          dpr={[1, 1.5]}
+          camera={{ position: [0, 0, 7], fov: 48 }}
+          gl={{
+            alpha: true,
+            antialias: false,
+            powerPreference: "low-power",
+          }}
+          onCreated={({ gl, scene }) => {
+            gl.setClearColor("#000000", 0);
+            scene.fog = new THREE.FogExp2("#07100f", 0.055);
+          }}
+        >
+          <ParticleField reduceMotion={reduceMotion} />
+        </Canvas>
+      </div>
+    </SceneErrorBoundary>
+  );
+}
+
+function ParticleField({ reduceMotion }: SeaConsciousnessSceneProps) {
+  const pointsRef = useRef<THREE.Points>(null);
+  const geometry = useMemo(() => {
+    const random = createSeededRandom(42);
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    const colors = new Float32Array(PARTICLE_COUNT * 3);
+    const palette = [
+      new THREE.Color("#d8f7ff"),
+      new THREE.Color("#b8d9c6"),
+      new THREE.Color("#f0d79f"),
+      new THREE.Color("#c9c3ff"),
+    ];
+
+    for (let index = 0; index < PARTICLE_COUNT; index += 1) {
+      const positionIndex = index * 3;
+      const depth = random();
+      const spread = 4.2 + depth * 4.8;
+      const color = palette[Math.floor(random() * palette.length)];
+
+      positions[positionIndex] = (random() - 0.5) * spread * 2.2;
+      positions[positionIndex + 1] = (random() - 0.5) * spread * 1.25;
+      positions[positionIndex + 2] = (random() - 0.5) * 7.5;
+
+      colors[positionIndex] = color.r;
+      colors[positionIndex + 1] = color.g;
+      colors[positionIndex + 2] = color.b;
+    }
+
+    const fieldGeometry = new THREE.BufferGeometry();
+    fieldGeometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3),
+    );
+    fieldGeometry.setAttribute(
+      "color",
+      new THREE.Float32BufferAttribute(colors, 3),
+    );
+
+    return fieldGeometry;
+  }, []);
+
+  useFrame((state, delta) => {
+    if (reduceMotion || !pointsRef.current) {
+      return;
+    }
+
+    pointsRef.current.rotation.y += delta * 0.012;
+    pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.045) * 0.04;
+    pointsRef.current.position.y =
+      Math.sin(state.clock.elapsedTime * 0.075) * 0.045;
+  });
+
+  return (
+    <points ref={pointsRef} geometry={geometry}>
+      <pointsMaterial
+        vertexColors
+        transparent
+        depthWrite={false}
+        opacity={0.58}
+        size={0.026}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
+function createSeededRandom(seed: number) {
+  let value = seed;
+
+  return () => {
+    value = (value * 16807) % 2147483647;
+    return (value - 1) / 2147483646;
+  };
+}
+
+class SceneErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null;
+    }
+
+    return this.props.children;
+  }
+}
+</file>
+
+<file path="components/site-footer.tsx">
+import Link from "next/link";
+
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-stone-300/70 bg-stone-50">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 text-sm leading-6 text-stone-600 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
+        <p>Selected research, essays, and editorial projects.</p>
+        <Link
+          href="/contact"
+          className="w-fit text-stone-800 underline underline-offset-4 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+        >
+          Contact
+        </Link>
+      </div>
+    </footer>
+  );
+}
+</file>
+
+<file path="data/projects.ts">
+export type ProjectStatus =
+  | "Live/Beta"
+  | "In Progress"
+  | "Published"
+  | "Active Publication/Substack";
+
+export type Project = {
+  slug: string;
+  title: string;
+  status: ProjectStatus;
+  category: "Tool" | "Research" | "Essay" | "Publication";
+  dek: string;
+  description: string;
+  year: string;
+};
+
+export const projects = [
+  {
+    slug: "ir-worldview-inventory",
+    title: "IR Worldview Inventory",
+    status: "Live/Beta",
+    category: "Tool",
+    dek: "A reflective instrument for mapping assumptions in international relations.",
+    description:
+      "A beta project for helping readers articulate the theories, instincts, and historical priors shaping how they interpret world affairs.",
+    year: "2026",
+  },
+  {
+    slug: "psii",
+    title: "PSII",
+    status: "In Progress",
+    category: "Research",
+    dek: "An in-progress research system for organizing political and strategic inquiry.",
+    description:
+      "A working research framework for tracking questions, sources, and arguments across a developing body of policy work.",
+    year: "2026",
+  },
+  {
+    slug: "philippines-south-china-sea",
+    title: "The Philippines in the South China Sea",
+    status: "Published",
+    category: "Essay",
+    dek: "A published analysis of Philippine strategy, maritime pressure, and regional order.",
+    description:
+      "An editorial research piece examining the Philippines' position in the South China Sea and the pressures shaping its strategic choices.",
+    year: "2025",
+  },
+  {
+    slug: "3-canadians",
+    title: "3 Canadians",
+    status: "Active Publication/Substack",
+    category: "Publication",
+    dek: "An active publication and Substack project.",
+    description:
+      "A live editorial publication with room for essays, interviews, commentary, and recurring notes.",
+    year: "2026",
+  },
+] as const satisfies readonly Project[];
+
+export type ProjectSlug = (typeof projects)[number]["slug"];
+
+export function getProjectBySlug(slug: string) {
+  return projects.find((project) => project.slug === slug);
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path="CLAUDE.md">
+@AGENTS.md
+</file>
+
+<file path="eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+<file path="app/(editorial)/projects/[slug]/page.tsx">
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+import { getProjectBySlug, type Project, projects } from "@/data/projects";
+
+type ProjectPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+const irWorldviewLinks = {
+  live: "https://ir-worldview-inventory.vercel.app",
+  github: "https://github.com/jinhuayip/ir-worldview-inventory",
+};
+
+const coreSurfaces = [
+  {
+    title: "Foundation",
+    eyebrow: "Seven dimensions",
+    body: "The opening surface gives people an IR Foundation result: a structured reading of the assumptions they bring to questions of power, order, institutions, norms, history, risk, and agency.",
+  },
+  {
+    title: "Modules",
+    eyebrow: "Security and Technology",
+    body: "Issue-specific modules test how the foundation behaves when the reader moves from general worldview questions into harder policy terrain, beginning with security and technology.",
+  },
+  {
+    title: "AI Governance",
+    eyebrow: "Compass",
+    body: "The AI Governance Compass extends the same interpretive logic into governance questions: safety, state capacity, market power, democratic oversight, international coordination, and strategic competition.",
+  },
+  {
+    title: "Profile",
+    eyebrow: "Synthesis",
+    body: "The profile gathers the results into a readable portrait. It is meant to help people notice patterns in judgment, not to sort them into a fixed identity.",
+  },
+];
+
+const guardrails = [
+  "The framework is interpretive, not psychometric. It does not claim scientific validation or diagnostic authority.",
+  "Results are best read as prompts for reflection: they can surface tendencies, but they cannot settle what someone believes.",
+  "The dimensions are editorial lenses. They are useful when they clarify tradeoffs and limited when they flatten context.",
+  "The friend trial is part of the method. Feedback is being used to refine wording, reduce false precision, and identify where the experience over-explains or under-explains.",
+];
+
+const psiiDimensions = [
+  {
+    title: "Governance & Elite Capture",
+    eyebrow: "Dimension 01",
+    body: "Measures how private-sector actors become entangled with political authority, patronage networks, regulatory discretion, and elite bargaining during asymmetric conflict.",
+  },
+  {
+    title: "Economic Structure & FDI",
+    eyebrow: "Dimension 02",
+    body: "Examines whether investment patterns, ownership structures, capital dependence, and sector concentration create leverage that can shape conflict behavior and state choices.",
+  },
+  {
+    title: "Information-Environment Control",
+    eyebrow: "Dimension 03",
+    body: "Tracks influence over media systems, platform infrastructure, public narratives, and commercial information channels that can affect perception, legitimacy, and mobilization.",
+  },
+];
+
+export function generateStaticParams() {
+  return projects.map((project) => ({
+    slug: project.slug,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: ProjectPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
+
+  if (!project) {
+    return {
+      title: "Project Not Found",
+    };
+  }
+
+  if (project.slug === "ir-worldview-inventory") {
+    return {
+      title: "IR Worldview Inventory",
+      description:
+        "A serious editorial interactive for examining how people read world politics.",
+    };
+  }
+
+  if (project.slug === "psii") {
+    return {
+      title: "PSII",
+      description:
+        "An economic index and framework for understanding private-sector influence in asymmetric conflict.",
+    };
+  }
+
+  return {
+    title: project.title,
+    description: project.dek,
+  };
+}
+
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
+
+  if (!project) {
+    notFound();
+  }
+
+  if (project.slug === "ir-worldview-inventory") {
+    return <IrWorldviewInventoryPage project={project} />;
+  }
+
+  if (project.slug === "psii") {
+    return <PsiiPage project={project} />;
+  }
+
+  return (
+    <article className="mx-auto w-full max-w-4xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
+      <Link
+        href="/archive"
+        className="text-sm uppercase leading-none text-stone-600 underline underline-offset-4 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+      >
+        Back to archive
+      </Link>
+
+      <header className="mt-10 border-b border-stone-300 pb-10">
+        <p className="mb-5 text-sm uppercase leading-none text-stone-500">
+          {project.category} / {project.status}
+        </p>
+        <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-6xl">
+          {project.title}
+        </h1>
+        <p className="mt-6 max-w-2xl text-xl leading-8 text-stone-700">
+          {project.dek}
+        </p>
+      </header>
+
+      <div className="mt-10 grid gap-10 md:grid-cols-[10rem_1fr]">
+        <dl className="space-y-5 text-sm leading-6 text-stone-600">
+          <div>
+            <dt className="text-stone-500">Year</dt>
+            <dd className="text-stone-900">{project.year}</dd>
+          </div>
+          <div>
+            <dt className="text-stone-500">Status</dt>
+            <dd className="text-stone-900">{project.status}</dd>
+          </div>
+        </dl>
+        <div className="space-y-6 text-lg leading-8 text-stone-700">
+          <p>{project.description}</p>
+          <p>
+            This detail page is a Sprint 1 scaffold. Future passes can add
+            source links, images, publication metadata, and long-form project
+            notes without changing the routing model.
+          </p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function PsiiPage({ project }: { project: Project }) {
+  return (
+    <article className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
+      <Link
+        href="/archive"
+        className="text-sm uppercase leading-none text-stone-600 underline underline-offset-4 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+      >
+        Back to archive
+      </Link>
+
+      <header className="mt-10 border-b border-stone-300 pb-12">
+        <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+          <div>
+            <p className="mb-5 text-sm uppercase leading-none text-stone-500">
+              {project.category} / Economic index
+            </p>
+            <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
+              PSII
+            </h1>
+          </div>
+          <div className="max-w-xl">
+            <p className="text-xl leading-8 text-stone-700">
+              The Private Sector Influence Index is a research framework for
+              operationalizing how firms, investors, and commercial networks
+              shape asymmetric conflict.
+            </p>
+            <p className="mt-8 inline-flex w-fit border border-stone-300 px-4 py-3 text-sm uppercase leading-none text-stone-700">
+              Research in Progress / Dashboard Upcoming
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <section className="border-b border-stone-300 py-14">
+        <div className="max-w-3xl">
+          <p className="mb-4 text-sm uppercase leading-none text-stone-500">
+            The framework
+          </p>
+          <h2 className="font-serif text-4xl leading-tight text-stone-950">
+            Three dimensions for reading private-sector influence as a strategic
+            variable.
+          </h2>
+        </div>
+
+        <div className="mt-12 divide-y divide-stone-300 border-y border-stone-300">
+          {psiiDimensions.map((dimension, index) => (
+            <section
+              key={dimension.title}
+              className="grid gap-5 py-8 md:grid-cols-[5rem_16rem_1fr]"
+            >
+              <p className="font-serif text-3xl leading-none text-stone-400">
+                {String(index + 1).padStart(2, "0")}
+              </p>
+              <div>
+                <p className="mb-3 text-sm uppercase leading-none text-stone-500">
+                  {dimension.eyebrow}
+                </p>
+                <h3 className="font-serif text-2xl leading-tight text-stone-950">
+                  {dimension.title}
+                </h3>
+              </div>
+              <p className="max-w-2xl text-lg leading-8 text-stone-700">
+                {dimension.body}
+              </p>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-10 border-b border-stone-300 py-14 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p className="text-sm uppercase leading-none text-stone-500">
+            The goal
+          </p>
+        </div>
+        <div className="max-w-3xl space-y-6 text-lg leading-8 text-stone-700">
+          <p>
+            Asymmetric conflict is often described through military imbalance,
+            state capacity, ideology, or geography. PSII adds another lens: the
+            ways private-sector actors can quietly alter the incentives,
+            information flows, and institutional constraints around conflict.
+          </p>
+          <p>
+            The index matters because economic power does not sit outside
+            geopolitical struggle. Ownership, investment, elite capture, and
+            control over information environments can all become part of how
+            states, firms, and non-state actors compete.
+          </p>
+        </div>
+      </section>
+
+      <section className="grid gap-10 py-14 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p className="text-sm uppercase leading-none text-stone-500">
+            Future roadmap
+          </p>
+        </div>
+        <div className="max-w-3xl">
+          <h2 className="font-serif text-3xl leading-tight text-stone-950">
+            From published research artifact to interactive visual dashboard.
+          </h2>
+          <p className="mt-8 text-lg leading-8 text-stone-700">
+            The next version will translate the paper framework into a dashboard
+            for comparing cases, visualizing dimension scores, and making the
+            index easier to inspect. The dashboard should clarify assumptions
+            and evidence rather than turn a complex political economy problem
+            into a single decorative score.
+          </p>
+        </div>
+      </section>
+    </article>
+  );
+}
+
+function IrWorldviewInventoryPage({ project }: { project: Project }) {
+  return (
+    <article className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
+      <Link
+        href="/archive"
+        className="text-sm uppercase leading-none text-stone-600 underline underline-offset-4 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+      >
+        Back to archive
+      </Link>
+
+      <header className="mt-10 border-b border-stone-300 pb-12">
+        <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+          <div>
+            <p className="mb-5 text-sm uppercase leading-none text-stone-500">
+              {project.category} / {project.status} / Friend trial
+            </p>
+            <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
+              IR Worldview Inventory
+            </h1>
+          </div>
+          <div className="max-w-xl">
+            <p className="text-xl leading-8 text-stone-700">
+              A serious editorial interactive about how people read world
+              politics: where they see order, danger, obligation, power, and
+              uncertainty.
+            </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <a
+                href={irWorldviewLinks.live}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-fit border border-stone-950 bg-stone-950 px-5 py-3 text-sm uppercase leading-none text-stone-50 hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+              >
+                Open friend trial
+              </a>
+              <p className="max-w-xs text-sm leading-6 text-stone-600">
+                The live Vercel app is currently being shared for limited
+                friend feedback.
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="grid gap-10 border-b border-stone-300 py-14 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p className="text-sm uppercase leading-none text-stone-500">
+            Why this exists
+          </p>
+        </div>
+        <div className="max-w-3xl space-y-6 text-lg leading-8 text-stone-700">
+          <p>
+            People often argue about world politics as if they are only
+            disagreeing about facts. Just as often, they are disagreeing about
+            priors: whether order is fragile or resilient, whether institutions
+            discipline power or disguise it, whether restraint is prudence or
+            abdication, and what kinds of risk deserve priority.
+          </p>
+          <p>
+            The IR Worldview Inventory gives those priors a careful language. It
+            is designed for readers, students, analysts, and curious citizens who
+            want to examine their own habits of interpretation without being
+            reduced to a quiz type.
+          </p>
+        </div>
+      </section>
+
+      <section className="border-b border-stone-300 py-14">
+        <div className="max-w-3xl">
+          <p className="mb-4 text-sm uppercase leading-none text-stone-500">
+            How the experience works
+          </p>
+          <h2 className="font-serif text-4xl leading-tight text-stone-950">
+            Four core surfaces, each built to make political judgment easier to
+            inspect.
+          </h2>
+        </div>
+
+        <div className="mt-12 divide-y divide-stone-300 border-y border-stone-300">
+          {coreSurfaces.map((surface, index) => (
+            <section
+              key={surface.title}
+              className="grid gap-5 py-8 md:grid-cols-[5rem_13rem_1fr]"
+            >
+              <p className="font-serif text-3xl leading-none text-stone-400">
+                {String(index + 1).padStart(2, "0")}
+              </p>
+              <div>
+                <p className="mb-3 text-sm uppercase leading-none text-stone-500">
+                  {surface.eyebrow}
+                </p>
+                <h3 className="font-serif text-2xl leading-tight text-stone-950">
+                  {surface.title}
+                </h3>
+              </div>
+              <p className="max-w-2xl text-lg leading-8 text-stone-700">
+                {surface.body}
+              </p>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-10 border-b border-stone-300 py-14 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p className="text-sm uppercase leading-none text-stone-500">
+            Methodology and guardrails
+          </p>
+        </div>
+        <div className="max-w-3xl">
+          <h2 className="font-serif text-3xl leading-tight text-stone-950">
+            The point is disciplined interpretation, not false certainty.
+          </h2>
+          <div className="mt-8 space-y-5">
+            {guardrails.map((guardrail) => (
+              <p
+                key={guardrail}
+                className="border-l border-stone-300 pl-5 text-lg leading-8 text-stone-700"
+              >
+                {guardrail}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-10 py-14 lg:grid-cols-[14rem_1fr]">
+        <div>
+          <p className="text-sm uppercase leading-none text-stone-500">Links</p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <a
+            href={irWorldviewLinks.live}
+            target="_blank"
+            rel="noreferrer"
+            className="border-t border-stone-300 pt-5 text-stone-950 hover:border-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+          >
+            <p className="text-sm uppercase leading-none text-stone-500">
+              Live app
+            </p>
+            <p className="mt-4 font-serif text-2xl leading-tight">
+              Open the Vercel friend trial
+            </p>
+          </a>
+          <a
+            href={irWorldviewLinks.github}
+            target="_blank"
+            rel="noreferrer"
+            className="border-t border-stone-300 pt-5 text-stone-950 hover:border-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+          >
+            <p className="text-sm uppercase leading-none text-stone-500">
+              GitHub repo
+            </p>
+            <p className="mt-4 font-serif text-2xl leading-tight">
+              Review the code and project history
+            </p>
+          </a>
+        </div>
+      </section>
+    </article>
+  );
+}
+</file>
+
+<file path="app/globals.css">
+@import "tailwindcss";
+
+:root {
+  --background: #fafaf8;
+  --foreground: #1c1917;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: #292524;
+  color: #fafaf8;
+}
+</file>
+
+<file path="components/site-header.tsx">
+import Link from "next/link";
+
+const navItems = [
+  { href: "/archive", label: "Archive" },
+  { href: "/research", label: "Research" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+export function SiteHeader() {
+  return (
+    <header className="border-b border-stone-300/70 bg-stone-50/90">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-10">
+        <Link
+          href="/"
+          className="w-fit font-serif text-2xl leading-none text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+        >
+          Jinhua Yip
+        </Link>
+        <nav aria-label="Primary navigation">
+          <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm uppercase leading-none text-stone-600">
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="underline-offset-4 hover:text-stone-950 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+  );
+}
+</file>
+
+<file path="AGENTS.md">
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+
+This repo is a premium personal portfolio site.
+
+## Product stance
+- The homepage may be artistic and atmospheric.
+- Inner pages must remain editorial, legible, and calm.
+- Prefer clarity over spectacle.
+- Motion should feel slow, intelligent, and restrained.
+- Do not make the site feel like SaaS, a game UI, or a generic developer portfolio.
+
+## Technical rules
+- Keep dependencies minimal.
+- Use Next.js App Router, TypeScript, Tailwind, and Motion.
+- React Three Fiber is homepage-only and optional.
+- Preserve progressive enhancement.
+- Respect reduced motion.
+- Keep project content in a typed local data file.
+
+## Working style
+- Make the smallest coherent diff.
+- Do not rewrite unrelated files.
+- Explain changes for a beginner.
+- End each implementation pass with review notes and a commit message.
+</file>
+
+<file path="app/layout.tsx">
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: {
+    default: "Jinhua Yi",
+    template: "%s | Jinhua Yi",
+  },
+  description:
+    "A premium personal portfolio for research, essays, and editorial projects.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full bg-stone-50 text-stone-950">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-4 focus:z-50 focus:bg-stone-950 focus:px-4 focus:py-2 focus:text-sm focus:text-stone-50"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "jinhua-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "motion": "^12.38.0",
+    "next": "16.2.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "three": "^0.184.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="app/page.tsx">
+"use client";
+
+import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
+import dynamic from "next/dynamic";
+import { useState } from "react";
+
+type SeaNode = {
+  id: string;
+  label: string;
+  note: string;
+  href?: string;
+  top: string;
+  left: string;
+  drift: [number, number];
+  duration: number;
+  color: string;
+};
+
+const navigation = [
+  { href: "/archive", label: "Archive" },
+  { href: "/about", label: "About" },
+  { href: "/research", label: "Research" },
+];
+
+const nodes: SeaNode[] = [
+  {
+    id: "ir-worldview",
+    label: "IR Worldview",
+    note: "map your worldview and how you understand international relations",
+    href: "/projects/ir-worldview-inventory",
+    top: "58%",
+    left: "18%",
+    drift: [18, -24],
+    duration: 34,
+    color: "border-amber-200/70 bg-amber-100/10 text-amber-100",
+  },
+  {
+    id: "psii",
+    label: "PSII",
+    note: "an index that maps the degree of private sector influence in foreign policy",
+    href: "/projects/psii",
+    top: "34%",
+    left: "68%",
+    drift: [-24, 16],
+    duration: 38,
+    color: "border-emerald-200/60 bg-emerald-100/10 text-emerald-100",
+  },
+  {
+    id: "whales",
+    label: "Cetaceans",
+    note: "My favorite animals :)",
+    top: "72%",
+    left: "78%",
+    drift: [-18, -18],
+    duration: 42,
+    color: "border-cyan-100/60 bg-cyan-100/10 text-cyan-50",
+  },
+  {
+    id: "aviation",
+    label: "Transportation",
+    note: "planes, trains, and things that go boom",
+    top: "24%",
+    left: "30%",
+    drift: [22, 20],
+    duration: 36,
+    color: "border-sky-100/60 bg-sky-100/10 text-sky-50",
+  },
+  {
+    id: "cartography",
+    label: "Geography",
+    note: "atlases are my favorite books",
+    top: "76%",
+    left: "45%",
+    drift: [14, -22],
+    duration: 40,
+    color: "border-stone-100/60 bg-stone-100/10 text-stone-50",
+  },
+  {
+    id: "sci-fi-strategy",
+    label: "Sci-Fi & Strategy",
+    note: "RTS, lore, and sci-fi",
+    top: "18%",
+    left: "78%",
+    drift: [-20, 24],
+    duration: 44,
+    color: "border-fuchsia-100/50 bg-fuchsia-100/10 text-fuchsia-50",
+  },
+];
+
+const fragments = [
+  {
+    text: "Grey",
+    top: "20%",
+    left: "8%",
+    duration: 46,
+  },
+  {
+    text: "Sperm",
+    top: "46%",
+    left: "62%",
+    duration: 52,
+  },
+  {
+    text: "Blue",
+    top: "84%",
+    left: "12%",
+    duration: 58,
+  },
+  {
+    text: "Orca",
+    top: "64%",
+    left: "42%",
+    duration: 50,
+  },
+  {
+    text: "Humpback",
+    top: "30%",
+    left: "48%",
+    duration: 62,
+  },
+];
+
+const signalLines = [
+  "left-[20%] top-[61%] w-[28%] rotate-[-9deg]",
+  "left-[34%] top-[31%] w-[27%] rotate-[5deg]",
+  "left-[51%] top-[72%] w-[22%] rotate-[-12deg]",
+  "left-[71%] top-[27%] w-[14%] rotate-[28deg]",
+];
+
+const SeaConsciousnessScene = dynamic(
+  () =>
+    import("@/components/sea-consciousness-scene").then(
+      (module) => module.SeaConsciousnessScene,
+    ),
+  {
+    loading: () => null,
+    ssr: false,
+  },
+);
+
+const ENABLE_3D_SCENE = true;
+
+export default function Home() {
+  const shouldReduceMotion = useReducedMotion();
+  const [activeNode, setActiveNode] = useState<string | null>(null);
+
+  return (
+    <main
+      id="main"
+      className="relative isolate min-h-screen overflow-hidden bg-[#070807] text-stone-50"
+    >
+      {ENABLE_3D_SCENE ? (
+        <SeaConsciousnessScene reduceMotion={Boolean(shouldReduceMotion)} />
+      ) : null}
+      <div className="pointer-events-none absolute inset-0 z-[-50] bg-[linear-gradient(115deg,rgba(7,8,7,1)_0%,rgba(13,25,21,0.92)_42%,rgba(20,18,25,0.9)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-[-30] opacity-40 [background-image:linear-gradient(rgba(250,250,248,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(250,250,248,0.035)_1px,transparent_1px)] [background-size:86px_86px]" />
+      <div className="pointer-events-none absolute inset-0 z-[-20] opacity-30 [background-image:repeating-linear-gradient(170deg,transparent_0,transparent_36px,rgba(231,229,228,0.05)_37px,transparent_39px)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[-10] h-1/2 bg-[linear-gradient(0deg,rgba(7,8,7,0.92)_0%,rgba(7,8,7,0)_100%)]" />
+
+      <header className="absolute inset-x-0 top-0 z-40">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-10">
+          <Link
+            href="/"
+            className="w-fit font-serif text-2xl leading-none text-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-100"
+          >
+            Jinhua Yip
+          </Link>
+          <nav aria-label="Primary navigation">
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm uppercase leading-none text-stone-300">
+              {navigation.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="underline-offset-4 hover:text-stone-50 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-100"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <section className="relative z-20 flex min-h-screen items-end px-6 pb-16 pt-36 sm:px-8 lg:px-10">
+        <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[minmax(0,0.78fr)_minmax(24rem,0.42fr)] lg:items-end">
+          <div>
+            <p className="mb-6 text-sm uppercase leading-none text-stone-400">
+              Yippy&apos;s Sea of Consciousness
+            </p>
+            <h1 className="max-w-5xl font-serif text-5xl leading-[1.03] text-stone-50 sm:text-7xl lg:text-8xl">
+              Welcome to my personal repository
+            </h1>
+          </div>
+          <p className="max-w-xl text-lg leading-8 text-stone-300">
+            A shifting home of my ideas, projects, questions, and interests:
+            international affairs, history, aviation, marine life, and speculative
+            futures.
+          </p>
+        </div>
+      </section>
+
+      <div aria-hidden="true" className="absolute inset-0 z-10">
+        {signalLines.map((line) => (
+          <motion.div
+            key={line}
+            className={`absolute h-px origin-left bg-stone-100/15 ${line}`}
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : { opacity: [0.08, 0.24, 0.08], scaleX: [0.85, 1, 0.85] }
+            }
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="absolute inset-0 z-10">
+        {fragments.map((fragment) => (
+          <motion.p
+            key={fragment.text}
+            className="absolute max-w-52 text-xs uppercase leading-5 text-stone-400/55"
+            style={{ top: fragment.top, left: fragment.left }}
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : {
+                  x: [0, 18, -8, 0],
+                  y: [0, -22, 10, 0],
+                  opacity: [0.2, 0.54, 0.28, 0.2],
+                }
+            }
+            transition={{
+              duration: fragment.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            {fragment.text}
+          </motion.p>
+        ))}
+      </div>
+
+      <div className="absolute inset-0 z-30">
+        {nodes.map((node) => (
+          <SeaNodeMarker
+            key={node.id}
+            node={node}
+            activeNode={activeNode}
+            setActiveNode={setActiveNode}
+            shouldReduceMotion={shouldReduceMotion}
+          />
+        ))}
+      </div>
+    </main>
+  );
+}
+
+function SeaNodeMarker({
+  node,
+  activeNode,
+  setActiveNode,
+  shouldReduceMotion,
+}: {
+  node: SeaNode;
+  activeNode: string | null;
+  setActiveNode: (id: string | null) => void;
+  shouldReduceMotion: boolean | null;
+}) {
+  const isActive = activeNode === node.id;
+  const animation = shouldReduceMotion
+    ? undefined
+    : {
+      x: [0, node.drift[0], node.drift[0] / -2, 0],
+      y: [0, node.drift[1], node.drift[1] / 2, 0],
+    };
+  const transition = {
+    duration: node.duration,
+    repeat: Infinity,
+    ease: "easeInOut" as const,
+  };
+  const wrapperProps = {
+    className: "absolute",
+    style: { top: node.top, left: node.left },
+    animate: animation,
+    transition,
+    whileHover: { scale: 1.04 },
+  };
+  const interactiveClasses = `group relative block -translate-x-1/2 -translate-y-1/2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-100 ${node.color}`;
+  const interactiveProps = {
+    onMouseEnter: () => setActiveNode(node.id),
+    onMouseLeave: () => setActiveNode(null),
+    onFocus: () => setActiveNode(node.id),
+    onBlur: () => setActiveNode(null),
+  };
+
+  const content = (
+    <>
+      <span className="relative flex h-[clamp(2.5rem,6vw,5rem)] w-[clamp(2.5rem,6vw,5rem)] items-center justify-center">
+        <span className="absolute inset-0 rounded-full border border-stone-100/20 bg-stone-100/[0.03] shadow-[0_0_28px_rgba(210,245,255,0.12)]" />
+        <span className="absolute h-1/2 w-1/2 rounded-full border border-current/25 opacity-70" />
+        <span className="h-[clamp(0.35rem,0.8vw,0.55rem)] w-[clamp(0.35rem,0.8vw,0.55rem)] rounded-full bg-current/80 shadow-[0_0_18px_currentColor]" />
+      </span>
+      <motion.span
+        className="pointer-events-none absolute left-1/2 top-[clamp(3.4rem,8vw,6rem)] w-[clamp(10rem,26vw,15rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 text-center [text-shadow:0_1px_18px_rgba(0,0,0,0.72)]"
+        initial={false}
+        animate={
+          isActive
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: shouldReduceMotion ? 0 : -4 }
+        }
+        transition={{ duration: 0.28, ease: "easeOut" }}
+      >
+        <span className="block font-serif text-[clamp(1rem,2vw,1.3rem)] leading-tight text-stone-50">
+          {node.label}
+        </span>
+        <span className="mt-2 block text-[clamp(0.75rem,1.35vw,0.88rem)] leading-5 text-stone-300/80">
+          {node.note}
+        </span>
+      </motion.span>
+    </>
+  );
+
+  if (node.href) {
+    return (
+      <motion.div {...wrapperProps}>
+        <Link
+          href={node.href}
+          aria-label={node.label}
+          className={interactiveClasses}
+          {...interactiveProps}
+        >
+          {content}
+        </Link>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div {...wrapperProps}>
+      <button
+        type="button"
+        aria-label={node.label}
+        className={interactiveClasses}
+        {...interactiveProps}
+      >
+        {content}
+      </button>
+    </motion.div>
+  );
+}
+</file>
+
+</files>

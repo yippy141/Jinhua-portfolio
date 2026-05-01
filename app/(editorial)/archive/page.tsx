@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { projects } from "@/data/projects";
+import { projects, projectStatusLabels } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Archive",
@@ -40,7 +40,9 @@ export default function ArchivePage() {
                 {project.dek}
               </p>
             </div>
-            <p className="text-sm leading-6 text-stone-600">{project.status}</p>
+            <p className="text-sm leading-6 text-stone-600">
+              {projectStatusLabels[project.status]}
+            </p>
           </article>
         ))}
       </div>

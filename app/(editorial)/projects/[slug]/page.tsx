@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getProjectBySlug, type Project, projects } from "@/data/projects";
+import {
+  getProjectBySlug,
+  type Project,
+  projects,
+  projectStatusLabels,
+  projectTypeLabels,
+} from "@/data/projects";
 
 type ProjectPageProps = {
   params: Promise<{
@@ -130,7 +136,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
       <header className="mt-10 border-b border-stone-300 pb-10">
         <p className="mb-5 text-sm uppercase leading-none text-stone-500">
-          {project.category} / {project.status}
+          {projectTypeLabels[project.type]} /{" "}
+          {projectStatusLabels[project.status]}
         </p>
         <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-6xl">
           {project.title}
@@ -148,7 +155,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
           <div>
             <dt className="text-stone-500">Status</dt>
-            <dd className="text-stone-900">{project.status}</dd>
+            <dd className="text-stone-900">
+              {projectStatusLabels[project.status]}
+            </dd>
           </div>
         </dl>
         <div className="space-y-6 text-lg leading-8 text-stone-700">
@@ -178,7 +187,7 @@ function PsiiPage({ project }: { project: Project }) {
         <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
           <div>
             <p className="mb-5 text-sm uppercase leading-none text-stone-500">
-              {project.category} / Economic index
+              {projectTypeLabels[project.type]} / Economic index
             </p>
             <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
               PSII
@@ -292,7 +301,8 @@ function IrWorldviewInventoryPage({ project }: { project: Project }) {
         <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
           <div>
             <p className="mb-5 text-sm uppercase leading-none text-stone-500">
-              {project.category} / {project.status} / Friend trial
+              {projectTypeLabels[project.type]} /{" "}
+              {projectStatusLabels[project.status]} / Friend trial
             </p>
             <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
               IR Worldview Inventory

@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { projects } from "@/data/projects";
+import {
+  projects,
+  projectStatusLabels,
+  projectTypeLabels,
+} from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Research",
@@ -28,7 +32,8 @@ export default function ResearchPage() {
         {projects.map((project) => (
           <article key={project.slug} className="border-t border-stone-300 pt-5">
             <p className="mb-4 text-sm leading-none text-stone-500">
-              {project.category} / {project.status}
+              {projectTypeLabels[project.type]} /{" "}
+              {projectStatusLabels[project.status]}
             </p>
             <h2 className="font-serif text-2xl leading-tight text-stone-950">
               <Link

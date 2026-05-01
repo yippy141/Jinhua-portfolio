@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Jinhua Yi",
-    template: "%s | Jinhua Yi",
+    default: "Jinhua Yip",
+    template: "%s | Jinhua Yip",
   },
   description:
     "A premium personal portfolio for research, essays, and editorial projects.",
