@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">PSII preview</title>
+  <desc id="desc">An editorial research preview with comparative bars and a quiet grid.</desc>
+  <rect width="800" height="600" fill="#09100d"/>
+  <rect x="48" y="48" width="704" height="504" fill="#10140f" stroke="#b8d9c6" stroke-opacity=".22"/>
+  <g stroke="#fafaf8" stroke-opacity=".07">
+    <path d="M112 164h576M112 224h576M112 284h576M112 344h576M112 404h576M112 464h576"/>
+    <path d="M232 128v364M352 128v364M472 128v364M592 128v364"/>
+  </g>
+  <g fill="#b8d9c6" fill-opacity=".75">
+    <rect x="160" y="178" width="402" height="18"/>
+    <rect x="160" y="238" width="316" height="18"/>
+    <rect x="160" y="298" width="362" height="18"/>
+    <rect x="160" y="358" width="254" height="18"/>
+    <rect x="160" y="418" width="438" height="18"/>
+  </g>
+  <g fill="#fafaf8" fill-opacity=".76" font-family="Georgia, serif">
+    <text x="72" y="96" font-size="28">PSII</text>
+    <text x="72" y="126" font-size="13" letter-spacing="3">PRIVATE SECTOR INFLUENCE INDEX</text>
+  </g>
+</svg>

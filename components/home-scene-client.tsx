@@ -3,115 +3,60 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-type SeaNode = {
+import {
+  projects,
+  projectStatusLabels,
+  projectTypeLabels,
+  type Project,
+} from "@/data/projects";
+
+type DecorativeMotif = {
   id: string;
   label: string;
-  note: string;
-  href?: string;
+  symbol: string;
+  mark: string;
   top: string;
   left: string;
   drift: [number, number];
   duration: number;
-  color: string;
+  className: string;
 };
 
-const nodes: SeaNode[] = [
-  {
-    id: "ir-worldview",
-    label: "IR Worldview",
-    note: "map your worldview and how you understand international relations",
-    href: "/projects/ir-worldview-inventory",
-    top: "58%",
-    left: "18%",
-    drift: [18, -24],
-    duration: 34,
-    color: "border-amber-200/70 bg-amber-100/10 text-amber-100",
-  },
-  {
-    id: "psii",
-    label: "PSII",
-    note: "an index that maps the degree of private sector influence in foreign policy",
-    href: "/projects/psii",
-    top: "34%",
-    left: "68%",
-    drift: [-24, 16],
-    duration: 38,
-    color: "border-emerald-200/60 bg-emerald-100/10 text-emerald-100",
-  },
+const decorativeMotifs: DecorativeMotif[] = [
   {
     id: "whales",
-    label: "Cetaceans",
-    note: "My favorite animals :)",
+    label: "Whales",
+    symbol: "W",
+    mark: "/marks/whales.svg",
     top: "72%",
     left: "78%",
     drift: [-18, -18],
     duration: 42,
-    color: "border-cyan-100/60 bg-cyan-100/10 text-cyan-50",
+    className: "border-cyan-100/20 text-cyan-50/55",
   },
   {
     id: "aviation",
-    label: "Transportation",
-    note: "planes, trains, and things that go boom",
+    label: "Aviation",
+    symbol: "A",
+    mark: "/marks/aviation.svg",
     top: "24%",
     left: "30%",
     drift: [22, 20],
     duration: 36,
-    color: "border-sky-100/60 bg-sky-100/10 text-sky-50",
+    className: "border-sky-100/20 text-sky-50/55",
   },
   {
-    id: "cartography",
-    label: "Geography",
-    note: "atlases are my favorite books",
-    top: "76%",
-    left: "45%",
+    id: "maps",
+    label: "Maps",
+    symbol: "M",
+    mark: "/marks/maps.svg",
+    top: "78%",
+    left: "44%",
     drift: [14, -22],
     duration: 40,
-    color: "border-stone-100/60 bg-stone-100/10 text-stone-50",
-  },
-  {
-    id: "sci-fi-strategy",
-    label: "Sci-Fi & Strategy",
-    note: "RTS, lore, and sci-fi",
-    top: "18%",
-    left: "78%",
-    drift: [-20, 24],
-    duration: 44,
-    color: "border-fuchsia-100/50 bg-fuchsia-100/10 text-fuchsia-50",
-  },
-];
-
-const fragments = [
-  {
-    text: "Grey",
-    top: "20%",
-    left: "8%",
-    duration: 46,
-  },
-  {
-    text: "Sperm",
-    top: "46%",
-    left: "62%",
-    duration: 52,
-  },
-  {
-    text: "Blue",
-    top: "84%",
-    left: "12%",
-    duration: 58,
-  },
-  {
-    text: "Orca",
-    top: "64%",
-    left: "42%",
-    duration: 50,
-  },
-  {
-    text: "Humpback",
-    top: "30%",
-    left: "48%",
-    duration: 62,
+    className: "border-stone-100/20 text-stone-50/55",
   },
 ];
 
@@ -121,6 +66,46 @@ const signalLines = [
   "left-[51%] top-[72%] w-[22%] rotate-[-12deg]",
   "left-[71%] top-[27%] w-[14%] rotate-[28deg]",
 ];
+
+type ProjectCardPosition = {
+  top: string;
+  left: string;
+  drift?: [number, number];
+  duration?: number;
+  width?: number;
+  accentClass?: string;
+  code?: string;
+};
+
+const projectCardPositions: Partial<Record<Project["slug"], ProjectCardPosition>> = {
+  "ir-worldview-inventory": {
+    top: "56%",
+    left: "18%",
+    drift: [18, -24],
+    duration: 34,
+    width: 232,
+    accentClass: "from-amber-200/20 via-stone-100/10 to-transparent",
+    code: "IR",
+  },
+  psii: {
+    top: "34%",
+    left: "66%",
+    drift: [-24, 16],
+    duration: 38,
+    width: 220,
+    accentClass: "from-emerald-200/20 via-stone-100/10 to-transparent",
+    code: "PI",
+  },
+  "philippines-south-china-sea": {
+    top: "70%",
+    left: "52%",
+    drift: [-14, -20],
+    duration: 42,
+    width: 250,
+    accentClass: "from-sky-200/18 via-stone-100/10 to-transparent",
+    code: "PH",
+  },
+};
 
 const SeaConsciousnessScene = dynamic(
   () =>
@@ -136,7 +121,6 @@ const SeaConsciousnessScene = dynamic(
 export function HomeSceneClient() {
   const prefersReducedMotion = Boolean(useReducedMotion());
   const [motionPaused, setMotionPaused] = useState(false);
-  const [activeNode, setActiveNode] = useState<string | null>(null);
   const canShowAtmosphere = useMediaQuery(
     "(min-width: 1024px) and (pointer: fine)",
   );
@@ -158,10 +142,7 @@ export function HomeSceneClient() {
           {isMotionPaused ? "Resume motion" : "Pause motion"}
         </button>
       ) : (
-        <div
-          aria-live="polite"
-          className="absolute right-6 top-28 z-50 rounded-full border border-stone-100/15 bg-stone-950/35 px-3 py-2 text-xs uppercase leading-none text-stone-400 backdrop-blur-md lg:right-10"
-        >
+        <div className="absolute right-6 top-28 z-50 rounded-full border border-stone-100/15 bg-stone-950/35 px-3 py-2 text-xs uppercase leading-none text-stone-400 backdrop-blur-md lg:right-10">
           Motion reduced
         </div>
       )}
@@ -189,41 +170,22 @@ export function HomeSceneClient() {
         ))}
       </div>
 
-      <div className="absolute inset-0 z-10">
-        {fragments.map((fragment) => (
-          <motion.p
-            key={fragment.text}
-            aria-hidden="true"
-            className="absolute max-w-52 text-xs uppercase leading-5 text-stone-400/55"
-            style={{ top: fragment.top, left: fragment.left }}
-            animate={
-              isMotionPaused
-                ? { x: 0, y: 0, opacity: 0.32 }
-                : {
-                    x: [0, 18, -8, 0],
-                    y: [0, -22, 10, 0],
-                    opacity: [0.2, 0.54, 0.28, 0.2],
-                  }
-            }
-            transition={{
-              duration: isMotionPaused ? 0.3 : fragment.duration,
-              repeat: isMotionPaused ? 0 : Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            {fragment.text}
-          </motion.p>
+      <div className="absolute inset-0 z-20">
+        {decorativeMotifs.map((motif) => (
+          <DecorativeMotif
+            key={motif.id}
+            motif={motif}
+            isMotionPaused={isMotionPaused}
+          />
         ))}
       </div>
 
       <div className="absolute inset-0 z-30">
-        {nodes.map((node) => (
-          <SeaNodeMarker
-            key={node.id}
-            node={node}
-            activeNode={activeNode}
+        {projects.map((project) => (
+          <DriftingDossier
+            key={project.slug}
+            project={project}
             isMotionPaused={isMotionPaused}
-            setActiveNode={setActiveNode}
           />
         ))}
       </div>
@@ -231,96 +193,237 @@ export function HomeSceneClient() {
   );
 }
 
-function SeaNodeMarker({
-  node,
-  activeNode,
+function DriftingDossier({
+  project,
   isMotionPaused,
-  setActiveNode,
 }: {
-  node: SeaNode;
-  activeNode: string | null;
+  project: Project;
   isMotionPaused: boolean;
-  setActiveNode: (id: string | null) => void;
 }) {
-  const isActive = activeNode === node.id;
-  const wrapperAnimation = isMotionPaused
-    ? { x: 0, y: 0 }
-    : {
-        x: [0, node.drift[0], node.drift[0] / -2, 0],
-        y: [0, node.drift[1], node.drift[1] / 2, 0],
-      };
-  const wrapperTransition = {
-    duration: isMotionPaused ? 0.3 : node.duration,
-    repeat: isMotionPaused ? 0 : Infinity,
-    ease: "easeInOut" as const,
+  const [isOpen, setIsOpen] = useState(false);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const card = projectCardPositions[project.slug];
+  const isExpanded = isOpen;
+  const driftX = card?.drift?.[0] ?? 15;
+  const driftY = card?.drift?.[1] ?? 20;
+  const duration = card?.duration ?? 8;
+  const top = card?.top ?? project.homeNode.coordinates.top;
+  const left = card?.left ?? project.homeNode.coordinates.left;
+  const width = card?.width ?? getDefaultCardWidth(project.homeNode.size);
+  const accentClass =
+    card?.accentClass ?? getDefaultAccentClass(project.homeNode.accentColor);
+  const code = card?.code ?? getProjectCode(project.title);
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimer.current) {
+        clearTimeout(hoverTimer.current);
+      }
+    };
+  }, []);
+
+  const clearHoverTimer = () => {
+    if (hoverTimer.current) {
+      clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
+    }
   };
 
-  if (!node.href) {
-    return (
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute"
-        style={{ top: node.top, left: node.left }}
-        animate={wrapperAnimation}
-        transition={wrapperTransition}
-      >
-        <span
-          className={`relative block -translate-x-1/2 -translate-y-1/2 ${node.color}`}
-        >
-          <NodeOrb />
-        </span>
-      </motion.div>
-    );
-  }
+  const queueOpen = () => {
+    clearHoverTimer();
+    hoverTimer.current = setTimeout(() => setIsOpen(true), 300);
+  };
+
+  const close = () => {
+    clearHoverTimer();
+    setIsOpen(false);
+  };
+
+  const wrapperAnimation = isMotionPaused
+    ? { x: 0, y: 0, rotate: 0 }
+    : {
+        x: [0, driftX, driftX / -2, 0],
+        y: [0, driftY, driftY / 2, 0],
+        rotate: [0, 0.45, -0.3, 0],
+      };
 
   return (
     <motion.div
       className="absolute"
-      style={{ top: node.top, left: node.left }}
+      style={{ top, left }}
       animate={wrapperAnimation}
-      transition={wrapperTransition}
-      whileHover={{ scale: 1.04 }}
+      transition={{
+        duration: isMotionPaused ? 0.3 : duration,
+        repeat: isMotionPaused ? 0 : Infinity,
+        ease: "easeInOut",
+      }}
     >
-      <Link
-        href={node.href}
-        aria-label={node.label}
-        className={`group relative block -translate-x-1/2 -translate-y-1/2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-100 ${node.color}`}
-        onMouseEnter={() => setActiveNode(node.id)}
-        onMouseLeave={() => setActiveNode(null)}
-        onFocus={() => setActiveNode(node.id)}
-        onBlur={() => setActiveNode(null)}
+      <motion.div
+        animate={{
+          width: isExpanded ? width : 116,
+          height: isExpanded ? 252 : 72,
+        }}
+        transition={{ duration: isMotionPaused ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
+        className="relative -translate-x-1/2 -translate-y-1/2"
       >
-        <NodeOrb />
-        <motion.span
-          className="pointer-events-none absolute left-1/2 top-[clamp(3.4rem,8vw,6rem)] w-[clamp(10rem,26vw,15rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 text-center [text-shadow:0_1px_18px_rgba(0,0,0,0.72)]"
-          initial={false}
-          animate={
-            isActive
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: isMotionPaused ? 0 : -4 }
-          }
-          transition={{ duration: isMotionPaused ? 0.1 : 0.28, ease: "easeOut" }}
+        <Link
+          href={`/projects/${project.slug}`}
+          aria-label={`Open ${project.title}`}
+          onMouseEnter={queueOpen}
+          onMouseLeave={close}
+          onFocus={queueOpen}
+          onBlur={close}
+          className="group relative block h-full overflow-hidden border border-stone-100/18 bg-[#10120f]/72 text-left text-stone-50 shadow-[0_18px_60px_rgba(0,0,0,0.34)] backdrop-blur-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-100"
         >
-          <span className="block font-serif text-[clamp(1rem,2vw,1.3rem)] leading-tight text-stone-50">
-            {node.label}
-          </span>
-          <span className="mt-2 block text-[clamp(0.75rem,1.35vw,0.88rem)] leading-5 text-stone-300/80">
-            {node.note}
-          </span>
-        </motion.span>
-      </Link>
+          <span
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r ${accentClass}`}
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_32%,rgba(255,255,255,0.03))]"
+          />
+
+          <motion.span
+            aria-hidden="true"
+            animate={{ opacity: isExpanded ? 0 : 1 }}
+            transition={{ duration: isMotionPaused ? 0 : 0.18 }}
+            className="absolute inset-0 grid place-items-center"
+          >
+            <span className="flex items-center gap-3 text-xs uppercase leading-none tracking-[0.16em] text-stone-300">
+              <span className="font-serif text-2xl tracking-normal text-stone-50">
+                {code}
+              </span>
+              <span>{project.year}</span>
+            </span>
+          </motion.span>
+
+          <motion.span
+            animate={{
+              opacity: isExpanded ? 1 : 0,
+              y: isMotionPaused ? 0 : (isExpanded ? 0 : 8),
+            }}
+            transition={{ duration: isMotionPaused ? 0 : 0.26, ease: "easeOut" }}
+            className="absolute inset-0 grid content-start gap-3 p-3"
+          >
+            {project.preview.poster ? (
+              <span
+                role="img"
+                aria-label={project.preview.alt}
+                className="relative block aspect-[4/3] overflow-hidden border border-stone-100/10 bg-cover bg-center bg-stone-950/50 opacity-90"
+                style={{
+                  backgroundImage: `url(${project.preview.poster})`,
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(7,8,7,0.52))]"
+                />
+              </span>
+            ) : null}
+            <span className="text-[0.65rem] uppercase leading-none tracking-[0.16em] text-stone-400">
+              {projectTypeLabels[project.type]} /{" "}
+              {projectStatusLabels[project.status]}
+            </span>
+            <span className="font-serif text-xl leading-tight text-stone-50">
+              {project.title}
+            </span>
+            <span className="text-sm leading-5 text-stone-300">
+              {project.dek}
+            </span>
+          </motion.span>
+        </Link>
+      </motion.div>
     </motion.div>
   );
 }
 
-function NodeOrb() {
+function DecorativeMotif({
+  motif,
+  isMotionPaused,
+}: {
+  motif: DecorativeMotif;
+  isMotionPaused: boolean;
+}) {
   return (
-    <span className="relative flex h-[clamp(2.5rem,6vw,5rem)] w-[clamp(2.5rem,6vw,5rem)] items-center justify-center">
-      <span className="absolute inset-0 rounded-full border border-stone-100/20 bg-stone-100/[0.03] shadow-[0_0_28px_rgba(210,245,255,0.12)]" />
-      <span className="absolute h-1/2 w-1/2 rounded-full border border-current/25 opacity-70" />
-      <span className="h-[clamp(0.35rem,0.8vw,0.55rem)] w-[clamp(0.35rem,0.8vw,0.55rem)] rounded-full bg-current/80 shadow-[0_0_18px_currentColor]" />
-    </span>
+    <motion.div
+      aria-hidden="true"
+      className="pointer-events-none absolute"
+      style={{ top: motif.top, left: motif.left }}
+      animate={
+        isMotionPaused
+          ? { x: 0, y: 0, opacity: 0.42 }
+          : {
+              x: [0, motif.drift[0], motif.drift[0] / -2, 0],
+              y: [0, motif.drift[1], motif.drift[1] / 2, 0],
+              opacity: [0.26, 0.48, 0.32, 0.26],
+            }
+      }
+      transition={{
+        duration: isMotionPaused ? 0.3 : motif.duration,
+        repeat: isMotionPaused ? 0 : Infinity,
+        ease: "easeInOut",
+      }}
+    >
+      <span
+        className={`relative grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border bg-stone-100/[0.025] font-serif text-xl ${motif.className}`}
+      >
+        <span className="absolute inset-3 rounded-full border border-current/20" />
+        <span
+          className="h-7 w-7 bg-current opacity-70"
+          style={{
+            maskImage: `url(${motif.mark})`,
+            maskPosition: "center",
+            maskRepeat: "no-repeat",
+            maskSize: "contain",
+            WebkitMaskImage: `url(${motif.mark})`,
+            WebkitMaskPosition: "center",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskSize: "contain",
+          }}
+        />
+        <span className="sr-only">{motif.symbol}</span>
+        <span className="sr-only">{motif.label}</span>
+      </span>
+    </motion.div>
   );
+}
+
+function getDefaultCardWidth(size: Project["homeNode"]["size"]) {
+  if (size === "lg") {
+    return 240;
+  }
+
+  if (size === "sm") {
+    return 204;
+  }
+
+  return 224;
+}
+
+function getDefaultAccentClass(accentColor: string) {
+  if (accentColor === "amber") {
+    return "from-amber-200/20 via-stone-100/10 to-transparent";
+  }
+
+  if (accentColor === "emerald") {
+    return "from-emerald-200/20 via-stone-100/10 to-transparent";
+  }
+
+  if (accentColor === "sky") {
+    return "from-sky-200/18 via-stone-100/10 to-transparent";
+  }
+
+  return "from-stone-100/18 via-stone-100/10 to-transparent";
+}
+
+function getProjectCode(title: string) {
+  return title
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join("");
 }
 
 function useMediaQuery(query: string) {

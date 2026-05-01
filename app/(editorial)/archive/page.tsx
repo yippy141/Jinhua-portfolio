@@ -5,7 +5,7 @@ import { projects, projectStatusLabels } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Archive",
-  description: "An archive of Jinhua Yi's research and editorial projects.",
+  description: "An archive of Jinhua Yip's research and editorial projects.",
 };
 
 export default function ArchivePage() {

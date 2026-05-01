@@ -77,9 +77,9 @@ export const projects = [
       },
     ],
     preview: {
-      kind: "none",
-      poster: null,
-      alt: "Preview pending for the IR Worldview Inventory.",
+      kind: "image",
+      poster: "/previews/ir-worldview-inventory.svg",
+      alt: "Archival preview card for the IR Worldview Inventory.",
     },
     homeNode: {
       coordinates: {
@@ -107,9 +107,9 @@ export const projects = [
     ],
     links: [],
     preview: {
-      kind: "none",
-      poster: null,
-      alt: "Preview pending for the Private Sector Influence Index.",
+      kind: "image",
+      poster: "/previews/psii.svg",
+      alt: "Archival preview card for the Private Sector Influence Index.",
     },
     homeNode: {
       coordinates: {
@@ -137,9 +137,9 @@ export const projects = [
     ],
     links: [],
     preview: {
-      kind: "none",
-      poster: null,
-      alt: "Preview pending for the Philippines in the South China Sea publication.",
+      kind: "image",
+      poster: "/previews/philippines-south-china-sea.svg",
+      alt: "Archival preview card for the Philippines in the South China Sea publication.",
     },
     homeNode: {
       coordinates: {
@@ -150,10 +150,39 @@ export const projects = [
       accentColor: "stone",
     },
   },
+  {
+    slug: "personal-substack",
+    title: "Personal Substack",
+    type: "essay",
+    status: "published",
+    year: "2026",
+    dek: "Writing and analysis on geopolitics, technology, and political economy.",
+    description: "An ongoing collection of essays, research notes, and commentary focusing on international relations, AI governance, and strategic competition.",
+    tags: ["Writing", "Geopolitics", "Tech Policy"],
+    links: [
+      {
+        label: "Read on Substack",
+        href: "https://substack.com/@yippy2",
+      },
+    ],
+    preview: {
+      kind: "image",
+      poster: null,
+      alt: "Archival preview card for the Personal Substack.",
+    },
+    homeNode: {
+      coordinates: {
+        top: "22%",
+        left: "35%",
+      },
+      size: "sm",
+      accentColor: "stone",
+    },
+  },
 ] as const satisfies readonly Project[];
 
 export type ProjectSlug = (typeof projects)[number]["slug"];
 
-export function getProjectBySlug(slug: string) {
+export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
 }

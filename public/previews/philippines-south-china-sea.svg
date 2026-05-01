@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">The Philippines in the South China Sea preview</title>
+  <desc id="desc">A quiet cartographic preview of maritime space and research annotations.</desc>
+  <rect width="800" height="600" fill="#081014"/>
+  <rect x="44" y="44" width="712" height="512" fill="#0f1516" stroke="#d8f7ff" stroke-opacity=".18"/>
+  <g stroke="#d8f7ff" stroke-opacity=".12" fill="none">
+    <path d="M104 148c120 24 185 86 296 74 98-10 164-88 300-52"/>
+    <path d="M94 238c156 42 245 16 356 62 84 34 152 86 256 58"/>
+    <path d="M128 424c108-66 204-70 292-34 118 48 174 30 266-32"/>
+    <path d="M190 118v374M348 118v374M506 118v374M664 118v374"/>
+  </g>
+  <g fill="#d8f7ff" fill-opacity=".8">
+    <circle cx="458" cy="226" r="6"/>
+    <circle cx="520" cy="286" r="5"/>
+    <circle cx="404" cy="348" r="5"/>
+    <circle cx="586" cy="374" r="4"/>
+  </g>
+  <path d="M440 204 526 288 406 350 588 376" stroke="#f0d79f" stroke-opacity=".45" fill="none"/>
+  <g fill="#fafaf8" fill-opacity=".76" font-family="Georgia, serif">
+    <text x="72" y="96" font-size="24">The Philippines</text>
+    <text x="72" y="126" font-size="13" letter-spacing="3">SOUTH CHINA SEA / PRIVATE ACTORS</text>
+  </g>
+</svg>

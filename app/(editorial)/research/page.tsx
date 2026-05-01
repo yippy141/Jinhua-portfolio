@@ -5,12 +5,31 @@ import {
   projects,
   projectStatusLabels,
   projectTypeLabels,
+  type ProjectSlug,
 } from "@/data/projects";
+
+const researchGroups = [
+  {
+    title: "Interactive Systems",
+    slugs: ["ir-worldview-inventory", "psii"],
+  },
+  {
+    title: "Writing & Publications",
+    slugs: ["philippines-south-china-sea", "personal-substack"],
+  },
+] as const satisfies readonly {
+  title: string;
+  slugs: readonly ProjectSlug[];
+}[];
 
 export const metadata: Metadata = {
   title: "Research",
-  description: "Research projects and policy work by Jinhua Yi.",
+  description: "Research projects and policy work by Jinhua Yip.",
 };
+
+function getProjectsBySlugs(slugs: readonly ProjectSlug[]) {
+  return projects.filter((project) => slugs.includes(project.slug));
+}
 
 export default function ResearchPage() {
   return (
@@ -20,34 +39,51 @@ export default function ResearchPage() {
           Research
         </p>
         <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
-          Research notes and policy projects with room for depth.
+          Research systems, publications, and public analysis.
         </h1>
         <p className="mt-6 text-lg leading-8 text-stone-700">
-          A simple listing for now, designed to become a more complete research
-          shelf as project material is added.
+          A working shelf for interactive tools, research frameworks, and
+          writing on international relations, AI governance, political economy,
+          and strategic influence.
         </p>
       </div>
 
-      <div className="mt-12 grid gap-8 md:grid-cols-2">
-        {projects.map((project) => (
-          <article key={project.slug} className="border-t border-stone-300 pt-5">
-            <p className="mb-4 text-sm leading-none text-stone-500">
-              {projectTypeLabels[project.type]} /{" "}
-              {projectStatusLabels[project.status]}
-            </p>
-            <h2 className="font-serif text-2xl leading-tight text-stone-950">
-              <Link
-                href={`/projects/${project.slug}`}
-                className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
-              >
-                {project.title}
-              </Link>
-            </h2>
-            <p className="mt-4 text-base leading-7 text-stone-700">
-              {project.dek}
-            </p>
-          </article>
-        ))}
+      <div className="mt-14 space-y-14">
+        {researchGroups.map((group) => {
+          const groupProjects = getProjectsBySlugs(group.slugs);
+
+          return (
+            <section key={group.title}>
+              <h2 className="border-b border-stone-300 pb-4 text-sm uppercase leading-none text-stone-500">
+                {group.title}
+              </h2>
+              <div className="grid gap-8 pt-8 md:grid-cols-2">
+                {groupProjects.map((project) => (
+                  <article
+                    key={project.slug}
+                    className="border-t border-stone-300 pt-5"
+                  >
+                    <p className="mb-4 text-sm leading-none text-stone-500">
+                      {projectTypeLabels[project.type]} /{" "}
+                      {projectStatusLabels[project.status]}
+                    </p>
+                    <h3 className="font-serif text-2xl leading-tight text-stone-950">
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+                      >
+                        {project.title}
+                      </Link>
+                    </h3>
+                    <p className="mt-4 text-base leading-7 text-stone-700">
+                      {project.dek}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </div>
   );
