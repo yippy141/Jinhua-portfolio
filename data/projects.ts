@@ -145,7 +145,12 @@ export const projects = [
       "maritime security",
       "regional order",
     ],
-    links: [],
+    links: [
+      {
+        label: "View on Springer",
+        href: "https://link.springer.com/chapter/10.1007/978-3-032-00506-9_5",
+      },
+    ],
     preview: {
       kind: "image",
       posters: ["/previews/philippines-south-china-sea.svg"],

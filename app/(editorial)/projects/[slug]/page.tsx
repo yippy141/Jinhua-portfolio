@@ -96,6 +96,12 @@ const philippinesFindings = [
   },
 ];
 
+const philippinesPublication = {
+  citation:
+    "Yip, J. (2025). The Philippines in the South China Sea: An Analysis of the Private Sector Influence in Asymmetric Conflict. In: Vuković, S., Dore, G.M.D. (eds) Good Governance in East Asia and Latin America. Perspectives on Global Affairs. Springer, Cham. https://doi.org/10.1007/978-3-032-00506-9_5",
+  publisher: "Springer, Cham",
+};
+
 export function generateStaticParams() {
   return projects.map((project) => ({
     slug: project.slug,
@@ -192,7 +198,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   if (project.slug === "philippines-south-china-sea") {
-    return <PhilippinesSouthChinaSeaPage />;
+    return <PhilippinesSouthChinaSeaPage project={project} />;
   }
 
   return (
@@ -249,23 +255,36 @@ function PsiiPage() {
       </Link>
 
       <header className="mt-10 border-b border-stone-300 pb-12">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-          <div>
-            <p className="mb-5 text-sm uppercase leading-none text-stone-500">
-              Research framework / dashboard forthcoming
-            </p>
-            <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
-              PSII — Private Sector Influence Index
-            </h1>
-          </div>
-          <div className="max-w-xl">
-            <p className="text-xl leading-8 text-stone-700">
-              A comparative lens for reading governance capture, economic
-              leverage, and information control as strategic variables.
-            </p>
-            <p className="mt-8 max-w-md text-sm leading-6 text-stone-600">
-              Developed as part of my published chapter on private-sector
-              influence in the South China Sea.
+        <div>
+          <p className="mb-5 text-sm uppercase leading-none text-stone-500">
+            Research framework / Interactive Dashboard
+          </p>
+          <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
+            PSII — Private Sector Influence Index
+          </h1>
+        </div>
+        <div className="max-w-xl">
+          <p className="text-xl leading-8 text-stone-700">
+            A comparative lens for reading governance capture, economic
+            leverage, and information control as strategic variables.
+          </p>
+          <p className="mt-8 max-w-md text-sm leading-6 text-stone-600">
+            Developed as part of my published chapter on private-sector
+            influence in the South China Sea.
+          </p>
+
+          {/* New Button Section */}
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <a
+              href="https://psii-dashboard.vercel.app"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-fit border border-stone-950 bg-stone-950 px-5 py-3 text-sm uppercase leading-none text-stone-50 hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+            >
+              Open the PSII Dashboard
+            </a>
+            <p className="max-w-xs text-sm leading-6 text-stone-600">
+              Sprint 0 public shell. Currently displaying sample data for pipeline testing.
             </p>
           </div>
         </div>
@@ -375,9 +394,7 @@ function PsiiPage() {
         </div>
         <div className="max-w-3xl text-lg leading-8 text-stone-700">
           <p>
-            The next version will translate the framework into an interactive
-            dashboard with clearer country comparisons, dimension-level
-            breakdowns, and a more explicit methodology layer.
+            The Sprint 0 dashboard shell is now live. The next sprint involves harmonizing official 2024 source files (WGI, V-Dem, UNCTAD, etc.) into the data pipeline to generate the first canonical PSII Core v2 public release.
           </p>
         </div>
       </section>
@@ -421,7 +438,11 @@ function PsiiComparisonChart() {
   );
 }
 
-function PhilippinesSouthChinaSeaPage() {
+function PhilippinesSouthChinaSeaPage({ project }: { project: Project }) {
+  const publicationLink =
+    project.links.find((link) => link.href.includes("springer.com")) ??
+    project.links[0];
+
   return (
     <article className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
       <Link
@@ -434,6 +455,10 @@ function PhilippinesSouthChinaSeaPage() {
       <header className="mt-10 border-b border-stone-300 pb-12">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <div>
+            <p className="mb-5 text-sm uppercase leading-none text-stone-500">
+              {projectTypeLabels[project.type]} /{" "}
+              {projectStatusLabels[project.status]} / {project.year}
+            </p>
             <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
               The Philippines in the South China Sea
             </h1>
@@ -447,6 +472,16 @@ function PhilippinesSouthChinaSeaPage() {
               Published in 2025 as part of a wider research project on
               governance, political economy, and strategic influence.
             </p>
+            {publicationLink ? (
+              <a
+                href={publicationLink.href}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-8 inline-flex w-fit border border-stone-950 bg-stone-950 px-5 py-3 text-sm uppercase leading-none text-stone-50 hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+              >
+                {publicationLink.label}
+              </a>
+            ) : null}
           </div>
         </div>
       </header>
@@ -454,33 +489,44 @@ function PhilippinesSouthChinaSeaPage() {
       <section className="grid gap-10 border-b border-stone-300 py-14 lg:grid-cols-[14rem_1fr]">
         <div>
           <p className="text-sm uppercase leading-none text-stone-500">
-            Central argument
+            Publication details
           </p>
         </div>
-        <div className="max-w-3xl text-lg leading-8 text-stone-700">
-          <p>
-            The chapter argues that private-sector actors are not peripheral to
-            conflict dynamics. In the Philippine case, domestic conglomerates,
-            foreign firms, investors, telecom infrastructure, media systems, and
-            business-state networks all help shape the strategic environment in
-            which the South China Sea dispute unfolds.
-          </p>
-        </div>
-      </section>
-
-      <section className="grid gap-10 border-b border-stone-300 py-14 lg:grid-cols-[14rem_1fr]">
-        <div>
-          <p className="text-sm uppercase leading-none text-stone-500">
-            Why the case matters
-          </p>
-        </div>
-        <div className="max-w-3xl text-lg leading-8 text-stone-700">
-          <p>
-            The Philippines is a revealing case because it sits at the
-            intersection of middle-power strategy, maritime coercion, alliance
-            management, and great-power competition. It is also a political
-            economy in which private influence is unusually visible.
-          </p>
+        <div className="grid gap-8 lg:grid-cols-[1fr_13rem]">
+          <dl className="grid gap-6 border border-stone-300 bg-stone-50/60 p-6 text-sm leading-6 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <dt className="text-stone-500">Citation</dt>
+              <dd className="mt-2 max-w-3xl text-base leading-7 text-stone-900">
+                {philippinesPublication.citation}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-stone-500">Year</dt>
+              <dd className="mt-2 text-stone-900">{project.year}</dd>
+            </div>
+            <div>
+              <dt className="text-stone-500">Publisher</dt>
+              <dd className="mt-2 text-stone-900">
+                {philippinesPublication.publisher}
+              </dd>
+            </div>
+          </dl>
+          {publicationLink ? (
+            <div className="flex flex-col justify-between border border-stone-300 p-6">
+              <p className="text-sm leading-6 text-stone-600">
+                DOI-hosted chapter page with publication record and access
+                options.
+              </p>
+              <a
+                href={publicationLink.href}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-8 inline-flex w-fit border border-stone-950 px-5 py-3 text-sm uppercase leading-none text-stone-950 hover:bg-stone-950 hover:text-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+              >
+                View on Springer
+              </a>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -488,26 +534,57 @@ function PhilippinesSouthChinaSeaPage() {
         <div className="grid gap-10 lg:grid-cols-[14rem_1fr]">
           <div>
             <p className="text-sm uppercase leading-none text-stone-500">
-              Key findings
+              Abstract & findings
             </p>
           </div>
-          <div className="grid gap-5 md:grid-cols-2">
-            {philippinesFindings.map((finding, index) => (
-              <article
-                key={finding.title}
-                className="border border-stone-300 p-5"
-              >
-                <p className="mb-8 font-serif text-3xl leading-none text-stone-400">
-                  {String(index + 1).padStart(2, "0")}
+          <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_20rem]">
+            <div className="space-y-8">
+              <section className="border-l border-stone-300 pl-6">
+                <p className="text-sm uppercase leading-none text-stone-500">
+                  Central argument
                 </p>
-                <h3 className="font-serif text-2xl leading-tight text-stone-950">
-                  {finding.title}
-                </h3>
-                <p className="mt-5 text-base leading-7 text-stone-700">
-                  {finding.body}
+                <p className="mt-5 max-w-3xl text-lg leading-8 text-stone-700">
+                  The chapter argues that private-sector actors are not
+                  peripheral to conflict dynamics. In the Philippine case,
+                  domestic conglomerates, foreign firms, investors, telecom
+                  infrastructure, media systems, and business-state networks all
+                  help shape the strategic environment in which the South China
+                  Sea dispute unfolds.
                 </p>
-              </article>
-            ))}
+              </section>
+              <section className="border-l border-stone-300 pl-6">
+                <p className="text-sm uppercase leading-none text-stone-500">
+                  Why the case matters
+                </p>
+                <p className="mt-5 max-w-3xl text-lg leading-8 text-stone-700">
+                  The Philippines is a revealing case because it sits at the
+                  intersection of middle-power strategy, maritime coercion,
+                  alliance management, and great-power competition. It is also a
+                  political economy in which private influence is unusually
+                  visible.
+                </p>
+              </section>
+            </div>
+            <aside className="border border-stone-300 bg-stone-50/60 p-6">
+              <p className="mb-7 text-sm uppercase leading-none text-stone-500">
+                Key findings
+              </p>
+              <div className="space-y-7">
+                {philippinesFindings.map((finding, index) => (
+                  <article key={finding.title}>
+                    <p className="font-serif text-2xl leading-none text-stone-400">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <h3 className="mt-4 font-serif text-xl leading-tight text-stone-950">
+                      {finding.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-6 text-stone-700">
+                      {finding.body}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </aside>
           </div>
         </div>
       </section>
@@ -515,20 +592,16 @@ function PhilippinesSouthChinaSeaPage() {
       <section className="grid gap-10 border-b border-stone-300 py-14 lg:grid-cols-[14rem_1fr]">
         <div>
           <p className="text-sm uppercase leading-none text-stone-500">
-            The PSII artifact
+            Research contribution
           </p>
         </div>
         <div className="max-w-3xl text-lg leading-8 text-stone-700">
           <p>
-            One artifact that came out of this chapter is{" "}
-            <Link
-              href="/projects/psii"
-              className="text-stone-950 underline underline-offset-4 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
-            >
-              PSII, the Private Sector Influence Index
-            </Link>
-            . It is an attempt to operationalize part of the chapter’s
-            framework.
+            The chapter places private-sector influence inside the study of
+            asymmetric conflict rather than treating it as a secondary economic
+            condition. Its contribution is methodological as well as empirical:
+            it names the channels through which commercial actors can affect
+            resilience, escalation, and strategic choice.
           </p>
         </div>
       </section>
@@ -536,14 +609,26 @@ function PhilippinesSouthChinaSeaPage() {
       <section className="grid gap-10 py-14 lg:grid-cols-[14rem_1fr]">
         <div>
           <p className="text-sm uppercase leading-none text-stone-500">
-            Future direction
+            From chapter to tool
           </p>
         </div>
-        <div className="max-w-3xl text-lg leading-8 text-stone-700">
-          <p>
-            The next step is to turn the chapter’s analytical structure into
-            interactive research tools, starting with the PSII comparison system.
+        <div className="border border-stone-300 bg-stone-950 p-7 text-stone-50 sm:p-8">
+          <h2 className="font-serif text-3xl leading-tight sm:text-4xl">
+            From Chapter to Tool
+          </h2>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-200">
+            The PSII framework was operationalized from this chapter. The
+            chapter identifies private-sector influence as a strategic variable;
+            PSII translates that argument into a comparative structure for
+            reading governance capture, economic leverage, and
+            information-environment control across cases.
           </p>
+          <Link
+            href="/projects/psii"
+            className="mt-8 inline-flex w-fit border border-stone-50 px-5 py-3 text-sm uppercase leading-none text-stone-50 hover:bg-stone-50 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-50"
+          >
+            View PSII
+          </Link>
         </div>
       </section>
     </article>
