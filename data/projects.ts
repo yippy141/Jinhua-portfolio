@@ -131,39 +131,39 @@ export const projects = [
     },
   },
   {
-    slug: "philippines-south-china-sea",
-    title: "The Philippines in the South China Sea",
-    type: "publication",
-    status: "published",
-    year: "2025",
-    dek: "A published analysis of Philippine strategy, maritime pressure, and regional order.",
+    slug: "psii",
+    title: "PSII",
+    type: "research",
+    status: "beta", // Changed from "in-progress"
+    year: "2026",
+    dek: "An interactive research dashboard translating my SAIS capstone into a versioned annual index prototype.",
     description:
-      "An editorial research piece examining the Philippines' position in the South China Sea and the pressures shaping its strategic choices.",
+      "The project separates the archival 2023 publication from PSII Core v2, a rebuilt structural screening tool with source manifests, release metadata, country cards, and robustness checks.",
     tags: [
-      "Philippines",
-      "South China Sea",
-      "maritime security",
-      "regional order",
+      "private sector influence",
+      "foreign policy",
+      "asymmetric conflict",
+      "interactive dashboard",
     ],
     links: [
       {
-        label: "View on Springer",
-        href: "https://link.springer.com/chapter/10.1007/978-3-032-00506-9_5",
+        label: "Explore the PSII dashboard",
+        href: "https://psii-dashboard.vercel.app", // Your new Vercel link
       },
     ],
     preview: {
       kind: "image",
-      posters: ["/previews/philippines-south-china-sea.svg"],
-      alt: "Archival preview card for the Philippines in the South China Sea publication.",
+      posters: ["/previews/psii.svg"],
+      alt: "Archival preview card for the Private Sector Influence Index.",
     },
     homeNode: {
       coordinates: {
-        top: "76%",
-        left: "45%",
+        top: "34%",
+        left: "68%",
       },
-      size: "md",
-      accentColor: "stone",
-      variant: "folio",
+      size: "lg",
+      accentColor: "emerald",
+      variant: "triptych",
     },
   },
   {
@@ -194,6 +194,38 @@ export const projects = [
       size: "sm",
       accentColor: "stone",
       variant: "note",
+    },
+  },
+  {
+    slug: "mine-to-magnet-capability-tracker",
+    title: "Mine-to-Magnet Capability Tracker",
+    type: "tool",
+    status: "in-progress",
+    year: "2026",
+    dek: "A source-driven tracker of whether U.S. and allied rare-earth initiatives can become operating mine-to-magnet capacity.",
+    description:
+      "An editorial intelligence product auditing the conversion problem between critical-minerals policy announcements and real industrial capability, with special attention to skilled labor, tacit process know-how, plant commissioning, QA, and environmental constraints.",
+    tags: [
+      "rare earths",
+      "critical minerals",
+      "workforce",
+      "industrial policy",
+      "supply chains",
+    ],
+    links: [],
+    preview: {
+      kind: "image",
+      posters: ["/previews/mine-to-magnet-capability-tracker.svg"],
+      alt: "Editorial preview card for the Mine-to-Magnet Capability Tracker.",
+    },
+    homeNode: {
+      coordinates: {
+        top: "72%",
+        left: "78%",
+      },
+      size: "md",
+      accentColor: "sky",
+      variant: "folio",
     },
   },
 ] as const satisfies readonly Project[];

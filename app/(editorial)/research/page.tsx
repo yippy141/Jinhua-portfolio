@@ -11,11 +11,15 @@ import {
 const researchGroups = [
   {
     title: "Interactive Systems",
-    slugs: ["ir-worldview-inventory", "psii"],
+    slugs: [
+      "ir-worldview-inventory",
+      "psii",
+      "mine-to-magnet-capability-tracker",
+    ],
   },
   {
     title: "Writing & Publications",
-    slugs: ["philippines-south-china-sea", "personal-substack"],
+    slugs: ["personal-substack"],
   },
 ] as const satisfies readonly {
   title: string;
