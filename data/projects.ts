@@ -1,5 +1,11 @@
 export type ProjectType = "tool" | "research" | "publication" | "essay";
 
+// How a project is positioned on the site. This is about presentation polish,
+// not subject matter. Research and writing are TYPES of work (see type), not
+// tiers. A flagship is the featured, most finished work; a lab project is real
+// but still moving.
+export type ProjectTier = "flagship" | "lab";
+
 export type ProjectStatus = "live" | "beta" | "published" | "in-progress";
 
 export type ProjectLink = {
@@ -29,6 +35,7 @@ export type ProjectHomeNode = {
 export type Project = {
   slug: string;
   title: string;
+  tier: ProjectTier;
   type: ProjectType;
   status: ProjectStatus;
   year: string;
@@ -54,10 +61,16 @@ export const projectStatusLabels = {
   "in-progress": "In Progress",
 } as const satisfies Record<ProjectStatus, string>;
 
+export const projectTierLabels = {
+  flagship: "Flagship",
+  lab: "Lab",
+} as const satisfies Record<ProjectTier, string>;
+
 export const projects = [
   {
     slug: "ir-worldview-inventory",
     title: "IR Worldview Inventory",
+    tier: "flagship",
     type: "tool",
     status: "beta",
     year: "2026",
@@ -102,37 +115,7 @@ export const projects = [
   {
     slug: "psii",
     title: "PSII",
-    type: "research",
-    status: "in-progress",
-    year: "2026",
-    dek: "A research framework for tracking private-sector influence in foreign policy and asymmetric conflict.",
-    description:
-      "An in-progress index that emerged from the Philippines chapter, built to study how firms, investors, and commercial networks can shape political incentives, information environments, and foreign-policy behavior.",
-    tags: [
-      "private sector influence",
-      "foreign policy",
-      "asymmetric conflict",
-      "Philippines",
-    ],
-    links: [],
-    preview: {
-      kind: "image",
-      posters: ["/previews/psii.svg"],
-      alt: "Archival preview card for the Private Sector Influence Index.",
-    },
-    homeNode: {
-      coordinates: {
-        top: "34%",
-        left: "68%",
-      },
-      size: "lg",
-      accentColor: "emerald",
-      variant: "triptych",
-    },
-  },
-  {
-    slug: "psii",
-    title: "PSII",
+    tier: "lab",
     type: "research",
     status: "beta", // Changed from "in-progress"
     year: "2026",
@@ -169,6 +152,7 @@ export const projects = [
   {
     slug: "personal-substack",
     title: "Personal Substack",
+    tier: "lab",
     type: "essay",
     status: "published",
     year: "2026",
@@ -199,6 +183,7 @@ export const projects = [
   {
     slug: "mine-to-magnet-capability-tracker",
     title: "Mine-to-Magnet Capability Tracker",
+    tier: "lab",
     type: "tool",
     status: "in-progress",
     year: "2026",

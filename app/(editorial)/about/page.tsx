@@ -2,32 +2,44 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "About Jinhua Yip and the editorial direction of the portfolio.",
+  description:
+    "Jinhua Yip builds source-backed intelligence products about frontier technology and great-power competition.",
 };
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-18">
-      <p className="mb-4 text-sm uppercase leading-none text-stone-500">About</p>
-      <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
-        A place for research, systems, and careful public thinking.
+    <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-20">
+      <p className="font-mono text-xs uppercase tracking-[0.22em] text-oxblood">
+        About
+      </p>
+      <h1 className="mt-3 font-serif text-4xl font-medium leading-tight tracking-tight text-ink sm:text-5xl">
+        Source-backed maps of a hard world.
       </h1>
-      <div className="mt-10 space-y-6 text-lg leading-8 text-stone-700">
+
+      <div className="mt-10 space-y-6 font-serif text-lg leading-relaxed text-ink">
         <p>
-          I work across international relations, AI governance, political
-          economy, and strategic analysis, with a particular interest in how
-          institutions, technology, and commercial actors shape world politics.
+          I build source-backed intelligence products about frontier technology
+          and great-power competition. I work in political risk now, and I am
+          moving toward AI safety, governance, and alignment.
         </p>
+
         <p>
-          This site is both an archive and a laboratory: a place to collect
-          projects, publications, and experiments, and to develop more visual
-          and interactive ways of thinking through geopolitical questions.
+          The recurring form is the atlas: a public map of a hard domain, with
+          every claim traceable to its source. China&apos;s AI stack,
+          semiconductor tooling, rare-earth capability, the maritime grey-zone.
+          Each one is built so a newcomer can learn the domain and a specialist
+          can still find something they had not been tracking. The standard is
+          one line: confident presentation, humble architecture. State the
+          finding clearly. Show the evidence and its limits honestly. Never blur
+          a claim with a guess.
         </p>
+
         <p>
-          My interests extend beyond formal policy work. Marine mammals,
-          aviation, geography, history, and strategy games all shape the way I
-          look at systems, movement, and power. I want the site to feel serious
-          without becoming sterile, and personal without becoming performative.
+          I trained at SAIS, at the intersection of emerging technology,
+          governance, security, and climate. I grew up across Shanghai, Beijing,
+          and Hong Kong, and I live in the DC area now. Away from the work, I
+          follow marine mammals, aviation, geography, and history. They shape how
+          I think about systems, movement, and power.
         </p>
       </div>
     </div>
