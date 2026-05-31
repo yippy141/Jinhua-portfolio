@@ -1,0 +1,75 @@
+/* ─────────────────────────────────────────────────────────
+   CONSTITUTION TOKENS — single source of truth
+   Fonts: Newsreader (voice) · IBM Plex Sans (chrome) · IBM Plex Mono (evidence)
+   ───────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Reading room (light) */
+  --paper:      #F4F0E6;
+  --paper-2:    #ECE7D9;
+  --ink:        #1E1A16;
+  --ink-2:      #5A5249;
+  --rule:       #D8D1BE;
+  --oxblood:      #7E2B22;
+  --oxblood-soft: #A6463B;
+  --tide:  #356B66;
+  --sonar: #4FB3BF;
+  --conf-high:   #2F5D4A;
+  --conf-medium: #9A6B27;
+  --conf-low:    #6B6258;
+
+  /* Deep water (front door / dark) */
+  --d-paper:   #07100F;
+  --d-paper-2: #0C1A17;
+  --d-ink:     #EDEFEA;
+  --d-ink-2:   #9DB0A8;
+  --d-rule:    #1C2B27;
+  --d-oxblood: #C2685C;
+  --d-oxblood-soft: #D88476;
+
+  --serif: 'Newsreader', Georgia, serif;
+  --sans:  'IBM Plex Sans', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+/* shared evidence + chrome primitives, used across artboards */
+.eyebrow {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em;
+  text-transform: uppercase; font-weight: 500;
+}
+.mono { font-family: var(--mono); }
+.sans { font-family: var(--sans); }
+.serif { font-family: var(--serif); }
+
+/* confidence badge */
+.conf {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px 7px 2px 6px;
+  border: 1px solid currentColor; border-radius: 2px;
+}
+.conf::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.conf-high   { color: var(--conf-high); }
+.conf-medium { color: var(--conf-medium); }
+.conf-low    { color: var(--conf-low); }
+
+/* status tag */
+.status {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 2px; display: inline-flex; align-items: center;
+}
+.status-confirmed { border: 1px solid var(--conf-high); color: var(--conf-high); }
+.status-reported  { border: 1px solid var(--ink-2); color: var(--ink-2); }
+.status-projected { border: 1px dashed var(--ink-2); color: var(--ink-2); }
+.status-mock      { border: 1px dashed var(--oxblood); color: var(--oxblood); background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(126,43,34,0.05) 4px 8px); }
+
+/* entity chip */
+.chip {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  padding: 3px 9px; border: 1px solid var(--rule); border-radius: 2px;
+  color: var(--ink-2); background: transparent; white-space: nowrap;
+  transition: border-color .2s, color .2s;
+}
+.chip:hover { border-color: var(--oxblood); color: var(--oxblood); cursor: pointer; }
