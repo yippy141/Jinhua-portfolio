@@ -4,6 +4,10 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
+## Read the constitution first
+
+Before doing any design or content work in this repo, read `CONSTITUTION.md` at the repo root in full. It is the single source of truth for how everything looks, sounds, and behaves. If anything here or anywhere else disagrees with it, `CONSTITUTION.md` wins.
+
 This repo is a premium personal portfolio site.
 
 ## Product stance

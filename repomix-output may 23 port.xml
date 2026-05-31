@@ -75,6 +75,7 @@ public/
     ir-worldview-loop.mp4
     ir-worldview-poster-1.png
     ir-worldview-poster-2.png
+    mine-to-magnet-capability-tracker.svg
     philippines-south-china-sea.svg
     psii.svg
   file.svg
@@ -319,6 +320,45 @@ export function SiteFooter() {
   <g fill="#fafaf8" fill-opacity=".76" font-family="Georgia, serif">
     <text x="72" y="96" font-size="24">IR Worldview Inventory</text>
     <text x="72" y="126" font-size="13" letter-spacing="3">FOUNDATION / MODULES / COMPASS</text>
+  </g>
+</svg>
+</file>
+
+<file path="public/previews/mine-to-magnet-capability-tracker.svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">Mine-to-Magnet Capability Tracker preview</title>
+  <desc id="desc">An editorial tracker preview showing staged rare-earth industrial capacity from mine to magnet.</desc>
+  <rect width="800" height="600" fill="#091116"/>
+  <rect x="48" y="48" width="704" height="504" fill="#101515" stroke="#c9e7f2" stroke-opacity=".2"/>
+  <g stroke="#fafaf8" stroke-opacity=".07">
+    <path d="M104 176h592M104 254h592M104 332h592M104 410h592M104 488h592"/>
+    <path d="M194 136v352M338 136v352M482 136v352M626 136v352"/>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M144 416c58-96 118-140 180-134 72 7 102 80 174 74 64-6 102-72 166-116" stroke="#c9e7f2" stroke-opacity=".52" stroke-width="3"/>
+    <path d="M144 416c58-44 106-58 144-42 52 22 66 78 124 78 64 0 110-70 252-70" stroke="#f0d79f" stroke-opacity=".5" stroke-width="3"/>
+  </g>
+  <g fill="#c9e7f2">
+    <circle cx="144" cy="416" r="7"/>
+    <circle cx="324" cy="282" r="7"/>
+    <circle cx="498" cy="356" r="7"/>
+    <circle cx="664" cy="240" r="7"/>
+  </g>
+  <g fill="#f0d79f" fill-opacity=".78">
+    <rect x="132" y="454" width="72" height="10"/>
+    <rect x="300" y="454" width="96" height="10"/>
+    <rect x="468" y="454" width="64" height="10"/>
+    <rect x="628" y="454" width="42" height="10"/>
+  </g>
+  <g fill="#fafaf8" fill-opacity=".78" font-family="Georgia, serif">
+    <text x="72" y="96" font-size="25">Mine-to-Magnet</text>
+    <text x="72" y="126" font-size="13" letter-spacing="3">CAPABILITY TRACKER</text>
+  </g>
+  <g fill="#fafaf8" fill-opacity=".52" font-family="Arial, sans-serif" font-size="12" letter-spacing="2">
+    <text x="132" y="486">MINE</text>
+    <text x="300" y="486">SEPARATE</text>
+    <text x="468" y="486">PROCESS</text>
+    <text x="628" y="486">MAGNET</text>
   </g>
 </svg>
 </file>
@@ -766,99 +806,6 @@ export default function ArchivePage() {
             </p>
           </article>
         ))}
-      </div>
-    </div>
-  );
-}
-</file>
-
-<file path="app/(editorial)/research/page.tsx">
-import type { Metadata } from "next";
-import Link from "next/link";
-
-import {
-  projects,
-  projectStatusLabels,
-  projectTypeLabels,
-  type ProjectSlug,
-} from "@/data/projects";
-
-const researchGroups = [
-  {
-    title: "Interactive Systems",
-    slugs: ["ir-worldview-inventory", "psii"],
-  },
-  {
-    title: "Writing & Publications",
-    slugs: ["philippines-south-china-sea", "personal-substack"],
-  },
-] as const satisfies readonly {
-  title: string;
-  slugs: readonly ProjectSlug[];
-}[];
-
-export const metadata: Metadata = {
-  title: "Research",
-  description: "Research projects and policy work by Jinhua Yip.",
-};
-
-function getProjectsBySlugs(slugs: readonly ProjectSlug[]) {
-  return projects.filter((project) => slugs.includes(project.slug));
-}
-
-export default function ResearchPage() {
-  return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
-      <div className="max-w-3xl">
-        <p className="mb-4 text-sm uppercase leading-none text-stone-500">
-          Research
-        </p>
-        <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
-          Research systems, publications, and public analysis.
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-stone-700">
-          A working shelf for interactive tools, research frameworks, and
-          writing on international relations, AI governance, political economy,
-          and strategic influence.
-        </p>
-      </div>
-
-      <div className="mt-14 space-y-14">
-        {researchGroups.map((group) => {
-          const groupProjects = getProjectsBySlugs(group.slugs);
-
-          return (
-            <section key={group.title}>
-              <h2 className="border-b border-stone-300 pb-4 text-sm uppercase leading-none text-stone-500">
-                {group.title}
-              </h2>
-              <div className="grid gap-8 pt-8 md:grid-cols-2">
-                {groupProjects.map((project) => (
-                  <article
-                    key={project.slug}
-                    className="border-t border-stone-300 pt-5"
-                  >
-                    <p className="mb-4 text-sm leading-none text-stone-500">
-                      {projectTypeLabels[project.type]} /{" "}
-                      {projectStatusLabels[project.status]}
-                    </p>
-                    <h3 className="font-serif text-2xl leading-tight text-stone-950">
-                      <Link
-                        href={`/projects/${project.slug}`}
-                        className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
-                      >
-                        {project.title}
-                      </Link>
-                    </h3>
-                    <p className="mt-4 text-base leading-7 text-stone-700">
-                      {project.dek}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          );
-        })}
       </div>
     </div>
   );
@@ -1729,211 +1676,177 @@ export function SiteHeader() {
 }
 </file>
 
-<file path="data/projects.ts">
-export type ProjectType = "tool" | "research" | "publication" | "essay";
+<file path="app/(editorial)/research/page.tsx">
+import type { Metadata } from "next";
+import Link from "next/link";
 
-export type ProjectStatus = "live" | "beta" | "published" | "in-progress";
+import {
+  projects,
+  projectStatusLabels,
+  projectTypeLabels,
+  type ProjectSlug,
+} from "@/data/projects";
 
-export type ProjectLink = {
-  label: string;
-  href: string;
-};
-
-export type ProjectPreview = {
-  kind: "image" | "video" | "none";
-  posters: readonly string[];
-  alt: string;
-  video?: string | null;
-};
-
-export type ProjectHomeVariant = "viewport" | "triptych" | "folio" | "note";
-
-export type ProjectHomeNode = {
-  coordinates: {
-    top: string;
-    left: string;
-  };
-  size: "sm" | "md" | "lg";
-  accentColor: string;
-  variant: ProjectHomeVariant;
-};
-
-export type Project = {
-  slug: string;
+const researchGroups = [
+  {
+    title: "Interactive Systems",
+    slugs: [
+      "ir-worldview-inventory",
+      "psii",
+      "mine-to-magnet-capability-tracker",
+    ],
+  },
+  {
+    title: "Writing & Publications",
+    slugs: ["personal-substack"],
+  },
+] as const satisfies readonly {
   title: string;
-  type: ProjectType;
-  status: ProjectStatus;
-  year: string;
-  dek: string;
-  description: string;
-  tags: string[];
-  links: ProjectLink[];
-  preview: ProjectPreview;
-  homeNode: ProjectHomeNode;
+  slugs: readonly ProjectSlug[];
+}[];
+
+export const metadata: Metadata = {
+  title: "Research",
+  description: "Research projects and policy work by Jinhua Yip.",
 };
 
-export const projectTypeLabels = {
-  tool: "Tool",
-  research: "Research",
-  publication: "Publication",
-  essay: "Essay",
-} as const satisfies Record<ProjectType, string>;
+function getProjectsBySlugs(slugs: readonly ProjectSlug[]) {
+  return projects.filter((project) => slugs.includes(project.slug));
+}
 
-export const projectStatusLabels = {
-  live: "Live",
-  beta: "Beta",
-  published: "Published",
-  "in-progress": "In Progress",
-} as const satisfies Record<ProjectStatus, string>;
+export default function ResearchPage() {
+  return (
+    <div className="mx-auto w-full max-w-6xl px-6 py-14 sm:px-8 sm:py-18 lg:px-10">
+      <div className="max-w-3xl">
+        <p className="mb-4 text-sm uppercase leading-none text-stone-500">
+          Research
+        </p>
+        <h1 className="font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">
+          Research systems, publications, and public analysis.
+        </h1>
+        <p className="mt-6 text-lg leading-8 text-stone-700">
+          A working shelf for interactive tools, research frameworks, and
+          writing on international relations, AI governance, political economy,
+          and strategic influence.
+        </p>
+      </div>
 
-export const projects = [
-  {
-    slug: "ir-worldview-inventory",
-    title: "IR Worldview Inventory",
-    type: "tool",
-    status: "beta",
-    year: "2026",
-    dek: "A reflective instrument for mapping assumptions in international relations.",
+      <div className="mt-14 space-y-14">
+        {researchGroups.map((group) => {
+          const groupProjects = getProjectsBySlugs(group.slugs);
+
+          return (
+            <section key={group.title}>
+              <h2 className="border-b border-stone-300 pb-4 text-sm uppercase leading-none text-stone-500">
+                {group.title}
+              </h2>
+              <div className="grid gap-8 pt-8 md:grid-cols-2">
+                {groupProjects.map((project) => (
+                  <article
+                    key={project.slug}
+                    className="border-t border-stone-300 pt-5"
+                  >
+                    <p className="mb-4 text-sm leading-none text-stone-500">
+                      {projectTypeLabels[project.type]} /{" "}
+                      {projectStatusLabels[project.status]}
+                    </p>
+                    <h3 className="font-serif text-2xl leading-tight text-stone-950">
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+                      >
+                        {project.title}
+                      </Link>
+                    </h3>
+                    <p className="mt-4 text-base leading-7 text-stone-700">
+                      {project.dek}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/layout.tsx">
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://jinhuayip.com",
+  ),
+  title: {
+    default: "Jinhua Yip",
+    template: "%s | Jinhua Yip",
+  },
+  description:
+    "Research, essays, and editorial projects on international relations, technology, and political economy.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Jinhua Yip",
+    title: "Jinhua Yip",
     description:
-      "A beta project for helping readers articulate the theories, instincts, and historical priors shaping how they interpret world affairs.",
-    tags: [
-      "international relations",
-      "political theory",
-      "interactive tool",
-      "worldview mapping",
-    ],
-    links: [
+      "Research, essays, and editorial projects on international relations, technology, and political economy.",
+    url: "/",
+    images: [
       {
-        label: "Live friend trial",
-        href: "https://ir-worldview-inventory.vercel.app",
-      },
-      {
-        label: "GitHub",
-        href: "https://github.com/jinhuayip/ir-worldview-inventory",
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Jinhua Yip — research, essays, and editorial projects",
       },
     ],
-    preview: {
-      kind: "video",
-      posters: [
-        "/previews/ir-worldview-poster-1.png",
-        "/previews/ir-worldview-poster-2.png",
-      ],
-      video: "/previews/ir-worldview-loop.mp4",
-      alt: "Archival preview card for the IR Worldview Inventory.",
-    },
-    homeNode: {
-      coordinates: {
-        top: "58%",
-        left: "18%",
-      },
-      size: "lg",
-      accentColor: "amber",
-      variant: "viewport",
-    },
   },
-  {
-    slug: "psii",
-    title: "PSII",
-    type: "research",
-    status: "in-progress",
-    year: "2026",
-    dek: "A research framework for tracking private-sector influence in foreign policy and asymmetric conflict.",
+  twitter: {
+    card: "summary_large_image",
+    title: "Jinhua Yip",
     description:
-      "An in-progress index that emerged from the Philippines chapter, built to study how firms, investors, and commercial networks can shape political incentives, information environments, and foreign-policy behavior.",
-    tags: [
-      "private sector influence",
-      "foreign policy",
-      "asymmetric conflict",
-      "Philippines",
-    ],
-    links: [],
-    preview: {
-      kind: "image",
-      posters: ["/previews/psii.svg"],
-      alt: "Archival preview card for the Private Sector Influence Index.",
-    },
-    homeNode: {
-      coordinates: {
-        top: "34%",
-        left: "68%",
-      },
-      size: "lg",
-      accentColor: "emerald",
-      variant: "triptych",
-    },
+      "Research, essays, and editorial projects on international relations, technology, and political economy.",
+    images: ["/og.png"],
   },
-  {
-    slug: "philippines-south-china-sea",
-    title: "The Philippines in the South China Sea",
-    type: "publication",
-    status: "published",
-    year: "2025",
-    dek: "A published analysis of Philippine strategy, maritime pressure, and regional order.",
-    description:
-      "An editorial research piece examining the Philippines' position in the South China Sea and the pressures shaping its strategic choices.",
-    tags: [
-      "Philippines",
-      "South China Sea",
-      "maritime security",
-      "regional order",
-    ],
-    links: [
-      {
-        label: "View on Springer",
-        href: "https://link.springer.com/chapter/10.1007/978-3-032-00506-9_5",
-      },
-    ],
-    preview: {
-      kind: "image",
-      posters: ["/previews/philippines-south-china-sea.svg"],
-      alt: "Archival preview card for the Philippines in the South China Sea publication.",
-    },
-    homeNode: {
-      coordinates: {
-        top: "76%",
-        left: "45%",
-      },
-      size: "md",
-      accentColor: "stone",
-      variant: "folio",
-    },
-  },
-  {
-    slug: "personal-substack",
-    title: "Personal Substack",
-    type: "essay",
-    status: "published",
-    year: "2026",
-    dek: "Writing and analysis on geopolitics, technology, and political economy.",
-    description: "An ongoing collection of essays, research notes, and commentary focusing on international relations, AI governance, and strategic competition.",
-    tags: ["Writing", "Geopolitics", "Tech Policy"],
-    links: [
-      {
-        label: "Read on Substack",
-        href: "https://substack.com/@yippy2",
-      },
-    ],
-    preview: {
-      kind: "none",
-      posters: [],
-      alt: "Archival preview card for the Personal Substack.",
-    },
-    homeNode: {
-      coordinates: {
-        top: "22%",
-        left: "35%",
-      },
-      size: "sm",
-      accentColor: "stone",
-      variant: "note",
-    },
-  },
-] as const satisfies readonly Project[];
+};
 
-export type ProjectSlug = (typeof projects)[number]["slug"];
-
-export function getProjectBySlug(slug: string): Project | undefined {
-  return projects.find((project) => project.slug === slug);
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full bg-stone-50 text-stone-950">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-4 focus:z-50 focus:bg-stone-950 focus:px-4 focus:py-2 focus:text-sm focus:text-stone-50"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
+    </html>
+  );
 }
 </file>
 
@@ -2195,23 +2108,36 @@ function PsiiPage() {
       </Link>
 
       <header className="mt-10 border-b border-stone-300 pb-12">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-          <div>
-            <p className="mb-5 text-sm uppercase leading-none text-stone-500">
-              Research framework / dashboard forthcoming
-            </p>
-            <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
-              PSII — Private Sector Influence Index
-            </h1>
-          </div>
-          <div className="max-w-xl">
-            <p className="text-xl leading-8 text-stone-700">
-              A comparative lens for reading governance capture, economic
-              leverage, and information control as strategic variables.
-            </p>
-            <p className="mt-8 max-w-md text-sm leading-6 text-stone-600">
-              Developed as part of my published chapter on private-sector
-              influence in the South China Sea.
+        <div>
+          <p className="mb-5 text-sm uppercase leading-none text-stone-500">
+            Research framework / Interactive Dashboard
+          </p>
+          <h1 className="max-w-4xl font-serif text-5xl leading-[1.06] text-stone-950 sm:text-7xl">
+            PSII — Private Sector Influence Index
+          </h1>
+        </div>
+        <div className="max-w-xl">
+          <p className="text-xl leading-8 text-stone-700">
+            A comparative lens for reading governance capture, economic
+            leverage, and information control as strategic variables.
+          </p>
+          <p className="mt-8 max-w-md text-sm leading-6 text-stone-600">
+            Developed as part of my published chapter on private-sector
+            influence in the South China Sea.
+          </p>
+
+          {/* New Button Section */}
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <a
+              href="https://psii-dashboard.vercel.app"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-fit border border-stone-950 bg-stone-950 px-5 py-3 text-sm uppercase leading-none text-stone-50 hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+            >
+              Open the PSII Dashboard
+            </a>
+            <p className="max-w-xs text-sm leading-6 text-stone-600">
+              Sprint 0 public shell. Currently displaying sample data for pipeline testing.
             </p>
           </div>
         </div>
@@ -2321,9 +2247,7 @@ function PsiiPage() {
         </div>
         <div className="max-w-3xl text-lg leading-8 text-stone-700">
           <p>
-            The next version will translate the framework into an interactive
-            dashboard with clearer country comparisons, dimension-level
-            breakdowns, and a more explicit methodology layer.
+            The Sprint 0 dashboard shell is now live. The next sprint involves harmonizing official 2024 source files (WGI, V-Dem, UNCTAD, etc.) into the data pipeline to generate the first canonical PSII Core v2 public release.
           </p>
         </div>
       </section>
@@ -2729,83 +2653,6 @@ function IrWorldviewInventoryPage({ project }: { project: Project }) {
 }
 </file>
 
-<file path="app/layout.tsx">
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://jinhuayip.com",
-  ),
-  title: {
-    default: "Jinhua Yip",
-    template: "%s | Jinhua Yip",
-  },
-  description:
-    "Research, essays, and editorial projects on international relations, technology, and political economy.",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    siteName: "Jinhua Yip",
-    title: "Jinhua Yip",
-    description:
-      "Research, essays, and editorial projects on international relations, technology, and political economy.",
-    url: "/",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Jinhua Yip — research, essays, and editorial projects",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Jinhua Yip",
-    description:
-      "Research, essays, and editorial projects on international relations, technology, and political economy.",
-    images: ["/og.png"],
-  },
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full bg-stone-50 text-stone-950">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-4 focus:z-50 focus:bg-stone-950 focus:px-4 focus:py-2 focus:text-sm focus:text-stone-50"
-        >
-          Skip to content
-        </a>
-        {children}
-      </body>
-    </html>
-  );
-}
-</file>
-
 <file path="app/page.tsx">
 import Link from "next/link";
 
@@ -2965,6 +2812,246 @@ export default function Home() {
       </section>
     </main>
   );
+}
+</file>
+
+<file path="data/projects.ts">
+export type ProjectType = "tool" | "research" | "publication" | "essay";
+
+export type ProjectStatus = "live" | "beta" | "published" | "in-progress";
+
+export type ProjectLink = {
+  label: string;
+  href: string;
+};
+
+export type ProjectPreview = {
+  kind: "image" | "video" | "none";
+  posters: readonly string[];
+  alt: string;
+  video?: string | null;
+};
+
+export type ProjectHomeVariant = "viewport" | "triptych" | "folio" | "note";
+
+export type ProjectHomeNode = {
+  coordinates: {
+    top: string;
+    left: string;
+  };
+  size: "sm" | "md" | "lg";
+  accentColor: string;
+  variant: ProjectHomeVariant;
+};
+
+export type Project = {
+  slug: string;
+  title: string;
+  type: ProjectType;
+  status: ProjectStatus;
+  year: string;
+  dek: string;
+  description: string;
+  tags: string[];
+  links: ProjectLink[];
+  preview: ProjectPreview;
+  homeNode: ProjectHomeNode;
+};
+
+export const projectTypeLabels = {
+  tool: "Tool",
+  research: "Research",
+  publication: "Publication",
+  essay: "Essay",
+} as const satisfies Record<ProjectType, string>;
+
+export const projectStatusLabels = {
+  live: "Live",
+  beta: "Beta",
+  published: "Published",
+  "in-progress": "In Progress",
+} as const satisfies Record<ProjectStatus, string>;
+
+export const projects = [
+  {
+    slug: "ir-worldview-inventory",
+    title: "IR Worldview Inventory",
+    type: "tool",
+    status: "beta",
+    year: "2026",
+    dek: "A reflective instrument for mapping assumptions in international relations.",
+    description:
+      "A beta project for helping readers articulate the theories, instincts, and historical priors shaping how they interpret world affairs.",
+    tags: [
+      "international relations",
+      "political theory",
+      "interactive tool",
+      "worldview mapping",
+    ],
+    links: [
+      {
+        label: "Live friend trial",
+        href: "https://ir-worldview-inventory.vercel.app",
+      },
+      {
+        label: "GitHub",
+        href: "https://github.com/jinhuayip/ir-worldview-inventory",
+      },
+    ],
+    preview: {
+      kind: "video",
+      posters: [
+        "/previews/ir-worldview-poster-1.png",
+        "/previews/ir-worldview-poster-2.png",
+      ],
+      video: "/previews/ir-worldview-loop.mp4",
+      alt: "Archival preview card for the IR Worldview Inventory.",
+    },
+    homeNode: {
+      coordinates: {
+        top: "58%",
+        left: "18%",
+      },
+      size: "lg",
+      accentColor: "amber",
+      variant: "viewport",
+    },
+  },
+  {
+    slug: "psii",
+    title: "PSII",
+    type: "research",
+    status: "in-progress",
+    year: "2026",
+    dek: "A research framework for tracking private-sector influence in foreign policy and asymmetric conflict.",
+    description:
+      "An in-progress index that emerged from the Philippines chapter, built to study how firms, investors, and commercial networks can shape political incentives, information environments, and foreign-policy behavior.",
+    tags: [
+      "private sector influence",
+      "foreign policy",
+      "asymmetric conflict",
+      "Philippines",
+    ],
+    links: [],
+    preview: {
+      kind: "image",
+      posters: ["/previews/psii.svg"],
+      alt: "Archival preview card for the Private Sector Influence Index.",
+    },
+    homeNode: {
+      coordinates: {
+        top: "34%",
+        left: "68%",
+      },
+      size: "lg",
+      accentColor: "emerald",
+      variant: "triptych",
+    },
+  },
+  {
+    slug: "psii",
+    title: "PSII",
+    type: "research",
+    status: "beta", // Changed from "in-progress"
+    year: "2026",
+    dek: "An interactive research dashboard translating my SAIS capstone into a versioned annual index prototype.",
+    description:
+      "The project separates the archival 2023 publication from PSII Core v2, a rebuilt structural screening tool with source manifests, release metadata, country cards, and robustness checks.",
+    tags: [
+      "private sector influence",
+      "foreign policy",
+      "asymmetric conflict",
+      "interactive dashboard",
+    ],
+    links: [
+      {
+        label: "Explore the PSII dashboard",
+        href: "https://psii-dashboard.vercel.app", // Your new Vercel link
+      },
+    ],
+    preview: {
+      kind: "image",
+      posters: ["/previews/psii.svg"],
+      alt: "Archival preview card for the Private Sector Influence Index.",
+    },
+    homeNode: {
+      coordinates: {
+        top: "34%",
+        left: "68%",
+      },
+      size: "lg",
+      accentColor: "emerald",
+      variant: "triptych",
+    },
+  },
+  {
+    slug: "personal-substack",
+    title: "Personal Substack",
+    type: "essay",
+    status: "published",
+    year: "2026",
+    dek: "Writing and analysis on geopolitics, technology, and political economy.",
+    description: "An ongoing collection of essays, research notes, and commentary focusing on international relations, AI governance, and strategic competition.",
+    tags: ["Writing", "Geopolitics", "Tech Policy"],
+    links: [
+      {
+        label: "Read on Substack",
+        href: "https://substack.com/@yippy2",
+      },
+    ],
+    preview: {
+      kind: "none",
+      posters: [],
+      alt: "Archival preview card for the Personal Substack.",
+    },
+    homeNode: {
+      coordinates: {
+        top: "22%",
+        left: "35%",
+      },
+      size: "sm",
+      accentColor: "stone",
+      variant: "note",
+    },
+  },
+  {
+    slug: "mine-to-magnet-capability-tracker",
+    title: "Mine-to-Magnet Capability Tracker",
+    type: "tool",
+    status: "in-progress",
+    year: "2026",
+    dek: "A source-driven tracker of whether U.S. and allied rare-earth initiatives can become operating mine-to-magnet capacity.",
+    description:
+      "An editorial intelligence product auditing the conversion problem between critical-minerals policy announcements and real industrial capability, with special attention to skilled labor, tacit process know-how, plant commissioning, QA, and environmental constraints.",
+    tags: [
+      "rare earths",
+      "critical minerals",
+      "workforce",
+      "industrial policy",
+      "supply chains",
+    ],
+    links: [],
+    preview: {
+      kind: "image",
+      posters: ["/previews/mine-to-magnet-capability-tracker.svg"],
+      alt: "Editorial preview card for the Mine-to-Magnet Capability Tracker.",
+    },
+    homeNode: {
+      coordinates: {
+        top: "72%",
+        left: "78%",
+      },
+      size: "md",
+      accentColor: "sky",
+      variant: "folio",
+    },
+  },
+] as const satisfies readonly Project[];
+
+export type ProjectSlug = (typeof projects)[number]["slug"];
+
+export function getProjectBySlug(slug: string): Project | undefined {
+  return projects.find((project) => project.slug === slug);
 }
 </file>
 
