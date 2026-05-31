@@ -1,15 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Newsreader, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Constitution fonts. Three families, nothing else.
+// Newsreader = voice (headlines + long-form body, an editorial serif).
+const fontSerif = Newsreader({
   subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// IBM Plex Sans = chrome (navigation, labels, buttons, captions).
+const fontSans = IBM_Plex_Sans({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+// IBM Plex Mono = evidence (source ids, status tags, dates, code).
+const fontMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -58,12 +72,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${fontSerif.variable} ${fontSans.variable} ${fontMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-stone-50 text-stone-950">
+      <body className="min-h-full bg-paper text-ink">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-4 focus:z-50 focus:bg-stone-950 focus:px-4 focus:py-2 focus:text-sm focus:text-stone-50"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-paper"
         >
           Skip to content
         </a>
