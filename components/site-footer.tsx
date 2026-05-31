@@ -2,15 +2,20 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-stone-300/70 bg-stone-50">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 text-sm leading-6 text-stone-600 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
-        <p>Selected research, essays, and editorial projects.</p>
-        <Link
-          href="/contact"
-          className="w-fit text-stone-800 underline underline-offset-4 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
-        >
-          Contact
-        </Link>
+    <footer className="mt-20 border-t border-rule bg-paper">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-10 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-ink-2">
+          jinhuayip.com · DC
+        </p>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm leading-6 text-ink-2">
+          <span>Selected research, essays, and editorial projects.</span>
+          <Link
+            href="/contact"
+            className="text-oxblood underline underline-offset-4 transition-colors duration-200 hover:text-oxblood-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
+          >
+            Contact
+          </Link>
+        </div>
       </div>
     </footer>
   );
