@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { FrontDoor } from "@/components/front-door";
 import { Icon, SocialCluster } from "@/components/icons";
+import { ParticleField } from "@/components/particle-field";
 
 const navItems = [
   { href: "/archive", label: "Archive" },
@@ -32,7 +33,9 @@ export default function HomePage() {
       data-theme="dark"
       className="relative isolate flex min-h-screen flex-col overflow-hidden bg-paper text-ink"
     >
-      {/* Deep-water atmosphere: tide glow, faint grid, fog at the foot. */}
+      {/* Deep-water atmosphere: WebGL plankton field (behind everything),
+          then tide glow, faint grid, and fog at the foot layered over it. */}
+      <ParticleField />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 [background:radial-gradient(120%_90%_at_80%_8%,rgba(53,107,102,0.16),transparent_55%)]"
