@@ -10,6 +10,9 @@ const navItems = [
   { href: "/about", label: "About" },
 ];
 
+// Decision: the old "The Atlases · No. 02" eyebrow is removed. This is a living
+// personal index, not a numbered issue series, so a fixed number would be a
+// claim we would have to maintain. No eyebrow, just the title and blurb.
 const hero = {
   headline: "Welcome to my Sea of Consciousness",
   blurb:
@@ -31,8 +34,10 @@ export default function HomePage() {
       data-theme="dark"
       className="relative isolate flex min-h-screen flex-col overflow-hidden bg-paper text-ink"
     >
-      {/* Deep-water atmosphere: WebGL plankton field (behind everything),
-          then tide glow, faint grid, and fog at the foot layered over it. */}
+      {/* Deep-water atmosphere: WebGL plankton field (behind everything), then
+          tide glow, faint grid, and fog at the foot layered over it. The rgba()
+          values below are the constitution tokens with alpha: 53,107,102 = tide,
+          157,176,168 = ink-2, 7,16,15 = deep-water paper. */}
       <ParticleField />
       <div
         aria-hidden="true"
@@ -93,7 +98,7 @@ export default function HomePage() {
           <div className="mt-7 flex flex-wrap items-center gap-5">
             <Link
               href="/archive"
-              className="inline-flex items-center gap-2 rounded-[3px] bg-[#7E2B22] px-5 py-3 font-sans text-sm tracking-[0.02em] text-[#F4F0E6] transition-colors duration-200 hover:bg-[#A6463B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
+              className="inline-flex items-center gap-2 rounded-[3px] bg-oxblood px-5 py-3 font-sans text-sm tracking-[0.02em] text-paper transition-colors duration-200 hover:bg-oxblood-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
             >
               {hero.cta} <Icon name="arrow" size={14} />
             </Link>

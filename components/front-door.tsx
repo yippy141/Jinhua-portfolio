@@ -27,6 +27,8 @@ type GraphNode = {
   x: number;
   y: number;
   r: number;
+  video: string | null;
+  posters: readonly string[];
 };
 
 const nodes: GraphNode[] = projects.map((project) => ({
@@ -42,6 +44,8 @@ const nodes: GraphNode[] = projects.map((project) => ({
   x: project.x,
   y: project.y,
   r: project.r,
+  video: project.video,
+  posters: project.preview.posters,
 }));
 
 const flagshipId = nodes.find((node) => node.tier === "flagship")?.id ?? nodes[0]?.id;
@@ -56,6 +60,16 @@ const ZONE = {
 };
 const EDGE_X = 76; // horizontal breathing room (icon + label width)
 const EDGE_Y = 34;
+
+// Faint species names drifting behind the nodes (the back register the
+// constitution calls for: italic serif, distinct from the mono node labels).
+const taxonomy = [
+  { word: "Balaenoptera musculus", top: "16%", size: 30, dur: 165 },
+  { word: "Physeter macrocephalus", top: "34%", size: 22, dur: 205 },
+  { word: "Megaptera novaeangliae", top: "54%", size: 26, dur: 180 },
+  { word: "Orcinus orca", top: "72%", size: 20, dur: 225 },
+  { word: "Monodon monoceros", top: "87%", size: 23, dur: 195 },
+];
 
 function iconSize(r: number) {
   return Math.round(Math.max(22, r * 2.2));
@@ -229,7 +243,7 @@ export function FrontDoor() {
   const open = useCallback((id: string, element: HTMLElement) => {
     const rect = element.getBoundingClientRect();
     const WIDTH = 300;
-    const HEIGHT = 300;
+    const HEIGHT = 344;
     const GAP = 22;
     const NAV_SAFE = 104; // keep the dossier clear of the top navigation
     const PAD = 16;
@@ -266,8 +280,28 @@ export function FrontDoor() {
 
   return (
     <>
-      {/* DRIFTING FIELD — md up. No connecting lines; nodes float freely. */}
+      {/* DRIFTING FIELD: md up. No connecting lines; nodes float freely. */}
       <div ref={fieldRef} className="pointer-events-none absolute inset-0 hidden md:block">
+        {/* Back register: faint species names drifting through the deep. */}
+        <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+          {taxonomy.map((entry) => (
+            <motion.span
+              key={entry.word}
+              className="absolute whitespace-nowrap font-serif italic text-tide"
+              style={{ top: entry.top, left: "-30%", fontSize: entry.size, opacity: 0.08 }}
+              initial={false}
+              animate={animate ? { x: ["0%", "520%"] } : { x: "180%" }}
+              transition={
+                animate
+                  ? { duration: entry.dur, repeat: Infinity, ease: "linear" }
+                  : { duration: 0 }
+              }
+            >
+              {entry.word}
+            </motion.span>
+          ))}
+        </div>
+
         {nodes.map((node, index) => {
           const isFlagship = node.id === flagshipId;
           const isActive = activeId === node.id;
@@ -330,7 +364,7 @@ export function FrontDoor() {
         })}
       </div>
 
-      {/* DOSSIER — non-interactive panel, no blur, hairline border. */}
+      {/* DOSSIER: non-interactive panel, no blur, hairline border. */}
       {active && dossierPos && (
         <motion.aside
           role="dialog"
@@ -339,7 +373,7 @@ export function FrontDoor() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           style={{ position: "fixed", left: dossierPos.left, top: dossierPos.top, width: 300 }}
-          className="pointer-events-none z-40 hidden border border-rule bg-[#060d0c] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.5)] md:block"
+          className="pointer-events-none z-40 hidden border border-rule bg-paper-2 p-4 shadow-[0_24px_60px_rgba(4,9,8,0.55)] md:block"
         >
           <div className="flex items-center justify-between">
             <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-2">
@@ -349,18 +383,44 @@ export function FrontDoor() {
               {projectStatusLabels[active.status]}
             </span>
           </div>
-          <div className="mt-3 flex items-center gap-3">
-            <span
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-[3px] border border-rule"
-              style={{ color: active.id === flagshipId ? "var(--oxblood)" : "var(--sonar)" }}
-            >
-              <NodeIcon id={active.id} size={24} />
-            </span>
-            <h2 className="font-serif text-[17px] leading-tight text-ink">
-              {active.title}
-            </h2>
+
+          {/* Decision: no "placeholder" labels. A real looping preview where one
+              exists (IR Worldview), a static poster frame where we have art,
+              otherwise a clean icon panel. */}
+          <div className="mt-3">
+            {active.video && !prefersReducedMotion ? (
+              <video
+                src={active.video}
+                poster={active.posters[0]}
+                muted
+                loop
+                autoPlay
+                playsInline
+                aria-hidden="true"
+                className="block aspect-[16/10] w-full border border-rule object-cover"
+              />
+            ) : active.posters.length > 0 ? (
+              <span
+                role="img"
+                aria-label={`${active.title} preview`}
+                className="block aspect-[16/10] w-full border border-rule bg-cover bg-center"
+                style={{ backgroundImage: `url(${active.posters[0]})` }}
+              />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="grid aspect-[16/10] w-full place-items-center border border-rule bg-paper"
+                style={{ color: active.id === flagshipId ? "var(--oxblood)" : "var(--sonar)" }}
+              >
+                <NodeIcon id={active.id} size={30} />
+              </span>
+            )}
           </div>
-          <p className="mt-3 font-serif text-[12.5px] leading-snug text-ink-2">
+
+          <h2 className="mt-3 font-serif text-[17px] leading-tight text-ink">
+            {active.title}
+          </h2>
+          <p className="mt-1.5 font-serif text-[12.5px] leading-snug text-ink-2">
             {active.dek}
           </p>
           <div className="mt-3 flex items-center gap-1.5 border-t border-rule pt-3 text-oxblood">
@@ -370,7 +430,7 @@ export function FrontDoor() {
         </motion.aside>
       )}
 
-      {/* PHONE LIST — the stacked fallback. Real links, no graph. */}
+      {/* PHONE LIST: the stacked fallback. Real links, no graph. */}
       <ul className="relative z-10 m-0 mt-8 flex list-none flex-col gap-3 p-0 md:hidden">
         {nodes.map((node) => (
           <li key={node.id}>

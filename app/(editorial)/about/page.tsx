@@ -30,8 +30,8 @@ export default function AboutPage() {
           Each one is built so a newcomer can learn the domain and a specialist
           can still find something they had not been tracking. The standard is
           one line: confident presentation, humble architecture. State the
-          finding clearly. Show the evidence and its limits honestly. Never blur
-          a claim with a guess.
+          finding clearly. Show the evidence and its limits. Never blur a claim
+          with a guess.
         </p>
 
         <p>

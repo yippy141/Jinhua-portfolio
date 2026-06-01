@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 // project id below (or swap the whole <svg> for an <img src="/node-icons/..svg">
 // inside NodeIcon). The key is the project id from data/projects.ts.
 const NODE_PATHS: Record<string, ReactNode> = {
-  // IR Worldview — a globe
+  // IR Worldview: a globe
   irwv: (
     <>
       <circle cx="12" cy="12" r="8.25" />
@@ -18,14 +18,14 @@ const NODE_PATHS: Record<string, ReactNode> = {
       <path d="M5 17c2.1-1.3 11.9-1.3 14 0" />
     </>
   ),
-  // AI Safety Atlas — a shield with a check
+  // AI Safety Atlas: a shield with a check
   aisa: (
     <>
       <path d="M12 3.5l7 2.4v4.8c0 4.4-3 7.5-7 8.8-4-1.3-7-4.4-7-8.8V5.9L12 3.5Z" />
       <path d="M8.8 12l2.2 2.2 4.2-4.6" />
     </>
   ),
-  // Semiconductor Atlas — a chip
+  // Semiconductor Atlas: a chip
   semi: (
     <>
       <rect x="7" y="7" width="10" height="10" rx="1" />
@@ -33,7 +33,7 @@ const NODE_PATHS: Record<string, ReactNode> = {
       <path d="M9.5 4v3M14.5 4v3M9.5 17v3M14.5 17v3M4 9.5h3M4 14.5h3M17 9.5h3M17 14.5h3" />
     </>
   ),
-  // Commercial Space — a rocket
+  // Commercial Space: a rocket
   space: (
     <>
       <path d="M12 3.2c2.7 1.9 4.1 5 4.1 8.4l-2.2 2.4h-3.8L7.9 11.6c0-3.4 1.4-6.5 4.1-8.4Z" />
@@ -42,14 +42,14 @@ const NODE_PATHS: Record<string, ReactNode> = {
       <path d="M10.4 17c.3 1.4 1 2.5 1.6 3.3.6-.8 1.3-1.9 1.6-3.3" />
     </>
   ),
-  // Rare Earths — mineral shards
+  // Rare Earths: mineral shards
   magnet: (
     <>
       <path d="M6 13.5l2.6-5.2 4 .8 2-3.4 3.4 3-1 5.3-5.6 2.2L6 13.5Z" />
       <path d="M8.6 8.3l1.8 4.6M14.6 5.7l-1.2 6.4M10.4 12.9l6.6 .3" />
     </>
   ),
-  // PSII — an index / bar chart
+  // PSII: an index / bar chart
   psii: (
     <>
       <path d="M4 20h16" />
@@ -58,7 +58,7 @@ const NODE_PATHS: Record<string, ReactNode> = {
       <rect x="15.9" y="9.5" width="2.6" height="10.5" />
     </>
   ),
-  // Philippines · South China Sea — waves
+  // Philippines · South China Sea: waves
   phsc: (
     <>
       <path d="M3.5 8.5c1.8-1.8 3.6-1.8 5.4 0s3.6 1.8 5.4 0 3.6-1.8 5.4 0" />
@@ -66,7 +66,7 @@ const NODE_PATHS: Record<string, ReactNode> = {
       <path d="M3.5 17.5c1.8-1.8 3.6-1.8 5.4 0s3.6 1.8 5.4 0 3.6-1.8 5.4 0" />
     </>
   ),
-  // Writing — a fountain-pen nib
+  // Writing: a fountain-pen nib
   writing: (
     <>
       <path d="M9 4h6l.8 9.2L12 20l-3.8-6.8L9 4Z" />
