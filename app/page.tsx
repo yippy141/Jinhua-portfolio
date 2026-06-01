@@ -11,19 +11,17 @@ const navItems = [
 ];
 
 const hero = {
-  eyebrow: "The Atlases · No. 02",
-  headline:
-    "Source-backed maps of frontier technology and great-power competition.",
-  positioning:
-    "AI governance · semiconductors · rare earths · the maritime grey-zone.",
+  headline: "Welcome to my Sea of Consciousness",
+  blurb:
+    "My personal repository of projects on emerging technology and international affairs.",
   cta: "Enter the archive",
-  hint: "or drift the graph · hover or tab a node",
+  hint: "or drift the sea · hover or tab a project",
 };
 
 const frontFooter = [
   "22.5°N · 114.1°E",
-  "Each node is a real project",
-  "Hover or focus a node · Enter to open",
+  "Each object is a real project",
+  "Hover or focus a project · Enter to open",
 ];
 
 export default function HomePage() {
@@ -85,15 +83,12 @@ export default function HomePage() {
       {/* Body: hero in flow (mobile) / pinned bottom-left (desktop), with the
           graph as an overlay on md+ and the stacked list on phones. */}
       <div className="relative z-10 flex flex-1 flex-col">
-        <section className="relative z-20 px-6 sm:px-8 md:absolute md:bottom-28 md:left-12 md:max-w-[620px] md:px-0 lg:bottom-32">
-          <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-sonar">
-            {hero.eyebrow}
-          </p>
-          <h1 className="mt-4 text-balance font-serif text-[2.5rem] font-medium leading-[1.04] tracking-tight text-ink sm:text-6xl">
+        <section className="relative z-20 px-6 sm:px-8 md:absolute md:bottom-28 md:left-12 md:max-w-[560px] md:px-0 lg:bottom-32">
+          <h1 className="text-balance font-serif text-[2.5rem] font-medium leading-[1.05] tracking-tight text-ink sm:text-6xl">
             {hero.headline}
           </h1>
-          <p className="mt-5 max-w-[460px] font-mono text-[13px] leading-relaxed tracking-[0.02em] text-ink-2">
-            ↳ {hero.positioning}
+          <p className="mt-5 max-w-[440px] font-sans text-base leading-relaxed text-ink-2">
+            {hero.blurb}
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-5">
             <Link
