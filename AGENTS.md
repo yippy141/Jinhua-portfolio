@@ -30,3 +30,10 @@ This repo is a premium personal portfolio site.
 - Do not rewrite unrelated files.
 - Explain changes for a beginner.
 - End each implementation pass with review notes and a commit message.
+
+## Environment limits
+Your sandbox cannot fetch Google Fonts or other external assets at build
+time. This is a sandbox limitation, not a bug in this repo. Never remove,
+replace, or work around next/font or any font loading to make your local
+build pass. If the build fails only on font fetching, note it in your
+review notes and rely on the Vercel preview build as the real test.
