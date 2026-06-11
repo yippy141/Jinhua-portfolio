@@ -211,9 +211,8 @@ export default function MethodologyPage() {
 
             <MethodologySection title="How these are built">
               <p className="mt-5">
-                [CONFIRM: These atlases are built with AI assistance for code
-                and data structuring. Source selection, claims, and confidence
-                ratings are my own judgment.]
+                These projects are built with AI assistance for code and data
+                structuring. Source selection and analysis are my own judgment.
               </p>
             </MethodologySection>
 
