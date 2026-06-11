@@ -44,22 +44,22 @@ const socialLinks = [
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-stone-300/70 bg-stone-50/90">
+    <header className="border-b border-rule bg-paper/90">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-10">
         <Link
           href="/"
-          className="w-fit font-serif text-2xl leading-none text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+          className="w-fit font-serif text-2xl leading-none text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
         >
           Jinhua Yip
         </Link>
         <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
           <nav aria-label="Primary navigation">
-            <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm uppercase leading-none text-stone-600">
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 font-sans text-sm uppercase tracking-[0.08em] leading-none text-ink-2">
               {navItems.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="underline-offset-4 hover:text-stone-950 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+                    className="underline-offset-4 transition-colors duration-200 hover:text-oxblood hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
                   >
                     {item.label}
                   </Link>
@@ -77,7 +77,7 @@ export function SiteHeader() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={item.label}
-                    className="grid h-8 w-8 place-items-center text-stone-500 transition duration-200 hover:scale-105 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-900"
+                    className="grid h-8 w-8 place-items-center text-ink-2 transition duration-200 hover:scale-105 hover:text-oxblood focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
                   >
                     <svg
                       aria-hidden="true"

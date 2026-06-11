@@ -1,24 +1,77 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────
+   CONSTITUTION TOKENS — single source of truth (see design-source/tokens.css)
+   Light values (the warm-paper reading room) live on :root.
+   Deep-water values (the front door + dark mode) live under [data-theme="dark"].
+   Both write to the SAME variable names, so switching the theme re-points every
+   token at once.
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
-  --background: #fafaf8;
-  --foreground: #1c1917;
+  /* Reading room (light, default for content pages) */
+  --paper: #f4f0e6; /* warm archival ivory, never pure white */
+  --paper-2: #ece7d9; /* slightly deeper panel / card surface */
+  --ink: #1e1a16; /* warm near-black, never pure #000 */
+  --ink-2: #5a5249; /* muted secondary text */
+  --rule: #d8d1be; /* hairline borders and dividers */
+
+  /* Signature accent: oxblood */
+  --oxblood: #7e2b22;
+  --oxblood-soft: #a6463b; /* hover / lighter state */
+
+  /* Depth accent: oceanic teal (sparing, mostly the front door) */
+  --tide: #356b66;
+  --sonar: #4fb3bf; /* rare highlight on dark only */
+
+  /* Evidence semantics: calm, not traffic lights */
+  --confidence-high: #2f5d4a;
+  --confidence-medium: #9a6b27;
+  --confidence-low: #6b6258;
 }
 
+[data-theme="dark"] {
+  /* Deep water (homepage front door + dark mode) */
+  --paper: #07100f; /* abyssal blue-green-black */
+  --paper-2: #0c1a17; /* panel on dark */
+  --ink: #edefea; /* off-white, slightly cool */
+  --ink-2: #9db0a8; /* muted sea-gray */
+  --rule: #1c2b27;
+
+  --oxblood: #c2685c; /* lightened so it reads on dark */
+  --oxblood-soft: #d88476;
+}
+
+/* Map the tokens into Tailwind utilities. `inline` keeps them as var()
+   references so utilities like bg-paper / text-ink flip with the theme.
+   Available names: bg-paper, bg-paper-2, text-ink, text-ink-2, border-rule,
+   text-oxblood, text-oxblood-soft, text-tide, text-sonar, and the three
+   confidence colors. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-rule: var(--rule);
+  --color-oxblood: var(--oxblood);
+  --color-oxblood-soft: var(--oxblood-soft);
+  --color-tide: var(--tide);
+  --color-sonar: var(--sonar);
+  --color-confidence-high: var(--confidence-high);
+  --color-confidence-medium: var(--confidence-medium);
+  --color-confidence-low: var(--confidence-low);
+
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 ::selection {
-  background: #292524;
-  color: #fafaf8;
+  background: var(--ink);
+  color: var(--paper);
 }
