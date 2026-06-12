@@ -50,7 +50,7 @@ export const projects = [
     tags: ["IR theory", "AI governance"],
     entities: ["ai-governance", "great-power-competition"],
     links: [
-      { label: "Live friend trial", href: "https://ir-worldview-inventory.vercel.app" },
+      { label: "Live friend trial", href: "https://irworldview.jhyip.com" },
       { label: "GitHub", href: "https://github.com/jinhuayip/ir-worldview-inventory" },
     ],
     preview: {
@@ -87,7 +87,7 @@ export const projects = [
       "A source-traceable map of AI safety and governance capacity across the Asia-Pacific. It tracks institutions, talent, and compute, and shows where the public record is thin.",
     tags: ["compute", "AI governance"],
     entities: ["ai-safety", "ai-governance", "compute", "asia-pacific"],
-    links: [],
+    links: [{ label: "Open the atlas", href: "https://aisafety.jhyip.com" }],
     preview: {
       kind: "none",
       posters: [],
@@ -118,7 +118,7 @@ export const projects = [
       "A map of the semiconductor stack: tooling, fabs, and the chokepoints where China's indigenization runs into limits, set against the export-control regime that shapes them.",
     tags: ["semiconductors", "export controls"],
     entities: ["semiconductors", "export-controls", "compute", "china"],
-    links: [],
+    links: [{ label: "Open the atlas", href: "https://chinatooling.jhyip.com" }],
     preview: {
       kind: "none",
       posters: [],
@@ -180,7 +180,7 @@ export const projects = [
       "A source-driven tracker of whether US and allied rare-earth announcements can become operating mine-to-magnet capacity, with attention to skilled labor, process know-how, plant commissioning, and environmental limits.",
     tags: ["rare earths", "supply chains"],
     entities: ["rare-earths", "supply-chains", "industrial-capability"],
-    links: [],
+    links: [{ label: "Open the atlas", href: "https://reetalent.jhyip.com" }],
     preview: {
       kind: "image",
       posters: ["/previews/mine-to-magnet-capability-tracker.svg"],
@@ -208,11 +208,11 @@ export const projects = [
     year: "2026",
     dek: "A versioned index of private-sector influence in foreign policy, rebuilt from the SAIS capstone.",
     description:
-      "A versioned index of private-sector influence in foreign policy, rebuilt from a SAIS capstone on the Philippines. It separates the archival 2023 publication from a structural screening tool with source manifests, country cards, and robustness checks.",
+      "A versioned index of private-sector influence in foreign policy, rebuilt from a SAIS capstone on the Philippines. It separates the archival 2025 publication from a structural screening tool with source manifests, country cards, and robustness checks.",
     tags: ["private-sector influence", "foreign policy"],
     entities: ["private-sector-influence", "philippines"],
     links: [
-      { label: "Explore the PSII dashboard", href: "https://psii-dashboard.vercel.app" },
+      { label: "Explore the PSII dashboard", href: "https://psii.jhyip.com" },
     ],
     preview: {
       kind: "image",
