@@ -50,8 +50,8 @@ export const projects = [
     tags: ["IR theory", "AI governance"],
     entities: ["ai-governance", "great-power-competition"],
     links: [
-      { label: "Live friend trial", href: "https://ir-worldview-inventory.vercel.app" },
-      { label: "GitHub", href: "https://github.com/jinhuayip/ir-worldview-inventory" },
+      { label: "Live friend trial", href: "https://ir-worldview-app-yippy141s-projects.vercel.app/" },
+      { label: "Source code", href: "https://github.com/yippy141/ir-worldview-app" },
     ],
     preview: {
       kind: "video",
@@ -87,7 +87,10 @@ export const projects = [
       "A source-traceable map of AI safety and governance capacity across the Asia-Pacific. It tracks institutions, talent, and compute, and shows where the public record is thin.",
     tags: ["compute", "AI governance"],
     entities: ["ai-safety", "ai-governance", "compute", "asia-pacific"],
-    links: [],
+    links: [
+      { label: "Open the atlas", href: "https://asia-ai-safety-atlas.vercel.app" },
+      { label: "Source code", href: "https://github.com/yippy141/asia-ai-safety-atlas" },
+    ],
     preview: {
       kind: "none",
       posters: [],
@@ -118,7 +121,16 @@ export const projects = [
       "A map of the semiconductor stack: tooling, fabs, and the chokepoints where China's indigenization runs into limits, set against the export-control regime that shapes them.",
     tags: ["semiconductors", "export controls"],
     entities: ["semiconductors", "export-controls", "compute", "china"],
-    links: [],
+    links: [
+      {
+        label: "Open the atlas",
+        href: "https://china-semiconductor-tooling-talent-atlas-yippy141s-projects.vercel.app",
+      },
+      {
+        label: "Source code",
+        href: "https://github.com/yippy141/china-semiconductor-tooling-talent-atlas",
+      },
+    ],
     preview: {
       kind: "none",
       posters: [],
@@ -170,7 +182,7 @@ export const projects = [
     id: "magnet",
     slug: "mine-to-magnet-capability-tracker",
     node: "Rare Earths",
-    title: "Mine-to-Magnet Capability Tracker",
+    title: "Allied Rare Earths Atlas",
     tier: "lab",
     type: "tool",
     status: "in-progress",
@@ -180,11 +192,17 @@ export const projects = [
       "A source-driven tracker of whether US and allied rare-earth announcements can become operating mine-to-magnet capacity, with attention to skilled labor, process know-how, plant commissioning, and environmental limits.",
     tags: ["rare earths", "supply chains"],
     entities: ["rare-earths", "supply-chains", "industrial-capability"],
-    links: [],
+    links: [
+      {
+        label: "Open the atlas",
+        href: "https://mine-to-magnet-capability-tracker-yippy141s-projects.vercel.app/",
+      },
+      { label: "Source code", href: "https://github.com/yippy141/mine-to-magnet-capability-tracker" },
+    ],
     preview: {
       kind: "image",
       posters: ["/previews/mine-to-magnet-capability-tracker.svg"],
-      alt: "Editorial preview card for the Mine-to-Magnet Capability Tracker.",
+      alt: "Editorial preview card for the Allied Rare Earths Atlas.",
     },
     x: 71,
     y: 61,
@@ -239,12 +257,14 @@ export const projects = [
     type: "research",
     status: "published",
     year: "2025",
-    dek: "Grey-zone coercion in the West Philippine Sea: vessel tracking, statecraft, and norm erosion.",
+    dek: "A sole-authored Springer chapter on how private-sector actors shape the Philippines' position in the South China Sea dispute.",
     description:
-      "An essay on grey-zone coercion in the West Philippine Sea, reading vessel tracking, statecraft, and the slow erosion of maritime norms through the lens of private-sector influence.",
+      "A published book chapter examining how private-sector actors, from multinational corporations to domestic business elites and industry associations, influence strategy and outcomes in the asymmetric conflict between the Philippines and China in the South China Sea. Published as Chapter 5 of Good Governance in East Asia and Latin America (Springer Nature, 2025). The chapter's framework seeded the PSII Dashboard.",
     tags: ["maritime", "foreign policy"],
     entities: ["philippines", "private-sector-influence", "asia-pacific"],
-    links: [],
+    links: [
+      { label: "Read the chapter (Springer)", href: "https://doi.org/10.1007/978-3-032-00506-9_5" },
+    ],
     preview: {
       kind: "image",
       posters: ["/previews/philippines-south-china-sea.svg"],
