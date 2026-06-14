@@ -10,16 +10,16 @@ import {
 
 const researchGroups = [
   {
+    title: "Publications",
+    slugs: ["philippines-south-china-sea"],
+  },
+  {
     title: "Interactive Systems",
     slugs: [
       "ir-worldview-inventory",
       "psii",
       "mine-to-magnet-capability-tracker",
     ],
-  },
-  {
-    title: "Writing & Publications",
-    slugs: ["personal-substack"],
   },
 ] as const satisfies readonly {
   title: string;
@@ -82,6 +82,20 @@ export default function ResearchPage() {
                     <p className="mt-4 font-serif text-base leading-relaxed text-ink-2">
                       {project.dek}
                     </p>
+                    <p className="mt-4 font-mono text-xs uppercase tracking-[0.12em] text-ink-2">
+                      {project.year}
+                    </p>
+                    {project.links
+                      .filter((link) => link.label === "Read the chapter (Springer)")
+                      .map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="mt-5 inline-flex font-sans text-sm font-medium text-oxblood underline underline-offset-4 transition-colors duration-200 hover:text-oxblood-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
                   </article>
                 ))}
               </div>

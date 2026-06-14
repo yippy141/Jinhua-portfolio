@@ -19,33 +19,37 @@ export default function AboutPage() {
 
       <div className="mt-10 space-y-6 font-serif text-lg leading-relaxed text-ink">
         <p>
-          I build source-backed intelligence products about frontier technology
-          and great-power competition. I work in political risk now, and I am
-          moving toward AI safety, governance, and alignment.
+          Jinhua Yip builds source-backed intelligence products on frontier
+          technology and great-power competition. The recurring form is the
+          atlas: a public, source-traceable map of a hard domain, built so a
+          newcomer can learn it and a specialist can still find something they
+          had not been tracking.
         </p>
 
         <p>
-          The recurring form is the atlas: a public map of a hard domain, with
-          every claim traceable to its source. China&apos;s AI stack,
-          semiconductor tooling, rare-earth capability, the maritime grey-zone.
-          Each one is built so a newcomer can learn the domain and a specialist
-          can still find something they had not been tracking. The standard is
-          one line: confident presentation, humble architecture. State the
-          finding clearly. Show the evidence and its limits. Never blur a claim
-          with a guess.
+          The atlases share one standard: every public claim traces to a source
+          record, confidence is stated plainly, and gaps in the record are shown
+          rather than papered over. The methodology page documents the contract.
         </p>
 
         <p>
-          I trained at SAIS, at the intersection of emerging technology,
-          governance, security, and climate. I grew up across Shanghai, Beijing,
-          and Hong Kong, and I live in the DC area now. Away from the work, I
-          follow marine mammals, aviation, geography, and history. They shape how
-          I think about systems, movement, and power.
+          Trained at Johns Hopkins SAIS in emerging technology, governance, and
+          security. Currently a tech policy and strategy researcher at DGA Group
+          / Albright Stonebridge Group, working across technology policy, AI
+          governance, semiconductor supply chains, data centers, and geopolitical
+          risk. Moving toward AI safety and governance research. Author of a
+          sole-authored Springer chapter on private-sector influence in
+          asymmetric conflict (2025). Born in Vancouver, raised across Shanghai,
+          Beijing, and Hong Kong. Based in the Washington, DC area.
+        </p>
+
+        <p>
+          The work published here is built from public sources only. It does not
+          use employer, client, or proprietary material as evidence.
         </p>
 
         <p className="font-sans text-base leading-7 text-ink-2">
-          Read the shared
-          {" "}
+          Read the shared {" "}
           <Link
             href="/methodology"
             className="text-oxblood underline underline-offset-4 transition-colors duration-200 hover:text-oxblood-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
