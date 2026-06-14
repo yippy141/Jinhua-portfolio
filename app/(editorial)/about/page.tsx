@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About",
@@ -40,6 +41,18 @@ export default function AboutPage() {
           and Hong Kong, and I live in the DC area now. Away from the work, I
           follow marine mammals, aviation, geography, and history. They shape how
           I think about systems, movement, and power.
+        </p>
+
+        <p className="font-sans text-base leading-7 text-ink-2">
+          Read the shared
+          {" "}
+          <Link
+            href="/methodology"
+            className="text-oxblood underline underline-offset-4 transition-colors duration-200 hover:text-oxblood-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
+          >
+            Methodology and limits
+          </Link>
+          .
         </p>
       </div>
     </div>

@@ -5,9 +5,10 @@ import { Icon, SocialCluster } from "@/components/icons";
 import { ParticleField } from "@/components/particle-field";
 
 const navItems = [
-  { href: "/archive", label: "Archive" },
-  { href: "/research", label: "Research" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "ABOUT" },
+  { href: "/research", label: "RESEARCH" },
+  { href: "/archive", label: "ARCHIVE" },
+  { href: "/contact", label: "CONTACT" },
 ];
 
 // Decision: the old "The Atlases · No. 02" eyebrow is removed. This is a living
@@ -18,13 +19,13 @@ const hero = {
   blurb:
     "My personal repository of projects on emerging technology and international affairs.",
   cta: "Enter the archive",
-  hint: "or drift the sea · hover or tab a project",
+  hint: "Explore a project",
 };
 
 const frontFooter = [
   "22.5°N · 114.1°E",
   "Each object is a real project",
-  "Hover or focus a project · Enter to open",
+  "Select a project to open it.",
 ];
 
 export default function HomePage() {

@@ -115,7 +115,7 @@ export const projectTypeLabels = {
 } as const satisfies Record<ProjectType, string>;
 
 export const projectStatusLabels = {
-  live: "Live",
+  live: "Live project",
   beta: "Beta",
   published: "Published",
   "in-progress": "In progress",
@@ -124,6 +124,6 @@ export const projectStatusLabels = {
 
 export const projectTierLabels = {
   flagship: "Flagship",
-  lab: "Lab",
+  lab: "Live project",
   concept: "Concept",
 } as const satisfies Record<ProjectTier, string>;
