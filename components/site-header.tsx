@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const navItems = [
-  { href: "/archive", label: "Archive" },
-  { href: "/methodology", label: "Methodology" },
-  { href: "/about", label: "About" },
-  { href: "/research", label: "Research" },
+  { href: "/about", label: "ABOUT" },
+  { href: "/research", label: "RESEARCH" },
+  { href: "/archive", label: "ARCHIVE" },
+  { href: "/contact", label: "CONTACT" },
 ];
 
 const socialLinks = [

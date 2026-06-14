@@ -12,10 +12,10 @@ import {
   type Project,
 } from "@/data/projects";
 
-// The filter bar mixes two axes on purpose: Flagship and Lab read the project
+// The filter bar mixes two axes on purpose: Flagship and Projects read the project
 // `tier`, while Research and Writing read the project `type`. All shows
 // everything.
-const filters = ["All", "Flagship", "Lab", "Research", "Writing"] as const;
+const filters = ["All", "Flagship", "Projects", "Research", "Writing"] as const;
 type Filter = (typeof filters)[number];
 
 function matchesFilter(project: Project, filter: Filter): boolean {
@@ -24,7 +24,7 @@ function matchesFilter(project: Project, filter: Filter): boolean {
       return true;
     case "Flagship":
       return project.tier === "flagship";
-    case "Lab":
+    case "Projects":
       return project.tier === "lab";
     case "Research":
       return project.type === "research";
