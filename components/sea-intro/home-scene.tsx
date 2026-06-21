@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { FrontDoor } from "@/components/front-door";
 import { Icon } from "@/components/icons";
 import { ParticleField } from "@/components/particle-field";
 
+import { ProjectDriftField } from "./project-drift-field";
 import { ReturnToSurface } from "./return-to-surface";
 import { SeaNav } from "./sea-nav";
 import { INTRO_CONFIG } from "./sea-intro-config";
@@ -111,6 +111,7 @@ export function HomeScene({ onReplay, entrance = false }: HomeSceneProps) {
           graph as an overlay on md+ and the stacked list on phones. */}
       <div className="relative z-10 flex flex-1 flex-col">
         <section
+          id="sea-hero"
           style={layer(delays.hero)}
           className="relative z-20 px-6 sm:px-8 md:absolute md:bottom-28 md:left-12 md:max-w-[480px] md:px-0 lg:bottom-32"
         >
@@ -137,15 +138,17 @@ export function HomeScene({ onReplay, entrance = false }: HomeSceneProps) {
           </div>
         </section>
 
-        {/* The project graph enters last and from a touch deeper. The transform
-            is removed once settled so the dossier's fixed positioning works. */}
-        <div style={layer(delays.graph)}>
-          <FrontDoor />
-        </div>
+        {/* The project field measures the real header/hero/footer rectangles and
+            runs its own settled, staggered entrance, so it is not wrapped in a
+            transform here (which would break its measurement and fixed dossier). */}
+        <ProjectDriftField />
       </div>
 
       {/* Front footer */}
-      <footer className="relative z-20 mt-10 flex flex-col gap-2 px-6 pb-7 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-12 sm:px-8 md:absolute md:inset-x-12 md:bottom-7 md:mt-0 md:px-0">
+      <footer
+        id="sea-footer"
+        className="relative z-20 mt-10 flex flex-col gap-2 px-6 pb-7 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-12 sm:px-8 md:absolute md:inset-x-12 md:bottom-7 md:mt-0 md:px-0"
+      >
         {frontFooter.map((line) => (
           <span key={line} className="whitespace-nowrap">
             {line}

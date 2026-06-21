@@ -65,11 +65,9 @@ export interface IntroConfig {
 
   // ── dive transition scene (Three.js) ──
   scene: {
-    // Camera descent in scene units. Water plane sits at y = 0.
-    cameraStartY: number;
-    cameraEndY: number;
-    crossProgress: number; // progress where the camera passes the water plane
-    fov: number;
+    crossProgress: number; // progress where the camera passes the water surface
+    // Optical centre of the dive (normalised 0..1), set live from the aperture.
+    apertureCenter: Vec2;
   };
 
   colors: {
@@ -141,14 +139,16 @@ export interface IntroConfigOverrides {
 }
 
 const DC: Vec2 = [-77.0369, 38.9072];
-const POTOMAC: Vec2 = [-77.045, 38.875]; // public river water south of the Mall
+// A broad public stretch of the tidal Potomac south of Washington, wide enough
+// that the final satellite frame is primarily open water, not roads and land.
+const POTOMAC: Vec2 = [-77.032, 38.785];
 
 export const INTRO_CONFIG: IntroConfig = {
   timing: {
-    totalMs: 6200,
+    totalMs: 6800,
     holdMs: 500,
-    occludeProgress: 0.8,
-    depthsRevealProgress: 0.88,
+    occludeProgress: 0.82,
+    depthsRevealProgress: 0.92,
     reducedMotionCrossfadeMs: 420,
   },
   surface: {
@@ -163,10 +163,11 @@ export const INTRO_CONFIG: IntroConfig = {
   },
   cameraPath: [
     { atProgress: 0.0, center: DC, zoom: 3.0, pitch: 0, bearing: 0, easing: "linear" },
-    { atProgress: 0.16, center: DC, zoom: 3.5, pitch: 6, bearing: 6, easing: "easeIn" },
-    { atProgress: 0.42, center: [-77.04, 38.9], zoom: 7.6, pitch: 32, bearing: 20, easing: "easeInOut" },
-    { atProgress: 0.62, center: [-77.043, 38.886], zoom: 11.6, pitch: 56, bearing: 34, easing: "easeInOut" },
-    { atProgress: 0.74, center: POTOMAC, zoom: 14.6, pitch: 68, bearing: 46, easing: "easeOut" },
+    { atProgress: 0.16, center: DC, zoom: 3.5, pitch: 4, bearing: 6, easing: "easeIn" },
+    { atProgress: 0.42, center: [-77.035, 38.86], zoom: 7.8, pitch: 22, bearing: 16, easing: "easeInOut" },
+    { atProgress: 0.62, center: [-77.033, 38.82], zoom: 11.4, pitch: 36, bearing: 24, easing: "easeInOut" },
+    // End near-top-down over broad water so the surface fills the frame.
+    { atProgress: 0.74, center: POTOMAC, zoom: 13.4, pitch: 28, bearing: 30, easing: "easeOut" },
   ],
   atmosphere: {
     spaceColor: "#0a1a3a", // deep cobalt, not near-black
@@ -176,10 +177,8 @@ export const INTRO_CONFIG: IntroConfig = {
     starIntensity: 0.12,
   },
   scene: {
-    cameraStartY: 60,
-    cameraEndY: -120,
-    crossProgress: 0.78,
-    fov: 62,
+    crossProgress: 0.72,
+    apertureCenter: [0.5, 0.58],
   },
   colors: {
     skyCobalt: "#16315f",
@@ -228,15 +227,15 @@ export const INTRO_CONFIG: IntroConfig = {
 };
 
 export const MOBILE_OVERRIDES: IntroConfigOverrides = {
-  timing: { totalMs: 5200, occludeProgress: 0.78, depthsRevealProgress: 0.86 },
+  timing: { totalMs: 5600, occludeProgress: 0.82, depthsRevealProgress: 0.92 },
   surface: { zoom: 3.2, autoRotateDegPerSec: 1.2 },
   clouds: { layers: 3, density: 0.5, parallax: 18 },
   bubbles: { count: 320, size: 2.0 },
-  // Shorter, simpler path: fewer waypoints, gentler pitch.
+  // Shorter, simpler path: fewer waypoints, gentle near-top-down ending.
   cameraPath: [
     { atProgress: 0.0, center: DC, zoom: 3.2, pitch: 0, bearing: 0, easing: "linear" },
-    { atProgress: 0.4, center: [-77.042, 38.9], zoom: 8.2, pitch: 30, bearing: 16, easing: "easeInOut" },
-    { atProgress: 0.74, center: POTOMAC, zoom: 14.2, pitch: 62, bearing: 38, easing: "easeOut" },
+    { atProgress: 0.4, center: [-77.034, 38.85], zoom: 8.4, pitch: 20, bearing: 12, easing: "easeInOut" },
+    { atProgress: 0.74, center: POTOMAC, zoom: 13.2, pitch: 24, bearing: 24, easing: "easeOut" },
   ],
 };
 

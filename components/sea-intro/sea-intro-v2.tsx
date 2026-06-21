@@ -9,6 +9,7 @@ import { IntroDebugPanel } from "./intro-debug-panel";
 import { SurfaceMenu } from "./surface-menu";
 import { createDiveClock } from "./dive-clock";
 import type { DiveClock } from "./dive-clock";
+import type { ApertureCenter } from "./dive-aperture";
 import { resolveConfig } from "./sea-intro-config";
 import { useSeaIntroState } from "./use-sea-intro-state";
 
@@ -49,6 +50,12 @@ export function SeaIntroV2() {
   useEffect(() => {
     clockRef.current.durationMs = config.timing.totalMs;
   }, [config.timing.totalMs]);
+
+  // Optical centre of the dive, set from the aperture on activation.
+  const centerRef = useRef<ApertureCenter>({
+    x: config.scene.apertureCenter[0],
+    y: config.scene.apertureCenter[1],
+  });
 
   // ── derived layer flags (set only on threshold change) ──
   const [mapOccluded, setMapOccluded] = useState(false);
@@ -107,7 +114,8 @@ export function SeaIntroV2() {
   };
 
   // ── user actions ──
-  const handleDive = () => {
+  const handleDive = (center?: ApertureCenter) => {
+    if (center) centerRef.current = center;
     if (reducedMotion) {
       arrivalRef.current = "reduced";
       setArrival("reduced");
@@ -224,6 +232,7 @@ export function SeaIntroV2() {
         >
           <DiveTransitionScene
             clockRef={clockRef}
+            centerRef={centerRef}
             reducedMotion={reducedMotion}
             config={config}
           />

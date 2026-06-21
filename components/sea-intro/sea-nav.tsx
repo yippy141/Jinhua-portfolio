@@ -14,7 +14,10 @@ const navItems = [
 // state) so it can render in either tree.
 export function SeaNav() {
   return (
-    <header className="relative z-20 flex flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-start lg:justify-between lg:px-12 lg:py-8">
+    <header
+      id="sea-nav"
+      className="relative z-20 flex flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-start lg:justify-between lg:px-12 lg:py-8"
+    >
       <Link
         href="/"
         className="block w-fit rounded-[3px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"

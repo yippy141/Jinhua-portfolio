@@ -4,10 +4,13 @@ import Link from "next/link";
 
 import { SocialCluster } from "@/components/icons";
 
+import { DiveAperture } from "./dive-aperture";
+import type { ApertureCenter } from "./dive-aperture";
+
 // The surface presents as a quiet title menu over the dawn globe, not a HUD and
 // not a generic CTA. Newsreader + IBM Plex Sans only, sentence case, normal
-// tracking. The Dive in control is typographic with a restrained underline and
-// a small descent chevron; Skip intro stays visually subordinate.
+// tracking. The dive action is an authored circular aperture; Skip intro stays
+// visually subordinate beneath it.
 
 const navItems = [
   { href: "/about", label: "About" },
@@ -17,7 +20,7 @@ const navItems = [
 ];
 
 type SurfaceMenuProps = {
-  onDive: () => void;
+  onDive: (center: ApertureCenter) => void;
   onSkip: () => void;
   disabled: boolean;
 };
@@ -62,37 +65,14 @@ export function SurfaceMenu({ onDive, onSkip, disabled }: SurfaceMenuProps) {
             Projects on emerging technology and international affairs.
           </p>
 
-          <button
-            type="button"
-            onClick={onDive}
-            className="group mt-9 inline-flex flex-col items-center gap-1.5 rounded-[2px] font-serif text-lg text-ink transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-sonar"
-          >
-            <span className="relative">
-              Dive in
-              <span className="absolute -bottom-1 left-1/2 h-px w-6 -translate-x-1/2 bg-ink/60 transition-all duration-300 group-hover:w-full group-hover:bg-ink" />
-            </span>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-              className="translate-y-0 text-ink-2 transition-transform duration-300 group-hover:translate-y-1"
-            >
-              <path
-                d="M12 5v13M6 13l6 6 6-6"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+          <div className="mt-8">
+            <DiveAperture onDive={onDive} disabled={disabled} />
+          </div>
 
           <button
             type="button"
             onClick={onSkip}
-            className="mt-6 rounded-[2px] font-sans text-sm text-ink-2 underline-offset-4 transition-colors hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
+            className="mt-5 rounded-[2px] font-sans text-sm text-ink-2 underline-offset-4 transition-colors hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
           >
             Skip intro
           </button>

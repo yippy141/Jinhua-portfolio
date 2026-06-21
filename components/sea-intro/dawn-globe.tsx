@@ -12,11 +12,12 @@ import type { IntroConfig } from "./sea-intro-config";
 type MapboxModule = typeof import("mapbox-gl");
 type MapboxMap = import("mapbox-gl").Map;
 
-// Stratospheric Dawn surface. Mapbox Standard-satellite with a dawn light
-// preset, a luminous cobalt-to-cyan atmosphere, and a readable Earth. During
-// the dive the camera is driven frame-by-frame from the shared clock along the
-// configured waypoints, so the descent is one continuous orbital-to-oblique
-// flight rather than a single generic flyTo.
+// Stratospheric Dawn surface. Pure Mapbox satellite imagery (satellite-v9: no
+// roads, boundaries, labels, POIs or transit) under a luminous cobalt-to-cyan
+// atmosphere with a warm horizon rim. During the dive the camera is driven
+// frame-by-frame from the shared clock along the configured waypoints, so the
+// descent is one continuous orbital-to-oblique flight rather than a generic
+// flyTo. Required Mapbox attribution is kept as a compact control.
 
 type DawnGlobeProps = {
   clockRef: React.RefObject<DiveClock>;
@@ -26,17 +27,6 @@ type DawnGlobeProps = {
   isMobile: boolean;
   config: IntroConfig;
 };
-
-// Standard style config keys are optional across versions; fail soft.
-function trySetConfig(map: MapboxMap, key: string, value: unknown) {
-  try {
-    (map as unknown as {
-      setConfigProperty: (i: string, k: string, v: unknown) => void;
-    }).setConfigProperty("basemap", key, value);
-  } catch {
-    // Property not supported by this style version: ignore.
-  }
-}
 
 export function DawnGlobe({
   clockRef,
@@ -70,9 +60,9 @@ export function DawnGlobe({
       try {
         map = new mapboxgl.Map({
           container: containerRef.current,
-          // Standard-satellite gives photoreal imagery plus dynamic dawn light
-          // and atmosphere. Falls back gracefully if the style id changes.
-          style: "mapbox://styles/mapbox/standard-satellite",
+          // satellite-v9 is pure imagery: no roads, boundaries, labels, POIs or
+          // transit. The dawn mood comes entirely from the atmosphere fog below.
+          style: "mapbox://styles/mapbox/satellite-v9",
           center: config.surface.center,
           zoom: config.surface.zoom,
           pitch: config.surface.pitch,
@@ -89,6 +79,8 @@ export function DawnGlobe({
           touchPitch: false,
           keyboard: false,
         });
+        // Required Mapbox attribution, kept compact and unobtrusive.
+        map.addControl(new mapboxgl.AttributionControl({ compact: true }));
       } catch {
         return;
       }
@@ -97,13 +89,6 @@ export function DawnGlobe({
 
       map.on("style.load", () => {
         if (!map) return;
-        trySetConfig(map, "lightPreset", config.surface.lightPreset);
-        // Keep the Earth unlabelled: no place, POI, road, or transit text.
-        trySetConfig(map, "showPlaceLabels", false);
-        trySetConfig(map, "showPointOfInterestLabels", false);
-        trySetConfig(map, "showRoadLabels", false);
-        trySetConfig(map, "showTransitLabels", false);
-
         try {
           map.setFog({
             color: config.atmosphere.horizonColor, // warm sunrise near horizon

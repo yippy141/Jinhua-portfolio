@@ -5,7 +5,6 @@
 import type {
   CameraKeyframe,
   EasingName,
-  IntroConfig,
   Vec2,
 } from "./sea-intro-config";
 
@@ -131,19 +130,4 @@ export function sampleCamera(
     pitch: last.pitch,
     bearing: last.bearing,
   };
-}
-
-// Scene camera height (Three units) as the camera descends through the water
-// plane at y = 0. Smoothly accelerates, crosses at config.scene.crossProgress.
-export function sampleSceneCameraY(config: IntroConfig, progress: number): number {
-  const { cameraStartY, cameraEndY, crossProgress } = config.scene;
-  const p = Math.min(Math.max(progress, 0), 1);
-  if (p <= crossProgress) {
-    // Above water: ease from start height down to 0 at the crossing.
-    const t = ease("easeIn", p / (crossProgress || 1));
-    return lerp(cameraStartY, 0, t);
-  }
-  // Below water: ease down to the deep end.
-  const t = ease("easeOut", (p - crossProgress) / (1 - crossProgress || 1));
-  return lerp(0, cameraEndY, t);
 }
