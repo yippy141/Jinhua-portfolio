@@ -75,3 +75,14 @@ body {
   background: var(--ink);
   color: var(--paper);
 }
+
+/* Sea Intro: restrained crossfade used when reduced-motion visitors cut from
+   the surface straight to the depths. */
+@keyframes seaIntroFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

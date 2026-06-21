@@ -15,7 +15,10 @@ type Action =
   | { type: "DIVE" }
   | { type: "TIMELINE_END" }
   | { type: "SKIP" }
-  | { type: "REPLAY" };
+  | { type: "REPLAY" }
+  // Unconditional set, used by the V2 orchestrator and the debug panel to jump
+  // directly between phases.
+  | { type: "FORCE"; state: IntroState };
 
 function reducer(state: IntroState, action: Action): IntroState {
   switch (action.type) {
@@ -31,6 +34,8 @@ function reducer(state: IntroState, action: Action): IntroState {
       return state === "surface" ? "depths" : state;
     case "REPLAY":
       return state === "depths" ? "surface" : state;
+    case "FORCE":
+      return action.state;
     default:
       return state;
   }
@@ -59,6 +64,17 @@ function hasWebGL(): boolean {
 function sessionComplete(): boolean {
   try {
     return window.sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+// Dev / share affordance: ?intro=force always replays the intro from the
+// surface, ignoring the per-session memory.
+function forceReplayRequested(): boolean {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("intro") === "force" || params.get("introDebug") === "1";
   } catch {
     return false;
   }
@@ -96,6 +112,8 @@ export type SeaIntroController = {
   skip: () => void;
   replay: () => void;
   finishDive: () => void;
+  // Debug / orchestrator: jump to any state. `complete` also marks the session.
+  force: (next: IntroState, opts?: { complete?: boolean }) => void;
 };
 
 export function useSeaIntroState(): SeaIntroController {
@@ -112,8 +130,10 @@ export function useSeaIntroState(): SeaIntroController {
     setIntroCapable(capable);
     setResolved(true);
 
-    if (sessionComplete() || !capable) {
-      // Returning visitor, or no globe possible: land in the depths silently.
+    const force = forceReplayRequested();
+    if (!capable || (sessionComplete() && !force)) {
+      // Returning visitor (without a force flag), or no globe possible: land in
+      // the depths silently.
       dispatch({ type: "RESOLVE", state: "depths" });
       return;
     }
@@ -137,6 +157,15 @@ export function useSeaIntroState(): SeaIntroController {
     dispatch({ type: "REPLAY" });
   }, []);
 
+  const force = useCallback(
+    (next: IntroState, opts?: { complete?: boolean }) => {
+      if (opts?.complete) markSessionComplete();
+      else if (next === "surface") clearSession();
+      dispatch({ type: "FORCE", state: next });
+    },
+    [],
+  );
+
   return {
     state,
     resolved,
@@ -147,5 +176,6 @@ export function useSeaIntroState(): SeaIntroController {
     skip,
     replay,
     finishDive,
+    force,
   };
 }

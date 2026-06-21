@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { FrontDoor } from "@/components/front-door";
@@ -8,11 +9,13 @@ import { ParticleField } from "@/components/particle-field";
 
 import { ReturnToSurface } from "./return-to-surface";
 import { SeaNav } from "./sea-nav";
+import { INTRO_CONFIG } from "./sea-intro-config";
 
 // The settled depths: the existing underwater portfolio, reused unchanged
 // (ParticleField + FrontDoor + nav + social + footer). The only change from the
 // original homepage body is a smaller, settled hero and a quiet "Return to
-// surface" control. Lifted out of app/page.tsx so the orchestrator can mount it.
+// surface" control. When the visitor arrives through the dive, the layers enter
+// in a staggered depth reveal rather than one flat opacity fade.
 
 const hero = {
   headline: "Welcome to my Sea of Consciousness",
@@ -28,13 +31,61 @@ const frontFooter = [
   "Select a project to open it.",
 ];
 
+// Stagger derived from the typed reveal offsets so it tunes alongside the dive.
+const STAGGER_SPAN = 760;
+const DUR = INTRO_CONFIG.reveal.layerDurationMs;
+const delays = {
+  chrome: INTRO_CONFIG.reveal.chromeAt * STAGGER_SPAN,
+  hero: INTRO_CONFIG.reveal.heroAt * STAGGER_SPAN,
+  graph: INTRO_CONFIG.reveal.graphAt * STAGGER_SPAN,
+};
+
 type HomeSceneProps = {
   // Provided when the intro is available this session; omitted for the no-JS /
   // no-globe path, where there is nothing to replay.
   onReplay?: () => void;
+  // Play the staggered depth entrance (true when arriving through the dive).
+  entrance?: boolean;
 };
 
-export function HomeScene({ onReplay }: HomeSceneProps) {
+export function HomeScene({ onReplay, entrance = false }: HomeSceneProps) {
+  const [revealed, setRevealed] = useState(!entrance);
+  // Once settled we drop transforms/filters entirely so FrontDoor's fixed
+  // dossier positioning is never trapped inside a transformed ancestor.
+  const [settled, setSettled] = useState(!entrance);
+
+  useEffect(() => {
+    if (!entrance) return;
+    const r = requestAnimationFrame(() => setRevealed(true));
+    const t = window.setTimeout(
+      () => setSettled(true),
+      DUR + delays.graph + 120,
+    );
+    return () => {
+      cancelAnimationFrame(r);
+      window.clearTimeout(t);
+    };
+  }, [entrance]);
+
+  // Per-layer entrance style: slight scale, blur and vertical offset, cleared
+  // once settled.
+  const layer = (delay: number): React.CSSProperties => {
+    if (settled) return {};
+    if (revealed) {
+      return {
+        opacity: 1,
+        transform: "none",
+        filter: "none",
+        transition: `opacity ${DUR}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform ${DUR}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, filter ${DUR}ms ease ${delay}ms`,
+      };
+    }
+    return {
+      opacity: 0,
+      transform: "translateY(20px) scale(0.97)",
+      filter: "blur(7px)",
+    };
+  };
+
   return (
     <>
       <ParticleField />
@@ -52,12 +103,17 @@ export function HomeScene({ onReplay }: HomeSceneProps) {
       />
 
       {/* Navigation */}
-      <SeaNav />
+      <div style={layer(delays.chrome)}>
+        <SeaNav />
+      </div>
 
       {/* Body: a smaller, settled hero pinned bottom-left on desktop, with the
           graph as an overlay on md+ and the stacked list on phones. */}
       <div className="relative z-10 flex flex-1 flex-col">
-        <section className="relative z-20 px-6 sm:px-8 md:absolute md:bottom-28 md:left-12 md:max-w-[480px] md:px-0 lg:bottom-32">
+        <section
+          style={layer(delays.hero)}
+          className="relative z-20 px-6 sm:px-8 md:absolute md:bottom-28 md:left-12 md:max-w-[480px] md:px-0 lg:bottom-32"
+        >
           <h1
             id="sea-depths-hero"
             tabIndex={-1}
@@ -81,7 +137,11 @@ export function HomeScene({ onReplay }: HomeSceneProps) {
           </div>
         </section>
 
-        <FrontDoor />
+        {/* The project graph enters last and from a touch deeper. The transform
+            is removed once settled so the dossier's fixed positioning works. */}
+        <div style={layer(delays.graph)}>
+          <FrontDoor />
+        </div>
       </div>
 
       {/* Front footer */}
