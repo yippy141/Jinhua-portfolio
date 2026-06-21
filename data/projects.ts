@@ -25,6 +25,7 @@ import {
 // from "@/data/projects".
 export type {
   Project,
+  ProjectDetail,
   ProjectHomeVariant,
   ProjectLink,
   ProjectPreview,
@@ -44,15 +45,19 @@ export const projects = [
     type: "tool",
     status: "beta",
     year: "2026",
-    dek: "A reflective instrument that maps the theories and priors shaping how readers read world affairs.",
+    dek: "A guided questionnaire that shows which schools of international-relations theory most closely match your assumptions.",
     description:
-      "A reflective instrument that helps a reader name the theories, instincts, and historical priors behind how they read world affairs. It builds an IR Foundation result, then tests it against harder security, technology, and AI governance questions.",
+      "A guided questionnaire that shows which schools of international-relations theory most closely match your assumptions. It then tests that result against security, technology, and AI-governance scenarios.",
     tags: ["IR theory", "AI governance"],
     entities: ["ai-governance", "great-power-competition"],
     links: [
       { label: "Open the inventory", href: "https://irworldview.jhyip.com" },
       { label: "Source code", href: "https://github.com/yippy141/ir-worldview-app" },
     ],
+    detail: {
+      whatYouCanExplore:
+        "Answer the questionnaire to get an IR Foundation result, then test it against harder security, technology, and AI-governance scenarios.",
+    },
     preview: {
       kind: "video",
       posters: [
@@ -82,15 +87,19 @@ export const projects = [
     type: "research",
     status: "in-progress",
     year: "2026",
-    dek: "A source-traceable map of AI safety and governance capacity across the region.",
+    dek: "A searchable map of the organizations building AI-safety capacity across Asia.",
     description:
-      "A source-traceable map of AI safety and governance capacity across the Asia-Pacific. It tracks institutions, talent, and compute, and shows where the public record is thin.",
+      "A searchable map of the organizations building AI-safety capacity across Asia. Filter by country, institution type, and area of work, then inspect the source behind each entry.",
     tags: ["compute", "AI governance"],
     entities: ["ai-safety", "ai-governance", "compute", "asia-pacific"],
     links: [
       { label: "Open the atlas", href: "https://aisafety.jhyip.com" },
       { label: "Source code", href: "https://github.com/yippy141/asia-ai-safety-atlas" },
     ],
+    detail: {
+      whatYouCanExplore:
+        "Filter by country, institution type, and area of work, then inspect the source behind each entry.",
+    },
     preview: {
       kind: "none",
       posters: [],
@@ -116,15 +125,19 @@ export const projects = [
     type: "research",
     status: "in-progress",
     year: "2026",
-    dek: "Tooling, fabs, and chokepoints across the semiconductor stack, with export-control context.",
+    dek: "A map of Chinese semiconductor-equipment makers and the production steps they serve.",
     description:
-      "A map of the semiconductor stack: tooling, fabs, and the chokepoints where China's indigenization runs into limits, set against the export-control regime that shapes them.",
+      "A map of Chinese semiconductor-equipment makers, the production steps they serve, and the areas where foreign tools still matter.",
     tags: ["semiconductors", "export controls"],
     entities: ["semiconductors", "export-controls", "compute", "china"],
     links: [
       { label: "Open the atlas", href: "https://chinatooling.jhyip.com" },
       { label: "Source code", href: "https://github.com/yippy141/china-semiconductor-tooling-talent-atlas" },
     ],
+    detail: {
+      whatYouCanExplore:
+        "Trace each equipment maker to the production steps it serves, and see the areas where foreign tools still matter.",
+    },
     preview: {
       kind: "none",
       posters: [],
@@ -150,12 +163,16 @@ export const projects = [
     type: "research",
     status: "in-progress",
     year: "2026",
-    dek: "China's commercial space sector: launch cadence, constellations, and dual-use capacity.",
+    dek: "A map of China's commercial space companies, launches, and constellations.",
     description:
-      "A read on China's commercial space sector as a hybrid strategic-industrial system rather than a Western-style private market, covering launch cadence, constellations, and dual-use capacity.",
+      "A map of China's commercial space companies, launches, constellations, and links to state industrial and security priorities.",
     tags: ["commercial space", "compute"],
     entities: ["space", "china", "industrial-capability"],
     links: [],
+    detail: {
+      whatYouCanExplore:
+        "Browse companies, launches, and constellations, and their links to state industrial and security priorities.",
+    },
     preview: {
       kind: "none",
       posters: [],
@@ -181,15 +198,21 @@ export const projects = [
     type: "tool",
     status: "in-progress",
     year: "2026",
-    dek: "Whether allied rare-earth announcements can become operating mine-to-magnet capacity.",
+    dek: "A tracker for mining, refining, metal, and magnet projects outside China.",
     description:
-      "A source-driven tracker of whether US and allied rare-earth announcements can become operating mine-to-magnet capacity, with attention to skilled labor, process know-how, plant commissioning, and environmental limits.",
+      "A tracker for mining, refining, metal, and magnet projects outside China. It separates announcements from operating capacity and shows where skills and processing know-how remain bottlenecks.",
     tags: ["rare earths", "supply chains"],
     entities: ["rare-earths", "supply-chains", "industrial-capability"],
     links: [
       { label: "Open the atlas", href: "https://reetalent.jhyip.com" },
       { label: "Source code", href: "https://github.com/yippy141/mine-to-magnet-capability-tracker" },
     ],
+    detail: {
+      whatYouCanExplore:
+        "See which projects have become operating capacity and which are only announced, and where skills and processing know-how remain bottlenecks.",
+      evidenceAndLimits:
+        "The tracker separates announcements from operating capacity. A project that has only been announced is labeled as such, not counted as output.",
+    },
     preview: {
       kind: "image",
       posters: ["/previews/mine-to-magnet-capability-tracker.svg"],
@@ -215,15 +238,21 @@ export const projects = [
     type: "tool",
     status: "beta",
     year: "2026",
-    dek: "A versioned index of private-sector influence in foreign policy, rebuilt from the SAIS capstone.",
+    dek: "An index for comparing how private companies can shape foreign policy and conflict risk.",
     description:
-      "A versioned index of private-sector influence in foreign policy, rebuilt from a SAIS capstone on the Philippines. It separates the archival 2025 publication from a structural screening tool with source manifests, country cards, and robustness checks.",
+      "An index for comparing how private companies can shape foreign policy and conflict risk. The current release applies the framework to the Philippines and exposes the weights, sources, and sensitivity tests.",
     tags: ["private-sector influence", "foreign policy"],
     entities: ["private-sector-influence", "philippines"],
     links: [
       { label: "Explore the PSII dashboard", href: "https://psii.jhyip.com" },
       { label: "Source code", href: "https://github.com/yippy141/psii-dashboard" },
     ],
+    detail: {
+      whatYouCanExplore:
+        "Open the weights, sources, and sensitivity tests behind the index. The current release applies the framework to the Philippines.",
+      evidenceAndLimits:
+        "The index exposes its weights and sources, and the sensitivity tests show how much a ranking depends on those choices.",
+    },
     preview: {
       kind: "image",
       posters: ["/previews/psii.svg"],
@@ -249,14 +278,17 @@ export const projects = [
     type: "research",
     status: "published",
     year: "2025",
-    dek: "A sole-authored Springer chapter that builds a general account of private-sector influence in asymmetric conflict, with the Philippines in the South China Sea as the case.",
+    dek: "A published chapter on how businesses can raise, lower, or redirect conflict risk.",
     description:
-      "A published book chapter on how private-sector actors, from multinational corporations to domestic business elites and industry associations, shape strategy and outcomes in asymmetric conflict. The Philippines' position in the South China Sea serves as the case study and field research; the framework is built to travel beyond it, and it seeded the PSII Dashboard. Published as Chapter 5 of Good Governance in East Asia and Latin America (Springer Nature, 2025).",
+      "A published chapter on how businesses can raise, lower, or redirect conflict risk, using the Philippines in the South China Sea as the case study. Published as Chapter 5 of Good Governance in East Asia and Latin America (Springer Nature, 2025).",
     tags: ["maritime", "foreign policy"],
     entities: ["philippines", "private-sector-influence", "asia-pacific"],
     links: [
       { label: "Read the chapter (Springer)", href: "https://doi.org/10.1007/978-3-032-00506-9_5" },
     ],
+    detail: {
+      myRole: "Sole author of the chapter, including the field research.",
+    },
     preview: {
       kind: "image",
       posters: ["/previews/philippines-south-china-sea.svg"],
@@ -282,9 +314,8 @@ export const projects = [
     type: "essay",
     status: "published",
     year: "2026",
-    dek: "Essays and notes on power, technology, and strategic choice.",
-    description:
-      "An ongoing collection of essays and notes on power, technology, and strategic choice, published on Substack.",
+    dek: "Essays and notes on technology, power, and strategy.",
+    description: "Essays and notes on technology, power, and strategy.",
     tags: ["essays", "notes"],
     entities: ["great-power-competition", "ai-governance"],
     links: [{ label: "Read on Substack", href: "https://substack.com/@yippy2" }],

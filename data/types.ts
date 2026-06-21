@@ -68,6 +68,20 @@ export type ProjectPreview = {
   video?: string | null;
 };
 
+// Optional long-form sections for the project page. Every field is optional and
+// a section only renders when its text exists, so projects with different
+// underlying material are not forced into an identical template. Add fields as
+// real content is written; never fabricate to fill the shape.
+export type ProjectDetail = {
+  whatItDoes?: string;
+  whatYouCanExplore?: string;
+  whyIBuiltIt?: string;
+  evidenceAndLimits?: string;
+  myRole?: string;
+  // A plain note on the latest meaningful update, beyond status + year.
+  currentStatus?: string;
+};
+
 // The visual treatment of a project's card on the homepage.
 export type ProjectHomeVariant = "viewport" | "triptych" | "folio" | "note";
 
@@ -94,6 +108,7 @@ export type Project = {
   tags: readonly string[]; // free-text tags for display
   entities: readonly EntityId[]; // which concept-graph ideas this project touches
   links: readonly ProjectLink[];
+  detail?: ProjectDetail; // optional long-form project-page sections
   preview: ProjectPreview;
   // Homepage graph geometry, in percent of the 1440x900 front door.
   x: number; // horizontal position, % (left)

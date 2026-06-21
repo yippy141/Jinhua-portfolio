@@ -32,13 +32,13 @@ export function SurfaceMenu({ onDive, onSkip, disabled }: SurfaceMenuProps) {
       <header className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-7">
         <Link
           href="/"
-          className="rounded-[3px] font-serif text-xl text-ink/90 transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
+          className="rounded-[3px] font-serif text-xl text-ink drop-shadow-[0_1px_10px_rgba(7,16,15,0.6)] transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
         >
           Jinhua Yip
         </Link>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           <nav aria-label="Primary">
-            <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 font-sans text-sm text-ink-2">
+            <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 font-sans text-[15px] text-ink/85 drop-shadow-[0_1px_10px_rgba(7,16,15,0.6)]">
               {navItems.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -51,7 +51,7 @@ export function SurfaceMenu({ onDive, onSkip, disabled }: SurfaceMenuProps) {
               ))}
             </ul>
           </nav>
-          <SocialCluster size={15} />
+          <SocialCluster size={16} />
         </div>
       </header>
 

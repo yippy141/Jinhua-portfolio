@@ -1,28 +1,25 @@
 import type { Metadata } from "next";
-import { Newsreader, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Spectral, Libre_Franklin } from "next/font/google";
 import "./globals.css";
 
-// Constitution fonts. Three families, nothing else.
-// Newsreader = voice (headlines + long-form body, an editorial serif).
-const fontSerif = Newsreader({
+// Editorial type system (V2.2). Two loaded families:
+//   Spectral       = display: headings, the portfolio name, project titles, and
+//                    selected editorial introductions. A warm, readable serif.
+//   Libre Franklin = interface + body: navigation, UI, body copy, buttons,
+//                    metadata and captions. A clear humanist sans.
+// A third token (--font-data) resolves to the system ui-monospace stack and is
+// applied only to literal source ids, code, and tabular evidence (see globals.css).
+const fontSerif = Spectral({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",
 });
 
-// IBM Plex Sans = chrome (navigation, labels, buttons, captions).
-const fontSans = IBM_Plex_Sans({
+const fontSans = Libre_Franklin({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
   variable: "--font-sans",
-  display: "swap",
-});
-
-// IBM Plex Mono = evidence (source ids, status tags, dates, code).
-const fontMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
   display: "swap",
 });
 
@@ -72,7 +69,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fontSerif.variable} ${fontSans.variable} ${fontMono.variable} h-full antialiased`}
+      className={`${fontSerif.variable} ${fontSans.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-paper text-ink">
         <a

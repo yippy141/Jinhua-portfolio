@@ -60,7 +60,7 @@ export function IntroDebugPanel({
     "rounded border border-white/25 px-2 py-1 text-[11px] text-white/90 hover:bg-white/15";
 
   return (
-    <div className="fixed bottom-3 left-3 z-[100] w-64 rounded-md border border-white/20 bg-black/70 p-3 font-mono text-[11px] text-white/90 backdrop-blur">
+    <div className="fixed bottom-3 left-3 z-[100] w-64 rounded-md border border-white/20 bg-black/70 p-3 font-data text-[11px] text-white/90 backdrop-blur">
       <div className="mb-2 flex items-center justify-between">
         <span className="font-semibold">intro debug</span>
         <span className="text-white/60">{(progress * 100).toFixed(1)}%</span>

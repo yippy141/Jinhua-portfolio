@@ -62,7 +62,11 @@
 
   --font-serif: var(--font-serif);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  /* Single data-specific token. Resolves to the system monospace stack and is
+     applied ONLY to literal source ids, code, and tabular evidence (font-data).
+     It is never the global UI or body font. */
+  --font-data: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 }
 
 body {

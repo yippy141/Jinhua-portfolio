@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-18">
-      <p aria-hidden="true" className="mb-4 font-mono text-xs uppercase tracking-[0.22em] text-oxblood">
+      <p aria-hidden="true" className="mb-4 font-sans text-sm text-oxblood">
         Contact
       </p>
       <h1 className="font-serif text-4xl font-medium leading-tight tracking-tight text-ink sm:text-5xl">

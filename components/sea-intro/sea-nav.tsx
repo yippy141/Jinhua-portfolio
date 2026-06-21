@@ -3,10 +3,10 @@ import Link from "next/link";
 import { SocialCluster } from "@/components/icons";
 
 const navItems = [
-  { href: "/about", label: "ABOUT" },
-  { href: "/research", label: "RESEARCH" },
-  { href: "/archive", label: "ARCHIVE" },
-  { href: "/contact", label: "CONTACT" },
+  { href: "/about", label: "About" },
+  { href: "/research", label: "Research" },
+  { href: "/archive", label: "Archive" },
+  { href: "/contact", label: "Contact" },
 ];
 
 // The portfolio name + navigation, shared by the surface and the depths so the
@@ -16,28 +16,23 @@ export function SeaNav() {
   return (
     <header
       id="sea-nav"
-      className="relative z-20 flex flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-start lg:justify-between lg:px-12 lg:py-8"
+      className="relative z-20 flex flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12 lg:py-8"
     >
       <Link
         href="/"
-        className="block w-fit rounded-[3px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
+        className="block w-fit rounded-[3px] font-serif text-2xl leading-none text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
       >
-        <span className="block font-serif text-2xl leading-none text-ink">
-          Jinhua Yip
-        </span>
-        <span className="mt-1.5 block font-mono text-[10px] uppercase tracking-[0.24em] text-ink-2">
-          Intelligence Atlases
-        </span>
+        Jinhua Yip
       </Link>
 
       <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
         <nav aria-label="Primary">
-          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 font-sans text-xs uppercase tracking-[0.12em] text-ink-2">
+          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 font-sans text-[15px] text-ink/80">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="rounded-[2px] transition-colors duration-200 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
+                  className="rounded-[2px] underline-offset-4 transition-colors duration-200 hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
                 >
                   {item.label}
                 </Link>
@@ -45,7 +40,7 @@ export function SeaNav() {
             ))}
           </ul>
         </nav>
-        <SocialCluster size={15} />
+        <SocialCluster size={16} />
       </div>
     </header>
   );

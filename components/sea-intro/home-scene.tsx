@@ -21,15 +21,7 @@ const hero = {
   headline: "Welcome to my Sea of Consciousness",
   blurb:
     "My personal repository of projects on emerging technology and international affairs.",
-  cta: "Enter the archive",
-  hint: "Explore a project",
 };
-
-const frontFooter = [
-  "22.5°N · 114.1°E",
-  "Each object is a real project",
-  "Select a project to open it.",
-];
 
 // Stagger derived from the typed reveal offsets so it tunes alongside the dive.
 const STAGGER_SPAN = 760;
@@ -122,19 +114,17 @@ export function HomeScene({ onReplay, entrance = false }: HomeSceneProps) {
           >
             {hero.headline}
           </h1>
-          <p className="mt-4 max-w-[420px] font-sans text-[0.95rem] leading-relaxed text-ink-2">
+          <p className="mt-4 max-w-[440px] font-sans text-[15px] leading-relaxed text-ink/70">
             {hero.blurb}
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-5">
+          <div className="mt-6">
             <Link
               href="/archive"
-              className="inline-flex items-center gap-2 rounded-[3px] bg-oxblood px-5 py-3 font-sans text-sm tracking-[0.02em] text-paper transition-colors duration-200 hover:bg-oxblood-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
+              className="group inline-flex items-center gap-1.5 rounded-[2px] font-sans text-[15px] text-ink underline-offset-4 transition-colors duration-200 hover:text-oxblood hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
             >
-              {hero.cta} <Icon name="arrow" size={14} />
+              Browse all projects
+              <Icon name="arrow" size={15} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
-            <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-2">
-              {hero.hint}
-            </span>
           </div>
         </section>
 
@@ -144,22 +134,17 @@ export function HomeScene({ onReplay, entrance = false }: HomeSceneProps) {
         <ProjectDriftField />
       </div>
 
-      {/* Front footer */}
-      <footer
-        id="sea-footer"
-        className="relative z-20 mt-10 flex flex-col gap-2 px-6 pb-7 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-12 sm:px-8 md:absolute md:inset-x-12 md:bottom-7 md:mt-0 md:px-0"
-      >
-        {frontFooter.map((line) => (
-          <span key={line} className="whitespace-nowrap">
-            {line}
-          </span>
-        ))}
-        {onReplay ? (
-          <span className="whitespace-nowrap normal-case tracking-normal">
-            <ReturnToSurface onReplay={onReplay} />
-          </span>
-        ) : null}
-      </footer>
+      {/* Front footer: a single quiet way back up, no decorative coordinates. */}
+      {onReplay ? (
+        <footer
+          id="sea-footer"
+          className="relative z-20 mt-10 flex px-6 pb-7 sm:px-8 md:absolute md:inset-x-12 md:bottom-7 md:mt-0 md:justify-end md:px-0"
+        >
+          <ReturnToSurface onReplay={onReplay} />
+        </footer>
+      ) : (
+        <footer id="sea-footer" aria-hidden="true" className="md:absolute md:bottom-7" />
+      )}
     </>
   );
 }
