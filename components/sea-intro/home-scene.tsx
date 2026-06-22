@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { ParticleField } from "@/components/particle-field";
 
+import { AmbientFaunaLayer } from "./ambient-fauna-layer";
 import { ProjectDriftField } from "./project-drift-field";
 import { ReturnToSurface } from "./return-to-surface";
 import { SeaNav } from "./sea-nav";
@@ -38,9 +39,15 @@ type HomeSceneProps = {
   onReplay?: () => void;
   // Play the staggered depth entrance (true when arriving through the dive).
   entrance?: boolean;
+  // Ambient animals are allowed only after the intro state has settled in depths.
+  showAmbientFauna?: boolean;
 };
 
-export function HomeScene({ onReplay, entrance = false }: HomeSceneProps) {
+export function HomeScene({
+  onReplay,
+  entrance = false,
+  showAmbientFauna = false,
+}: HomeSceneProps) {
   const [revealed, setRevealed] = useState(!entrance);
   // Once settled we drop transforms/filters entirely so FrontDoor's fixed
   // dossier positioning is never trapped inside a transformed ancestor.
@@ -93,6 +100,7 @@ export function HomeScene({ onReplay, entrance = false }: HomeSceneProps) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 [background:linear-gradient(0deg,rgba(7,16,15,0.92),transparent)]"
       />
+      {showAmbientFauna ? <AmbientFaunaLayer /> : null}
 
       {/* Navigation */}
       <div style={layer(delays.chrome)}>

@@ -130,3 +130,94 @@ body {
     opacity: 0;
   }
 }
+
+/* Sea fauna: dormant until data/whales.ts has approved public/whales SVGs. */
+@keyframes seaFaunaSwimLtr {
+  from {
+    transform: translate3d(-24vw, 0, 0) scale(var(--fauna-scale));
+  }
+  to {
+    transform: translate3d(124vw, 0, 0) scale(var(--fauna-scale));
+  }
+}
+
+@keyframes seaFaunaSwimRtl {
+  from {
+    transform: translate3d(124vw, 0, 0) scaleX(-1) scale(var(--fauna-scale));
+  }
+  to {
+    transform: translate3d(-24vw, 0, 0) scaleX(-1) scale(var(--fauna-scale));
+  }
+}
+
+@keyframes seaFaunaBob {
+  0%,
+  100% {
+    transform: translate3d(0, calc(var(--fauna-bob) * -0.5), 0);
+  }
+  50% {
+    transform: translate3d(0, calc(var(--fauna-bob) * 0.5), 0);
+  }
+}
+
+@keyframes seaFaunaTailWag {
+  0%,
+  100% {
+    transform: rotate(calc(var(--fauna-tail-wag) * -1));
+  }
+  50% {
+    transform: rotate(var(--fauna-tail-wag));
+  }
+}
+
+@keyframes seaFaunaTuskShift {
+  0%,
+  100% {
+    opacity: 0.58;
+    background-position: 0% 50%;
+  }
+  50% {
+    opacity: 0.8;
+    background-position: 100% 50%;
+  }
+}
+
+.sea-fauna-bob {
+  animation-name: seaFaunaBob;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+}
+
+.sea-fauna-tail {
+  animation-name: seaFaunaTailWag;
+  animation-duration: 3.8s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.sea-fauna-tusk {
+  background: linear-gradient(
+    90deg,
+    rgba(79, 179, 191, 0.35),
+    rgba(194, 104, 92, 0.45),
+    rgba(237, 239, 234, 0.58)
+  );
+  background-size: 180% 100%;
+  animation: seaFaunaTuskShift 14s ease-in-out infinite;
+}
+
+[data-sea-fauna-paused="true"] .sea-fauna-swimmer,
+[data-sea-fauna-paused="true"] .sea-fauna-bob,
+[data-sea-fauna-paused="true"] .sea-fauna-tail,
+[data-sea-fauna-paused="true"] .sea-fauna-tusk {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sea-fauna-swimmer,
+  .sea-fauna-bob,
+  .sea-fauna-tail,
+  .sea-fauna-tusk {
+    animation: none;
+  }
+}

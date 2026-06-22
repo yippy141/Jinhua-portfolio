@@ -49,15 +49,20 @@ export function SeaIntroV2() {
     const update = () => setIsMobile(mq.matches);
     update();
     mq.addEventListener("change", update);
-    try {
-      const params = new URLSearchParams(window.location.search);
-      setDebug(params.get("introDebug") === "1");
-      const t = params.get("diveTarget");
-      if (isDiveTargetId(t)) setDiveTargetState(t);
-    } catch {
-      // ignore
-    }
-    return () => mq.removeEventListener("change", update);
+    const paramId = window.setTimeout(() => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        setDebug(params.get("introDebug") === "1");
+        const t = params.get("diveTarget");
+        if (isDiveTargetId(t)) setDiveTargetState(t);
+      } catch {
+        // ignore
+      }
+    }, 0);
+    return () => {
+      window.clearTimeout(paramId);
+      mq.removeEventListener("change", update);
+    };
   }, []);
 
   const config = useMemo(
@@ -265,7 +270,10 @@ export function SeaIntroV2() {
   if (!resolved || (state === "depths" && arrival === "none")) {
     return (
       <>
-        <HomeScene onReplay={introCapable ? handleReplay : undefined} />
+        <HomeScene
+          onReplay={introCapable ? handleReplay : undefined}
+          showAmbientFauna={resolved && state === "depths"}
+        />
         {debugPanel}
       </>
     );
@@ -365,6 +373,7 @@ export function SeaIntroV2() {
           <HomeScene
             onReplay={introCapable ? handleReplay : undefined}
             entrance={arrival === "dive" && !reducedMotion}
+            showAmbientFauna={state === "depths"}
           />
         </div>
       ) : null}

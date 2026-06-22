@@ -11,7 +11,6 @@ import { useReducedMotion } from "motion/react";
 //   plankton  -> tide #356B66 .. sonar #4FB3BF
 //   fog       -> deep-water background #07100F
 //   currents  -> a muted deep tide
-//   whale     -> deep-water panel #0C1A17
 //
 // Guards: no animation under prefers-reduced-motion (one static frame), and the
 // loop pauses while the tab is hidden.
@@ -126,28 +125,6 @@ function initParticles(
   const lines = new THREE.LineSegments(lineGeo, lineMat);
   scene.add(lines);
 
-  // ── faint whale silhouette drifting through the deep ──
-  const whaleShape = new THREE.Shape();
-  whaleShape.moveTo(-1.0, 0);
-  whaleShape.bezierCurveTo(-0.95, 0.18, -0.55, 0.3, -0.05, 0.28);
-  whaleShape.bezierCurveTo(0.45, 0.26, 0.78, 0.18, 0.92, 0.08);
-  whaleShape.lineTo(1.0, 0.28);
-  whaleShape.lineTo(1.12, 0.05);
-  whaleShape.lineTo(1.0, -0.18);
-  whaleShape.bezierCurveTo(0.85, -0.22, 0.5, -0.28, 0.0, -0.26);
-  whaleShape.bezierCurveTo(-0.5, -0.24, -0.85, -0.18, -1.0, 0);
-  const whaleGeo = new THREE.ShapeGeometry(whaleShape);
-  const whaleMat = new THREE.MeshBasicMaterial({
-    color: 0x0c1a17, // deep-water panel
-    transparent: true,
-    opacity: 0.5,
-    side: THREE.DoubleSide,
-  });
-  const whale = new THREE.Mesh(whaleGeo, whaleMat);
-  whale.scale.set(28, 28, 1);
-  whale.position.set(-220, -10, -80);
-  scene.add(whale);
-
   // ── parallax (gentle, follows the pointer) ──
   const target = { x: 0, y: 0 };
   const eased = { x: 0, y: 0 };
@@ -177,9 +154,6 @@ function initParticles(
     camera.position.x = eased.x * 5;
     camera.position.y = -eased.y * 3;
     camera.lookAt(0, 0, 0);
-    whale.position.x = ((elapsed * 4) % 460) - 230;
-    whale.position.y = -10 + Math.sin(elapsed * 0.2) * 6;
-    whale.rotation.z = Math.sin(elapsed * 0.3) * 0.03;
     renderer.render(scene, camera);
   };
 
@@ -216,8 +190,6 @@ function initParticles(
     mat.dispose();
     lineGeo.dispose();
     lineMat.dispose();
-    whaleGeo.dispose();
-    whaleMat.dispose();
     renderer.dispose();
   };
 }
@@ -231,12 +203,15 @@ export function ParticleField() {
   // The graph (and so this atmosphere) only shows from md up. Phones use the
   // Phase 2 stacked list, so we never spin up WebGL there.
   useEffect(() => {
-    setMounted(true);
+    const mountedId = window.setTimeout(() => setMounted(true), 0);
     const query = window.matchMedia("(min-width: 768px)");
     const update = () => setIsWide(query.matches);
     update();
     query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
+    return () => {
+      window.clearTimeout(mountedId);
+      query.removeEventListener("change", update);
+    };
   }, []);
 
   useEffect(() => {

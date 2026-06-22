@@ -80,7 +80,12 @@ export function SeaIntro() {
   // Until the client resolves the real state, render the depths shell so the
   // server output and first paint are usable (no-JS friendly).
   if (!resolved || state === "depths") {
-    return <HomeScene onReplay={introCapable ? handleReplay : undefined} />;
+    return (
+      <HomeScene
+        onReplay={introCapable ? handleReplay : undefined}
+        showAmbientFauna={resolved && state === "depths"}
+      />
+    );
   }
 
   // Surface and Dive share the same globe instance and chrome.
