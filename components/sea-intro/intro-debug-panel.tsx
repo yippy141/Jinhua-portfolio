@@ -4,71 +4,136 @@ import { useEffect, useState } from "react";
 
 import { phaseAtProgress, phaseStart } from "./dive-clock";
 import type { DiveClock } from "./dive-clock";
+import type { MapState } from "./dawn-globe";
+import type { BeaconState } from "./life-anchors";
+import { DIVE_TARGETS, type DiveTargetId } from "./sea-intro-config";
 
 // Development-only tuning surface, enabled with ?introDebug=1. Intentionally
-// plain: it is not production UI. Lets us scrub the sequence, jump between
-// phases, pause/resume, and read the current phase + elapsed time.
+// plain: it is not production UI. Reads the live clock and Mapbox camera state,
+// shows the continuity instrumentation (occlusion, removal time, inherited
+// velocity), and lets us scrub, switch dive targets, and restart.
 
 type IntroDebugPanelProps = {
   clockRef: React.RefObject<DiveClock>;
+  mapStateRef: React.RefObject<MapState>;
+  mapRemovedAtRef: React.RefObject<number | null>;
+  beaconStateRef: React.RefObject<BeaconState>;
   paused: boolean;
+  diveTarget: DiveTargetId;
+  occludeProgress: number;
+  crossProgress: number;
+  depthsRevealProgress: number;
   onRestart: () => void;
   onSurface: () => void;
   onDepths: () => void;
-  // Enter the dive and seek to a progress value (pauses for inspection).
   onSeek: (progress: number) => void;
   onTogglePause: () => void;
+  onSetTarget: (id: DiveTargetId) => void;
 };
 
 const JUMPS: { label: string; progress: number }[] = [
   { label: "Atmosphere", progress: phaseStart("atmosphere") },
-  { label: "Water approach", progress: phaseStart("water-approach") },
-  { label: "Water crossing", progress: phaseStart("water-crossing") },
+  { label: "Approach", progress: phaseStart("water-approach") },
+  { label: "Crossing", progress: phaseStart("water-crossing") },
   { label: "Underwater", progress: phaseStart("submersion") },
 ];
 
+function smoothstep(a: number, b: number, x: number) {
+  const t = Math.min(Math.max((x - a) / (b - a || 1), 0), 1);
+  return t * t * (3 - 2 * t);
+}
+
 export function IntroDebugPanel({
   clockRef,
+  mapStateRef,
+  mapRemovedAtRef,
+  beaconStateRef,
   paused,
+  diveTarget,
+  occludeProgress,
+  crossProgress,
+  depthsRevealProgress,
   onRestart,
   onSurface,
   onDepths,
   onSeek,
   onTogglePause,
+  onSetTarget,
 }: IntroDebugPanelProps) {
   const [progress, setProgress] = useState(0);
-  const [elapsed, setElapsed] = useState(0);
+  const [map, setMap] = useState<MapState>({
+    zoom: 0,
+    pitch: 0,
+    bearing: 0,
+    lng: 0,
+    lat: 0,
+    ready: false,
+    autoSpin: false,
+  });
+  const [removedAt, setRemovedAt] = useState<number | null>(null);
+  const [beacon, setBeacon] = useState<BeaconState>({
+    activeId: null,
+    pinnedId: null,
+  });
 
-  // Poll the shared clock for a live readout without coupling to React renders.
   useEffect(() => {
     let raf = 0;
     const tick = () => {
       const c = clockRef.current;
-      if (c) {
-        setProgress(c.progress);
-        setElapsed(Math.round(c.progress * c.durationMs));
-      }
+      if (c) setProgress(c.progress);
+      if (mapStateRef.current) setMap({ ...mapStateRef.current });
+      if (beaconStateRef.current) setBeacon({ ...beaconStateRef.current });
+      setRemovedAt(mapRemovedAtRef.current);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [clockRef]);
+  }, [clockRef, mapStateRef, mapRemovedAtRef, beaconStateRef]);
 
   const phase = phaseAtProgress(progress);
+  const occlusion = Math.round(smoothstep(0.46, occludeProgress, progress) * 100);
+  const inherited =
+    progress > crossProgress
+      ? Math.round(Math.max(0, Math.min(1, 1 - (progress - 0.84) / 0.12)) * 100)
+      : 0;
+  void depthsRevealProgress;
 
   const btn =
     "rounded border border-white/25 px-2 py-1 text-[11px] text-white/90 hover:bg-white/15";
 
   return (
-    <div className="fixed bottom-3 left-3 z-[100] w-64 rounded-md border border-white/20 bg-black/70 p-3 font-data text-[11px] text-white/90 backdrop-blur">
+    <div className="fixed bottom-3 left-3 z-[100] w-72 rounded-md border border-white/20 bg-black/70 p-3 font-data text-[11px] text-white/90 backdrop-blur">
       <div className="mb-2 flex items-center justify-between">
         <span className="font-semibold">intro debug</span>
         <span className="text-white/60">{(progress * 100).toFixed(1)}%</span>
       </div>
-      <div className="mb-2 text-white/70">
+
+      <div className="mb-2 leading-5 text-white/70">
         phase: <span className="text-white">{phase}</span>
         <br />
-        elapsed: <span className="text-white">{elapsed}ms</span>
+        target: <span className="text-white">{DIVE_TARGETS[diveTarget].label}</span>
+        <br />
+        zoom <span className="text-white">{map.zoom.toFixed(2)}</span> · pitch{" "}
+        <span className="text-white">{map.pitch.toFixed(0)}</span> · bear{" "}
+        <span className="text-white">{map.bearing.toFixed(0)}</span>
+        <br />
+        center{" "}
+        <span className="text-white">
+          {map.lng.toFixed(3)}, {map.lat.toFixed(3)}
+        </span>
+        <br />
+        occlusion <span className="text-white">{occlusion}%</span> · removed{" "}
+        <span className="text-white">
+          {occlusion >= 100 ? (removedAt === null ? "true" : `true (${removedAt}ms)`) : "false"}
+        </span>
+        <br />
+        inherited vel <span className="text-white">{inherited}%</span>
+        <br />
+        auto-spin{" "}
+        <span className="text-white">{map.autoSpin ? "running" : "paused"}</span>
+        <br />
+        beacon active <span className="text-white">{beacon.activeId ?? "—"}</span> ·
+        pinned <span className="text-white">{beacon.pinnedId ?? "—"}</span>
       </div>
 
       <input
@@ -95,6 +160,19 @@ export function IntroDebugPanel({
         <button type="button" className={btn} onClick={onDepths}>
           Depths
         </button>
+      </div>
+
+      <div className="mb-2 flex flex-wrap gap-1">
+        {(["potomac", "chesapeake"] as DiveTargetId[]).map((id) => (
+          <button
+            key={id}
+            type="button"
+            className={`${btn} ${diveTarget === id ? "bg-white/20" : ""}`}
+            onClick={() => onSetTarget(id)}
+          >
+            {DIVE_TARGETS[id].label}
+          </button>
+        ))}
       </div>
 
       <div className="flex flex-wrap gap-1">

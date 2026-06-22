@@ -139,16 +139,60 @@ export interface IntroConfigOverrides {
 }
 
 const DC: Vec2 = [-77.0369, 38.9072];
-// A broad public stretch of the tidal Potomac south of Washington, wide enough
-// that the final satellite frame is primarily open water, not roads and land.
-const POTOMAC: Vec2 = [-77.032, 38.785];
+
+// Two debug-selectable public-water dive targets (?diveTarget=potomac|chesapeake).
+// Both are open-water coordinates, never land or a residence.
+export type DiveTargetId = "potomac" | "chesapeake";
+export const DIVE_TARGETS: Record<
+  DiveTargetId,
+  { center: Vec2; label: string }
+> = {
+  // Broad tidal Potomac south of Washington.
+  potomac: { center: [-77.032, 38.785], label: "Potomac" },
+  // Open Chesapeake Bay water southeast of Washington (mid-bay).
+  chesapeake: { center: [-76.33, 38.5], label: "Chesapeake Bay" },
+};
+export const DEFAULT_DIVE_TARGET: DiveTargetId = "potomac";
+
+function mix2(a: Vec2, b: Vec2, t: number): Vec2 {
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+}
+
+// A continuous camera path from orbit to the chosen water. Crucially it keeps
+// MOVING (centre, zoom, pitch all change) right through the surface crossing and
+// past the occlusion point, so the geographic motion never freezes while the
+// water layer takes over. The final frames are zoomed in over open water.
+export function buildCameraPath(target: Vec2, isMobile: boolean): CameraKeyframe[] {
+  if (isMobile) {
+    return [
+      { atProgress: 0.0, center: DC, zoom: 3.2, pitch: 0, bearing: 0, easing: "linear" },
+      { atProgress: 0.4, center: mix2(DC, target, 0.5), zoom: 8.4, pitch: 18, bearing: 12, easing: "easeInOut" },
+      { atProgress: 0.74, center: target, zoom: 13.8, pitch: 40, bearing: 24, easing: "easeOut" },
+      // Keeps rushing in through the crossing and past occlusion.
+      { atProgress: 0.86, center: target, zoom: 15.8, pitch: 48, bearing: 28, easing: "easeOut" },
+    ];
+  }
+  return [
+    { atProgress: 0.0, center: DC, zoom: 3.0, pitch: 0, bearing: 0, easing: "linear" },
+    { atProgress: 0.16, center: DC, zoom: 3.6, pitch: 4, bearing: 6, easing: "easeIn" },
+    { atProgress: 0.42, center: mix2(DC, target, 0.5), zoom: 7.8, pitch: 20, bearing: 16, easing: "easeInOut" },
+    { atProgress: 0.62, center: mix2(DC, target, 0.85), zoom: 11.6, pitch: 34, bearing: 24, easing: "easeInOut" },
+    { atProgress: 0.74, center: target, zoom: 13.8, pitch: 44, bearing: 30, easing: "easeOut" },
+    { atProgress: 0.82, center: target, zoom: 15.4, pitch: 52, bearing: 33, easing: "easeOut" },
+    // Final keyframe past occlusion so motion never flatlines before map.remove().
+    { atProgress: 0.86, center: target, zoom: 16.4, pitch: 56, bearing: 35, easing: "easeOut" },
+  ];
+}
 
 export const INTRO_CONFIG: IntroConfig = {
   timing: {
     totalMs: 6800,
     holdMs: 500,
-    occludeProgress: 0.82,
-    depthsRevealProgress: 0.92,
+    // The water fully occludes the map (and the map is removed) only after the
+    // crossing, while the camera is still moving.
+    occludeProgress: 0.84,
+    // The homepage appears only well after the camera has entered the water.
+    depthsRevealProgress: 0.95,
     reducedMotionCrossfadeMs: 420,
   },
   surface: {
@@ -158,17 +202,13 @@ export const INTRO_CONFIG: IntroConfig = {
     bearing: 0,
     autoRotateDegPerSec: 1.6,
     minZoom: 2.2,
-    maxZoom: 5,
+    // High enough that the dive can zoom right in over the water. Idle surface
+    // zoom is held constant by disabling scroll-zoom (see DawnGlobe), so this
+    // does not loosen the surface interaction.
+    maxZoom: 17,
     lightPreset: "dawn",
   },
-  cameraPath: [
-    { atProgress: 0.0, center: DC, zoom: 3.0, pitch: 0, bearing: 0, easing: "linear" },
-    { atProgress: 0.16, center: DC, zoom: 3.5, pitch: 4, bearing: 6, easing: "easeIn" },
-    { atProgress: 0.42, center: [-77.035, 38.86], zoom: 7.8, pitch: 22, bearing: 16, easing: "easeInOut" },
-    { atProgress: 0.62, center: [-77.033, 38.82], zoom: 11.4, pitch: 36, bearing: 24, easing: "easeInOut" },
-    // End near-top-down over broad water so the surface fills the frame.
-    { atProgress: 0.74, center: POTOMAC, zoom: 13.4, pitch: 28, bearing: 30, easing: "easeOut" },
-  ],
+  cameraPath: buildCameraPath(DIVE_TARGETS[DEFAULT_DIVE_TARGET].center, false),
   atmosphere: {
     spaceColor: "#0a1a3a", // deep cobalt, not near-black
     highColor: "#5fd2e6", // cyan atmospheric rim
@@ -177,7 +217,7 @@ export const INTRO_CONFIG: IntroConfig = {
     starIntensity: 0.12,
   },
   scene: {
-    crossProgress: 0.72,
+    crossProgress: 0.74,
     apertureCenter: [0.5, 0.58],
   },
   colors: {
@@ -227,20 +267,21 @@ export const INTRO_CONFIG: IntroConfig = {
 };
 
 export const MOBILE_OVERRIDES: IntroConfigOverrides = {
-  timing: { totalMs: 5600, occludeProgress: 0.82, depthsRevealProgress: 0.92 },
+  timing: { totalMs: 5600 },
   surface: { zoom: 3.2, autoRotateDegPerSec: 1.2 },
   clouds: { layers: 3, density: 0.5, parallax: 18 },
   bubbles: { count: 320, size: 2.0 },
-  // Shorter, simpler path: fewer waypoints, gentle near-top-down ending.
-  cameraPath: [
-    { atProgress: 0.0, center: DC, zoom: 3.2, pitch: 0, bearing: 0, easing: "linear" },
-    { atProgress: 0.4, center: [-77.034, 38.85], zoom: 8.4, pitch: 20, bearing: 12, easing: "easeInOut" },
-    { atProgress: 0.74, center: POTOMAC, zoom: 13.2, pitch: 24, bearing: 24, easing: "easeOut" },
-  ],
 };
 
-export function resolveConfig(isMobile: boolean): IntroConfig {
-  if (!isMobile) return INTRO_CONFIG;
+export function resolveConfig(
+  isMobile: boolean,
+  targetId: DiveTargetId = DEFAULT_DIVE_TARGET,
+): IntroConfig {
+  const target = DIVE_TARGETS[targetId].center;
+  const cameraPath = buildCameraPath(target, isMobile);
+  if (!isMobile) {
+    return { ...INTRO_CONFIG, cameraPath };
+  }
   const o = MOBILE_OVERRIDES;
   return {
     ...INTRO_CONFIG,
@@ -249,6 +290,6 @@ export function resolveConfig(isMobile: boolean): IntroConfig {
     clouds: { ...INTRO_CONFIG.clouds, ...o.clouds },
     bubbles: { ...INTRO_CONFIG.bubbles, ...o.bubbles },
     scene: { ...INTRO_CONFIG.scene, ...o.scene },
-    cameraPath: o.cameraPath ?? INTRO_CONFIG.cameraPath,
+    cameraPath,
   };
 }

@@ -25,7 +25,7 @@ export const PHASE_TABLE: { name: DivePhase; start: number }[] = [
   { name: "atmosphere", start: 0.42 },
   { name: "water-approach", start: 0.62 },
   { name: "water-crossing", start: 0.74 },
-  { name: "submersion", start: 0.86 },
+  { name: "submersion", start: 0.84 },
   { name: "depths", start: 1.0 },
 ];
 

@@ -3,15 +3,28 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { DawnGlobe } from "./dawn-globe";
+import type { MapState } from "./dawn-globe";
 import { DiveTransitionScene } from "./dive-transition-scene";
 import { HomeScene } from "./home-scene";
 import { IntroDebugPanel } from "./intro-debug-panel";
+import { LifeAnchors } from "./life-anchors";
+import type { BeaconState } from "./life-anchors";
 import { SurfaceMenu } from "./surface-menu";
 import { createDiveClock } from "./dive-clock";
 import type { DiveClock } from "./dive-clock";
 import type { ApertureCenter } from "./dive-aperture";
-import { resolveConfig } from "./sea-intro-config";
+import {
+  DEFAULT_DIVE_TARGET,
+  resolveConfig,
+  type DiveTargetId,
+} from "./sea-intro-config";
 import { useSeaIntroState } from "./use-sea-intro-state";
+
+type MapboxMap = import("mapbox-gl").Map;
+
+function isDiveTargetId(v: string | null): v is DiveTargetId {
+  return v === "potomac" || v === "chesapeake";
+}
 
 // V2 orchestrator. One shared clock drives Mapbox (DawnGlobe) and the spatial
 // Three.js transition (DiveTransitionScene) as a single continuous journey:
@@ -30,20 +43,44 @@ export function SeaIntroV2() {
   // ── environment ──
   const [isMobile, setIsMobile] = useState(false);
   const [debug, setDebug] = useState(false);
+  const [diveTarget, setDiveTargetState] = useState<DiveTargetId>(DEFAULT_DIVE_TARGET);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     const update = () => setIsMobile(mq.matches);
     update();
     mq.addEventListener("change", update);
     try {
-      setDebug(new URLSearchParams(window.location.search).get("introDebug") === "1");
+      const params = new URLSearchParams(window.location.search);
+      setDebug(params.get("introDebug") === "1");
+      const t = params.get("diveTarget");
+      if (isDiveTargetId(t)) setDiveTargetState(t);
     } catch {
       // ignore
     }
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const config = useMemo(() => resolveConfig(isMobile), [isMobile]);
+  const config = useMemo(
+    () => resolveConfig(isMobile, diveTarget),
+    [isMobile, diveTarget],
+  );
+
+  // Live map handle + camera state (debug + beacons), and rotation pause flag.
+  const mapRef = useRef<MapboxMap | null>(null);
+  const mapStateRef = useRef<MapState>({
+    zoom: 0,
+    pitch: 0,
+    bearing: 0,
+    lng: 0,
+    lat: 0,
+    ready: false,
+    autoSpin: false,
+  });
+  const rotationPausedRef = useRef(false);
+  const lastInteractionRef = useRef(-Infinity);
+  const beaconStateRef = useRef<BeaconState>({ activeId: null, pinnedId: null });
+  const diveStartRef = useRef(0);
+  const mapRemovedAtRef = useRef<number | null>(null);
 
   // ── shared clock ──
   const clockRef = useRef<DiveClock>(createDiveClock(config.timing.totalMs));
@@ -80,7 +117,12 @@ export function SeaIntroV2() {
         clock.elapsedMs = Math.min(clock.elapsedMs + dt, clock.durationMs);
         clock.progress = clock.elapsedMs / clock.durationMs;
       }
-      setMapOccluded(clock.progress >= config.timing.occludeProgress);
+      const occluded = clock.progress >= config.timing.occludeProgress;
+      setMapOccluded(occluded);
+      // The map is removed (DawnGlobe unmounts) the instant it is fully occluded.
+      if (occluded && mapRemovedAtRef.current === null && diveStartRef.current > 0) {
+        mapRemovedAtRef.current = Math.round(performance.now() - diveStartRef.current);
+      }
       setDepthsRevealed(clock.progress >= config.timing.depthsRevealProgress);
       if (clock.progress >= 1 && !clock.paused && !debug) {
         finishDive();
@@ -111,6 +153,22 @@ export function SeaIntroV2() {
     setPaused(false);
     setMapOccluded(false);
     setDepthsRevealed(false);
+    mapRemovedAtRef.current = null;
+  };
+
+  const setDiveTarget = (id: DiveTargetId) => {
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.set("diveTarget", id);
+      window.history.replaceState({}, "", u);
+    } catch {
+      // ignore
+    }
+    setDiveTargetState(id);
+    arrivalRef.current = "none";
+    setArrival("none");
+    resetClock();
+    intro.force("surface");
   };
 
   // ── user actions ──
@@ -125,6 +183,7 @@ export function SeaIntroV2() {
     arrivalRef.current = "dive";
     setArrival("dive");
     resetClock();
+    diveStartRef.current = performance.now();
     intro.dive();
   };
 
@@ -185,12 +244,20 @@ export function SeaIntroV2() {
   const debugPanel = debug ? (
     <IntroDebugPanel
       clockRef={clockRef}
+      mapStateRef={mapStateRef}
+      mapRemovedAtRef={mapRemovedAtRef}
+      beaconStateRef={beaconStateRef}
       paused={paused}
+      diveTarget={diveTarget}
+      occludeProgress={config.timing.occludeProgress}
+      crossProgress={config.scene.crossProgress}
+      depthsRevealProgress={config.timing.depthsRevealProgress}
       onRestart={debugRestart}
       onSurface={debugSurface}
       onDepths={debugDepths}
       onSeek={debugSeek}
       onTogglePause={debugTogglePause}
+      onSetTarget={setDiveTarget}
     />
   ) : null;
 
@@ -209,14 +276,22 @@ export function SeaIntroV2() {
 
   return (
     <div className="absolute inset-0">
-      {/* Dawn globe: persists across surface -> diving; removed once occluded. */}
+      {/* Dawn globe: persists across surface -> diving; removed once occluded.
+          Keyed by the dive target so a debug target switch rebuilds the path. */}
       {showSurfaceOrDive && !mapOccluded ? (
         <DawnGlobe
+          key={diveTarget}
           clockRef={clockRef}
           phase={state === "diving" ? "diving" : "surface"}
           reducedMotion={reducedMotion}
           isMobile={isMobile}
           config={config}
+          onMap={(m) => {
+            mapRef.current = m;
+          }}
+          mapStateRef={mapStateRef}
+          rotationPausedRef={rotationPausedRef}
+          lastInteractionRef={lastInteractionRef}
         />
       ) : null}
 
@@ -242,6 +317,19 @@ export function SeaIntroV2() {
       {/* Surface title menu. */}
       {state === "surface" ? (
         <SurfaceMenu onDive={handleDive} onSkip={handleSurfaceSkip} disabled={false} />
+      ) : null}
+
+      {/* Life-anchor beacons: above the menu so the markers stay clickable
+          (the overlay is transparent, so the menu underneath still works), and
+          hidden the moment the dive begins. */}
+      {state === "surface" ? (
+        <LifeAnchors
+          mapRef={mapRef}
+          rotationPausedRef={rotationPausedRef}
+          lastInteractionRef={lastInteractionRef}
+          beaconStateRef={beaconStateRef}
+          isMobile={isMobile}
+        />
       ) : null}
 
       {/* Diving: input lock + an always-available quiet Skip + SR announcement. */}

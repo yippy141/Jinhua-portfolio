@@ -73,8 +73,9 @@ const QUAD_FRAG = /* glsl */ `
     float dist = length(d2);
     float maxR = length(vec2(uAspect, 1.0)) * 1.06;
 
-    // Water floods outward from the aperture centre (no horizon line).
-    float reach = smoothstep(0.46, 0.80, prog) * maxR;
+    // Water floods outward from the aperture centre (no horizon line), fully
+    // covering just before the map is removed at ~0.84.
+    float reach = smoothstep(0.46, 0.82, prog) * maxR;
     float front = reach - dist; // >0 inside the water
     float water = smoothstep(-0.04, 0.06, front);
 
@@ -82,22 +83,30 @@ const QUAD_FRAG = /* glsl */ `
     float ripple = sin(dist * 26.0 - uTime * 5.0 - prog * 8.0) * 0.5 + 0.5;
 
     float submer = smoothstep(uCross, 1.0, prog);
+    // Inherited downward velocity just after the crossing: a brief continued
+    // "fall" that decays over the submersion window (~0.84 -> 0.96).
+    float inherited = clamp(1.0 - (prog - 0.84) / 0.12, 0.0, 1.0) * step(uCross, prog);
 
     // Base colour: shallow turquoise near the surface, deepening with descent.
     vec3 col = mix(uTurq, uDeep, submer);
     col += uCyan * ripple * 0.05 * (1.0 - submer);
 
-    // Caustics + light shafts once below the surface.
+    // Caustics + light shafts once below the surface. The downward pan speeds up
+    // with the inherited velocity so the descent visibly continues underwater.
     vec2 cuv = vUv * vec2(uAspect, 1.0);
-    float caustic = fbm(cuv * 6.0 - vec2(0.0, uTime * 0.5));
+    float flow = uTime * 0.5 + inherited * 2.4;
+    float caustic = fbm(cuv * 6.0 - vec2(0.0, flow));
     caustic = pow(caustic, 2.0);
     col += uCyan * caustic * submer * (1.0 - smoothstep(0.95, 1.0, prog)) * 0.35;
     float shafts = pow(0.5 + 0.5 * sin(vUv.x * 22.0 + uTime * 0.6), 3.0);
     col += uCyan * shafts * (1.0 - vUv.y) * submer * 0.12;
+    // A subtle streak that rushes downward right after the crossing.
+    col += uCyan * inherited * smoothstep(0.4, 1.0, fract(vUv.y * 4.0 - flow)) * 0.06;
 
     // Surface-break flare: a bright cyan ring riding the water front + a brief
-    // central bloom. Capped so it never hard-flashes.
-    float breakPhase = smoothstep(0.70, 0.80, prog) * (1.0 - smoothstep(0.80, 0.92, prog));
+    // central bloom, at the moment of impact (~0.74 -> 0.86) while velocity
+    // continues. Capped so it never hard-flashes.
+    float breakPhase = smoothstep(0.74, 0.84, prog) * (1.0 - smoothstep(0.84, 0.94, prog));
     float ring = exp(-pow((dist - reach) * 7.0, 2.0));
     col += uCyan * ring * breakPhase * 0.6;
     col += uSky * exp(-dist * 4.0) * breakPhase * 0.25;
@@ -107,7 +116,7 @@ const QUAD_FRAG = /* glsl */ `
 
     // Opacity: transparent until water arrives, fully opaque before the map is
     // removed, so the surface visibly replaces Mapbox (no black fade).
-    float opacity = smoothstep(0.46, 0.80, prog);
+    float opacity = smoothstep(0.46, 0.82, prog);
     float alpha = clamp(water * opacity, 0.0, 1.0);
     gl_FragColor = vec4(col, alpha);
   }
@@ -244,7 +253,14 @@ function initScene(
       0,
       Math.min(1, (progress - config.scene.crossProgress) / (1 - config.scene.crossProgress)),
     );
+    // Bubbles rush past faster right after the crossing (inherited downward
+    // velocity) and settle as we reach the deep.
+    const inherited =
+      progress > config.scene.crossProgress
+        ? Math.max(0, Math.min(1, 1 - (progress - 0.84) / 0.12))
+        : 0;
     bubbleMat.uniforms.uTime.value = time;
+    bubbleMat.uniforms.uRise.value = 0.18 + inherited * 0.7;
     bubbleMat.uniforms.uOpacity.value = submer * (1 - Math.max(0, (progress - 0.97) / 0.03)) * 0.85;
 
     renderer.render(scene, camera);
