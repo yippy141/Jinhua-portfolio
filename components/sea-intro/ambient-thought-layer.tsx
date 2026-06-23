@@ -5,7 +5,6 @@ import { useReducedMotion } from "motion/react";
 
 import {
   AMBIENT_THOUGHT_DEBUG_KEY,
-  AMBIENT_THOUGHT_SESSION_PREFIX,
   ambientThoughtRegistry,
   type AmbientThought,
   type AmbientThoughtCategory,
@@ -17,29 +16,32 @@ type ViewportMode = "desktop" | "mobile";
 type DriftDirection = "left-to-right" | "right-to-left";
 type FontTone = "serif" | "sans";
 
-type StoredThoughtPlacement = {
+type ThoughtPlacementConfig = {
   thoughtId: string;
   direction: DriftDirection;
   yPercent: number;
   xPercent: number;
+  xStartVw: number;
+  xMidAVw: number;
+  xMidBVw: number;
+  xEndVw: number;
+  yStartVh: number;
+  yMidAVh: number;
+  yMidBVh: number;
+  yEndVh: number;
   delaySeconds: number;
   durationSeconds: number;
   opacity: number;
   blurPx: number;
   fontSizePx: number;
-  bobPixels: number;
-  bobDurationSeconds: number;
+  swayXVw: number;
+  swayYPixels: number;
+  swayDurationSeconds: number;
   fontTone: FontTone;
 };
 
-type AmbientThoughtPlacement = StoredThoughtPlacement & {
+type AmbientThoughtPlacement = ThoughtPlacementConfig & {
   thought: AmbientThought;
-};
-
-type StoredThoughtSelection = {
-  seed: number;
-  mode: ViewportMode;
-  placements: StoredThoughtPlacement[];
 };
 
 type DepthTuning = {
@@ -54,7 +56,7 @@ type DepthTuning = {
 const DEPTH_TUNING: Record<AmbientThoughtDepthBand, DepthTuning> = {
   shallow: {
     durationSeconds: [60, 96],
-    opacity: [0.08, 0.16],
+    opacity: [0.1, 0.2],
     blurPx: [0, 0.45],
     fontSizePx: [12, 22],
     ghostFontSizePx: [42, 76],
@@ -65,7 +67,7 @@ const DEPTH_TUNING: Record<AmbientThoughtDepthBand, DepthTuning> = {
   },
   mid: {
     durationSeconds: [86, 132],
-    opacity: [0.055, 0.12],
+    opacity: [0.075, 0.15],
     blurPx: [0.45, 1],
     fontSizePx: [13, 28],
     ghostFontSizePx: [54, 104],
@@ -76,7 +78,7 @@ const DEPTH_TUNING: Record<AmbientThoughtDepthBand, DepthTuning> = {
   },
   deep: {
     durationSeconds: [118, 160],
-    opacity: [0.035, 0.085],
+    opacity: [0.05, 0.105],
     blurPx: [1, 2.2],
     fontSizePx: [18, 34],
     ghostFontSizePx: [64, 140],
@@ -175,12 +177,47 @@ function sizeForThought(
 function opacityForThought(thought: AmbientThought, rng: () => number) {
   const base = randomBetween(rng, DEPTH_TUNING[thought.depthBand].opacity);
   const weightScale: Record<AmbientThoughtWeight, number> = {
-    whisper: 0.74,
+    whisper: 0.86,
     normal: 1,
-    ghost: 0.48,
+    ghost: 0.62,
   };
-  const categoryScale = thought.category === "taxonomy" ? 0.72 : 1;
+  const categoryScale = thought.category === "taxonomy" ? 0.82 : 1;
   return base * weightScale[thought.weight] * categoryScale;
+}
+
+function fluidPathForThought(
+  thought: AmbientThought,
+  direction: DriftDirection,
+  rng: () => number,
+) {
+  const travelRange: Record<AmbientThoughtDepthBand, readonly [number, number]> = {
+    shallow: [4, 10],
+    mid: [6, 14],
+    deep: [8, 18],
+  };
+  const travel = randomBetween(rng, travelRange[thought.depthBand]);
+  const signed = () => randomBetween(rng, [-travel, travel]);
+  const xStartVw = direction === "left-to-right" ? -46 : 146;
+  const xEndVw = direction === "left-to-right" ? 146 : -46;
+  const xMidAVw =
+    direction === "left-to-right"
+      ? randomBetween(rng, [14, 40])
+      : randomBetween(rng, [60, 86]);
+  const xMidBVw =
+    direction === "left-to-right"
+      ? randomBetween(rng, [60, 92])
+      : randomBetween(rng, [8, 40]);
+
+  return {
+    xStartVw: Number(xStartVw.toFixed(2)),
+    xMidAVw: Number(xMidAVw.toFixed(2)),
+    xMidBVw: Number(xMidBVw.toFixed(2)),
+    xEndVw: Number(xEndVw.toFixed(2)),
+    yStartVh: Number(randomBetween(rng, [-travel * 0.45, travel * 0.45]).toFixed(2)),
+    yMidAVh: Number(signed().toFixed(2)),
+    yMidBVh: Number(signed().toFixed(2)),
+    yEndVh: Number(randomBetween(rng, [-travel * 0.7, travel * 0.7]).toFixed(2)),
+  };
 }
 
 function createPlacements(
@@ -207,6 +244,7 @@ function createPlacements(
           : "right-to-left";
     const fontTone: FontTone =
       thought.category === "consciousness" && rng() > 0.35 ? "sans" : "serif";
+    const path = fluidPathForThought(thought, direction, rng);
 
     return {
       thought,
@@ -214,6 +252,7 @@ function createPlacements(
       direction,
       yPercent: Number(randomBetween(rng, yRange).toFixed(2)),
       xPercent: Number(randomBetween(rng, [8, 92]).toFixed(2)),
+      ...path,
       delaySeconds: Number((-duration * randomBetween(rng, [0.08, 0.92])).toFixed(2)),
       durationSeconds: Number(duration.toFixed(2)),
       opacity: Number(opacityForThought(thought, rng).toFixed(3)),
@@ -221,89 +260,12 @@ function createPlacements(
         (randomBetween(rng, tuning.blurPx) + (thought.weight === "ghost" ? 0.25 : 0)).toFixed(2),
       ),
       fontSizePx: Number(sizeForThought(thought, mode, rng).toFixed(2)),
-      bobPixels: Number(randomBetween(rng, [1.5, 7]).toFixed(2)),
-      bobDurationSeconds: Number(randomBetween(rng, [18, 36]).toFixed(2)),
+      swayXVw: Number(randomBetween(rng, [0.35, 1.65]).toFixed(2)),
+      swayYPixels: Number(randomBetween(rng, [2, 8]).toFixed(2)),
+      swayDurationSeconds: Number(randomBetween(rng, [16, 34]).toFixed(2)),
       fontTone,
     };
   });
-}
-
-function isViewportMode(value: unknown): value is ViewportMode {
-  return value === "desktop" || value === "mobile";
-}
-
-function isStoredPlacement(value: unknown): value is StoredThoughtPlacement {
-  if (!value || typeof value !== "object") return false;
-  const entry = value as Record<string, unknown>;
-  return (
-    typeof entry.thoughtId === "string" &&
-    (entry.direction === "left-to-right" || entry.direction === "right-to-left") &&
-    typeof entry.yPercent === "number" &&
-    typeof entry.xPercent === "number" &&
-    typeof entry.delaySeconds === "number" &&
-    typeof entry.durationSeconds === "number" &&
-    typeof entry.opacity === "number" &&
-    typeof entry.blurPx === "number" &&
-    typeof entry.fontSizePx === "number" &&
-    typeof entry.bobPixels === "number" &&
-    typeof entry.bobDurationSeconds === "number" &&
-    (entry.fontTone === "serif" || entry.fontTone === "sans")
-  );
-}
-
-function readStoredSelection(
-  mode: ViewportMode,
-): { seed: number; placements: AmbientThoughtPlacement[] } | null {
-  try {
-    const raw = window.sessionStorage.getItem(`${AMBIENT_THOUGHT_SESSION_PREFIX}-${mode}`);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<StoredThoughtSelection>;
-    if (
-      typeof parsed.seed !== "number" ||
-      !isViewportMode(parsed.mode) ||
-      parsed.mode !== mode ||
-      !Array.isArray(parsed.placements)
-    ) {
-      return null;
-    }
-
-    const byId = new Map(ambientThoughtRegistry.map((thought) => [thought.id, thought]));
-    const placements = parsed.placements
-      .filter(isStoredPlacement)
-      .map((stored) => {
-        const thought = byId.get(stored.thoughtId);
-        return thought ? { ...stored, thought } : null;
-      })
-      .filter((placement): placement is AmbientThoughtPlacement => Boolean(placement));
-
-    return placements.length > 0 ? { seed: parsed.seed, placements } : null;
-  } catch {
-    return null;
-  }
-}
-
-function storeSelection(
-  mode: ViewportMode,
-  seed: number,
-  placements: AmbientThoughtPlacement[],
-) {
-  try {
-    const stored: StoredThoughtSelection = {
-      seed,
-      mode,
-      placements: placements.map((placement) => {
-        const { thought, ...storedPlacement } = placement;
-        void thought;
-        return storedPlacement;
-      }),
-    };
-    window.sessionStorage.setItem(
-      `${AMBIENT_THOUGHT_SESSION_PREFIX}-${mode}`,
-      JSON.stringify(stored),
-    );
-  } catch {
-    // Storage can be unavailable in private or hardened browsing modes.
-  }
 }
 
 function storeDebug(seed: number, mode: ViewportMode, activeCount: number, reducedMotion: boolean) {
@@ -363,24 +325,11 @@ export function AmbientThoughtLayer() {
 
     let cancelled = false;
     const id = window.setTimeout(() => {
-      const stored = readStoredSelection(mode);
-      if (stored) {
-        const nextPlacements = prefersReducedMotion
-          ? stored.placements.slice(0, mode === "mobile" ? 4 : 7)
-          : stored.placements;
-        if (cancelled) return;
-        setSeed(stored.seed);
-        setPlacements(nextPlacements);
-        storeDebug(stored.seed, mode, nextPlacements.length, prefersReducedMotion);
-        return;
-      }
-
       const nextSeed = createSeed();
       const fullPlacements = createPlacements(nextSeed, mode);
       const nextPlacements = prefersReducedMotion
         ? fullPlacements.slice(0, mode === "mobile" ? 4 : 7)
         : fullPlacements;
-      storeSelection(mode, nextSeed, fullPlacements);
       if (cancelled) return;
       storeDebug(nextSeed, mode, nextPlacements.length, prefersReducedMotion);
       setSeed(nextSeed);
@@ -403,27 +352,32 @@ export function AmbientThoughtLayer() {
     () =>
       placements.map((placement) => {
         const thought = placement.thought;
-        const driftName =
-          placement.direction === "left-to-right"
-            ? "ambientThoughtDriftLtr"
-            : "ambientThoughtDriftRtl";
         const playState = paused ? "paused" : "running";
         const style = {
           "--thought-y": `${placement.yPercent}%`,
           "--thought-x": `${placement.xPercent}%`,
+          "--thought-x-start": `${placement.xStartVw}vw`,
+          "--thought-x-mid-a": `${placement.xMidAVw}vw`,
+          "--thought-x-mid-b": `${placement.xMidBVw}vw`,
+          "--thought-x-end": `${placement.xEndVw}vw`,
+          "--thought-y-start": `${placement.yStartVh}vh`,
+          "--thought-y-mid-a": `${placement.yMidAVh}vh`,
+          "--thought-y-mid-b": `${placement.yMidBVh}vh`,
+          "--thought-y-end": `${placement.yEndVh}vh`,
           "--thought-duration": `${placement.durationSeconds}s`,
           "--thought-delay": `${placement.delaySeconds}s`,
           "--thought-opacity": placement.opacity,
           "--thought-blur": `${placement.blurPx}px`,
           "--thought-size": `${placement.fontSizePx}px`,
-          "--thought-bob": `${placement.bobPixels}px`,
-          "--thought-bob-duration": `${placement.bobDurationSeconds}s`,
+          "--thought-sway-x": `${placement.swayXVw}vw`,
+          "--thought-sway-y": `${placement.swayYPixels}px`,
+          "--thought-sway-duration": `${placement.swayDurationSeconds}s`,
           top: "var(--thought-y)",
           left: prefersReducedMotion ? "var(--thought-x)" : 0,
           opacity: "var(--thought-opacity)",
           filter: "blur(var(--thought-blur))",
           fontSize: "var(--thought-size)",
-          animationName: prefersReducedMotion ? undefined : driftName,
+          animationName: prefersReducedMotion ? undefined : "ambientThoughtFloat",
           animationDuration: "var(--thought-duration)",
           animationTimingFunction: "linear",
           animationDelay: "var(--thought-delay)",
@@ -431,8 +385,8 @@ export function AmbientThoughtLayer() {
           animationPlayState: playState,
           transform: prefersReducedMotion ? "translate3d(-50%, 0, 0)" : undefined,
         } as CSSProperties;
-        const bobStyle = {
-          animationDuration: "var(--thought-bob-duration)",
+        const swayStyle = {
+          animationDuration: "var(--thought-sway-duration)",
           animationPlayState: playState,
         } as CSSProperties;
         const isItalic = thought.italic || thought.category === "taxonomy";
@@ -452,7 +406,7 @@ export function AmbientThoughtLayer() {
             data-thought-category={thought.category}
             style={style}
           >
-            <span className="ambient-thought-bob inline-block" style={bobStyle}>
+            <span className="ambient-thought-sway inline-block" style={swayStyle}>
               {thought.label}
             </span>
           </span>

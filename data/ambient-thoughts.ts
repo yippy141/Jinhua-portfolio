@@ -12,11 +12,9 @@ export type AmbientThought = {
   italic?: boolean;
 };
 
-export const AMBIENT_THOUGHT_REGISTRY_VERSION = 1;
-export const AMBIENT_THOUGHT_SESSION_PREFIX =
-  `sea-ambient-thoughts-v${AMBIENT_THOUGHT_REGISTRY_VERSION}`;
+export const AMBIENT_THOUGHT_REGISTRY_VERSION = 3;
 export const AMBIENT_THOUGHT_DEBUG_KEY =
-  `${AMBIENT_THOUGHT_SESSION_PREFIX}-debug`;
+  `sea-ambient-thoughts-v${AMBIENT_THOUGHT_REGISTRY_VERSION}-debug`;
 
 export const ambientThoughtRegistry: AmbientThought[] = [
   {

@@ -193,46 +193,67 @@ body {
 }
 
 /* Ambient thoughts: sparse typographic drift for the settled depths state. */
-@keyframes ambientThoughtDriftLtr {
-  from {
-    transform: translate3d(-44vw, 0, 0);
+@keyframes ambientThoughtFloat {
+  0% {
+    transform: translate3d(
+      var(--thought-x-start),
+      var(--thought-y-start),
+      0
+    );
   }
-  to {
-    transform: translate3d(144vw, 0, 0);
+  29% {
+    transform: translate3d(
+      var(--thought-x-mid-a),
+      var(--thought-y-mid-a),
+      0
+    );
+  }
+  67% {
+    transform: translate3d(
+      var(--thought-x-mid-b),
+      var(--thought-y-mid-b),
+      0
+    );
+  }
+  100% {
+    transform: translate3d(
+      var(--thought-x-end),
+      var(--thought-y-end),
+      0
+    );
   }
 }
 
-@keyframes ambientThoughtDriftRtl {
-  from {
-    transform: translate3d(144vw, 0, 0);
-  }
-  to {
-    transform: translate3d(-44vw, 0, 0);
-  }
-}
-
-@keyframes ambientThoughtBob {
+@keyframes ambientThoughtSway {
   0%,
   100% {
-    transform: translate3d(0, calc(var(--thought-bob) * -0.5), 0);
+    transform: translate3d(
+      calc(var(--thought-sway-x) * -1),
+      calc(var(--thought-sway-y) * -0.45),
+      0
+    );
   }
   50% {
-    transform: translate3d(0, calc(var(--thought-bob) * 0.5), 0);
+    transform: translate3d(
+      var(--thought-sway-x),
+      calc(var(--thought-sway-y) * 0.55),
+      0
+    );
   }
 }
 
 .ambient-thought {
-  text-shadow: 0 0 18px rgba(79, 179, 191, 0.08);
+  text-shadow: 0 0 18px rgba(79, 179, 191, 0.14);
 }
 
-.ambient-thought-bob {
-  animation-name: ambientThoughtBob;
+.ambient-thought-sway {
+  animation-name: ambientThoughtSway;
   animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
   animation-iteration-count: infinite;
 }
 
 [data-ambient-thought-paused="true"] .ambient-thought,
-[data-ambient-thought-paused="true"] .ambient-thought-bob {
+[data-ambient-thought-paused="true"] .ambient-thought-sway {
   animation-play-state: paused;
 }
 
@@ -294,7 +315,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .ambient-thought,
-  .ambient-thought-bob {
+  .ambient-thought-sway {
     animation: none;
   }
 

@@ -93,7 +93,7 @@ export function HomeScene({
       {showParticleField ? <ParticleField /> : null}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 [background:radial-gradient(120%_90%_at_80%_8%,rgba(53,107,102,0.16),transparent_55%)]"
+        className="pointer-events-none absolute inset-0 -z-10 [background:radial-gradient(120%_90%_at_80%_8%,rgba(53,107,102,0.18),transparent_55%),radial-gradient(95%_85%_at_24%_52%,rgba(53,107,102,0.1),transparent_66%),radial-gradient(86%_64%_at_52%_96%,rgba(79,179,191,0.06),transparent_62%)]"
       />
       <div
         aria-hidden="true"
@@ -101,7 +101,7 @@ export function HomeScene({
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 [background:linear-gradient(0deg,rgba(7,16,15,0.92),transparent)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 [background:linear-gradient(0deg,rgba(7,16,15,0.78),rgba(7,16,15,0.34)_58%,transparent)]"
       />
       {showAmbientThoughts ? <AmbientThoughtLayer /> : null}
 

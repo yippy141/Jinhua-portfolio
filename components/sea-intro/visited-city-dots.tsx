@@ -41,7 +41,7 @@ function clamp01(value: number) {
 function markerOpacity(distance: number, cullDegrees: number, forced: boolean) {
   if (forced) return 1;
   const fade = clamp01((cullDegrees - distance) / 24);
-  return 0.2 + fade * 0.58;
+  return 0.34 + fade * 0.6;
 }
 
 function dotSize(place: VisitedPlace) {
@@ -182,9 +182,9 @@ export function VisitedCityDots({
           >
             <span
               aria-hidden="true"
-              className={`rounded-full bg-confidence-medium ring-1 ring-paper shadow-[0_1px_6px_rgba(7,16,15,0.78)] transition-[box-shadow,transform,width,height] duration-200 ${
+              className={`rounded-full ring-1 ring-[#07100f] shadow-[0_0_0_1px_rgba(237,239,234,0.32),0_1px_7px_rgba(7,16,15,0.9),0_0_10px_rgba(154,107,39,0.34)] transition-[box-shadow,transform,width,height] duration-200 [background:color-mix(in_srgb,var(--confidence-medium)_78%,var(--oxblood-soft)_22%)] ${
                 isActive
-                  ? "scale-105 shadow-[0_0_0_2px_rgba(7,16,15,0.66),0_0_10px_rgba(154,107,39,0.42)]"
+                  ? "scale-105 shadow-[0_0_0_2px_rgba(7,16,15,0.76),0_0_0_3px_rgba(237,239,234,0.26),0_0_14px_rgba(194,104,92,0.46)]"
                   : "scale-100"
               }`}
               style={{ width: coreSize, height: coreSize }}
@@ -236,13 +236,18 @@ export function VisitedCityDots({
       ) : null}
 
       <div className="pointer-events-none absolute bottom-4 right-4 max-w-[13rem] border border-rule bg-paper-2/90 px-2.5 py-2 font-sans text-[11px] leading-4 text-ink-2 shadow-[0_8px_8px_rgba(4,9,8,0.24)] sm:bottom-5 sm:right-5 sm:px-3 sm:text-[12px] sm:leading-5">
-        <div className="flex items-center gap-2">
-          <span aria-hidden="true" className="h-3 w-3 rounded-full bg-tide ring-1 ring-paper shadow-[0_1px_5px_rgba(7,16,15,0.75)]" />
-          <span>Lived / studied / worked</span>
+        <div className="grid grid-cols-[minmax(0,1fr)_2rem] items-center gap-2">
+          <span className="text-right">Lived / studied / worked</span>
+          <span aria-hidden="true" className="relative grid h-8 w-8 place-items-center justify-self-end">
+            <span className="absolute h-7 w-7 rounded-full border border-sonar/60 shadow-[0_0_0_1px_rgba(7,16,15,0.5)]" />
+            <span className="h-3.5 w-3.5 rounded-full bg-tide ring-1 ring-paper shadow-[0_1px_5px_rgba(7,16,15,0.75)]" />
+          </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-confidence-medium ring-1 ring-paper shadow-[0_1px_4px_rgba(7,16,15,0.7)]" />
-          <span>Visited</span>
+        <div className="grid grid-cols-[minmax(0,1fr)_2rem] items-center gap-2">
+          <span className="text-right">Visited</span>
+          <span aria-hidden="true" className="grid h-8 w-8 place-items-center justify-self-end">
+            <span className="h-2.5 w-2.5 rounded-full ring-1 ring-[#07100f] shadow-[0_0_0_1px_rgba(237,239,234,0.32),0_1px_5px_rgba(7,16,15,0.82),0_0_8px_rgba(154,107,39,0.4)] [background:color-mix(in_srgb,var(--confidence-medium)_78%,var(--oxblood-soft)_22%)]" />
+          </span>
         </div>
       </div>
     </div>

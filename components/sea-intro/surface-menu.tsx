@@ -65,7 +65,7 @@ export function SurfaceMenu({ onDive, onSkip, disabled }: SurfaceMenuProps) {
             Jinhua Yip
           </h1>
           <p className="mt-4 max-w-sm font-sans text-sm leading-relaxed text-ink-2 drop-shadow-[0_1px_10px_rgba(7,16,15,0.6)]">
-            Projects on emerging technology and international affairs.
+            A collection of my projects.
           </p>
 
           <div className="pointer-events-auto mt-8">
