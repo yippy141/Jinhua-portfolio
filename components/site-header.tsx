@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const navItems = [
-  { href: "/about", label: "ABOUT" },
-  { href: "/research", label: "RESEARCH" },
-  { href: "/archive", label: "ARCHIVE" },
-  { href: "/contact", label: "CONTACT" },
+  { href: "/about", label: "About" },
+  { href: "/research", label: "Research" },
+  { href: "/archive", label: "Archive" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const socialLinks = [
@@ -55,7 +55,7 @@ export function SiteHeader() {
         </Link>
         <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
           <nav aria-label="Primary navigation">
-            <ul className="flex flex-wrap gap-x-6 gap-y-3 font-sans text-sm uppercase tracking-[0.08em] leading-none text-ink-2">
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 font-sans text-[15px] leading-none text-ink/80">
               {navItems.map((item) => (
                 <li key={item.href}>
                   <Link

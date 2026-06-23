@@ -4,55 +4,47 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Jinhua Yip builds source-backed intelligence products about frontier technology and great-power competition.",
+    "Jinhua Yip is a technology-policy researcher working on AI, semiconductors, critical minerals, commercial space, and the role private companies play in foreign policy.",
 };
 
 export default function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-20">
-      <p className="font-mono text-xs uppercase tracking-[0.22em] text-oxblood">
-        About
-      </p>
-      <h1 className="mt-3 font-serif text-4xl font-medium leading-tight tracking-tight text-ink sm:text-5xl">
-        Source-backed maps of a hard world.
+      <h1 className="font-serif text-4xl font-medium leading-tight tracking-tight text-ink sm:text-5xl">
+        I research how technology changes power.
       </h1>
 
-      <div className="mt-10 space-y-6 font-serif text-lg leading-relaxed text-ink">
+      <div className="mt-10 space-y-6 font-serif text-[1.0625rem] leading-[1.65] text-ink sm:text-lg">
         <p>
-          I build source-backed intelligence products about frontier technology
-          and great-power competition. I work in political risk now, and I am
-          moving toward AI safety, governance, and alignment.
+          I&apos;m Jinhua Yip, a technology-policy researcher. My work covers
+          artificial intelligence, semiconductors, critical minerals, commercial
+          space, and the role private companies play in foreign policy.
         </p>
 
         <p>
-          The recurring form is the atlas: a public map of a hard domain, with
-          every claim traceable to its source. China&apos;s AI stack,
-          semiconductor tooling, rare-earth capability, the maritime grey-zone.
-          Each one is built so a newcomer can learn the domain and a specialist
-          can still find something they had not been tracking. The standard is
-          one line: confident presentation, humble architecture. State the
-          finding clearly. Show the evidence and its limits. Never blur a claim
-          with a guess.
+          This site is where I turn that research into things people can use:
+          maps, trackers, indices, questionnaires, and explainers. Each project
+          includes its sources, method, and known gaps so readers can inspect the
+          reasoning rather than take the result on trust.
         </p>
 
         <p>
-          I trained at SAIS, at the intersection of emerging technology,
-          governance, security, and climate. I grew up across Shanghai, Beijing,
-          and Hong Kong, and I live in the DC area now. Away from the work, I
-          follow marine mammals, aviation, geography, and history. They shape how
-          I think about systems, movement, and power.
+          I studied international relations at SAIS and UBC and have worked in
+          political-risk consulting and the Canadian government. Outside work, I
+          follow whales, aviation, geography, and history. Those interests are the
+          reason the portfolio takes place in an ocean rather than a conventional
+          project grid.
         </p>
 
-        <p className="font-sans text-base leading-7 text-ink-2">
-          Read the shared
-          {" "}
+        <p className="font-sans text-base leading-[1.6] text-ink-2">
+          Every project links to its{" "}
           <Link
             href="/methodology"
             className="text-oxblood underline underline-offset-4 transition-colors duration-200 hover:text-oxblood-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
           >
-            Methodology and limits
+            methodology and limits
           </Link>
-          .
+          , so you can see how a result was reached and where it is uncertain.
         </p>
       </div>
     </div>

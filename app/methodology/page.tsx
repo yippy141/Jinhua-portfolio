@@ -124,7 +124,7 @@ function MethodologyList({
           className="grid gap-3 py-4 sm:grid-cols-[13rem_1fr] sm:gap-8"
         >
           <dt
-            className={`font-mono text-sm leading-6 tracking-[0.01em] ${
+            className={`font-data text-sm leading-6 ${
               item.className ?? "text-ink"
             }`}
           >
