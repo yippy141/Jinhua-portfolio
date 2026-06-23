@@ -39,6 +39,8 @@ type HomeSceneProps = {
   onReplay?: () => void;
   // Play the staggered depth entrance (true when arriving through the dive).
   entrance?: boolean;
+  // Heavy WebGL atmosphere starts only once the depths are the active state.
+  showParticleField?: boolean;
   // Ambient animals are allowed only after the intro state has settled in depths.
   showAmbientFauna?: boolean;
 };
@@ -46,6 +48,7 @@ type HomeSceneProps = {
 export function HomeScene({
   onReplay,
   entrance = false,
+  showParticleField = true,
   showAmbientFauna = false,
 }: HomeSceneProps) {
   const [revealed, setRevealed] = useState(!entrance);
@@ -87,7 +90,7 @@ export function HomeScene({
 
   return (
     <>
-      <ParticleField />
+      {showParticleField ? <ParticleField /> : null}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 [background:radial-gradient(120%_90%_at_80%_8%,rgba(53,107,102,0.16),transparent_55%)]"

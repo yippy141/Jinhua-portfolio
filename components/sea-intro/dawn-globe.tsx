@@ -12,6 +12,15 @@ import type { IntroConfig } from "./sea-intro-config";
 type MapboxModule = typeof import("mapbox-gl");
 type MapboxMap = import("mapbox-gl").Map;
 
+export type AutoSpinPauseReason =
+  | "none"
+  | "user-drag"
+  | "beacon"
+  | "pinned"
+  | "diving"
+  | "reduced-motion"
+  | "document-hidden";
+
 // Live Mapbox camera state, shared by ref for the debug panel and beacons.
 export interface MapState {
   zoom: number;
@@ -21,6 +30,8 @@ export interface MapState {
   lat: number;
   ready: boolean;
   autoSpin: boolean; // true while the idle auto-spin is actually turning
+  autoSpinPauseReason: AutoSpinPauseReason;
+  lastInteractionAt: number;
 }
 
 // Idle delay before auto-spin resumes after any interaction.
@@ -48,6 +59,7 @@ type DawnGlobeProps = {
   // Timestamp (performance.now) of the last user interaction, shared with the
   // beacons. Auto-spin resumes ~3s after the most recent interaction.
   lastInteractionRef?: React.RefObject<number>;
+  autoSpinPauseReasonRef?: React.RefObject<AutoSpinPauseReason>;
 };
 
 function smoothstep(a: number, b: number, x: number) {
@@ -65,6 +77,7 @@ export function DawnGlobe({
   mapStateRef,
   rotationPausedRef,
   lastInteractionRef,
+  autoSpinPauseReasonRef,
 }: DawnGlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapboxMap | null>(null);
@@ -93,8 +106,40 @@ export function DawnGlobe({
     // Shared interaction clock: any drag/rotate/pitch/wheel, or a beacon
     // interaction, stamps this; auto-spin resumes RESUME_AFTER_MS later.
     const interactionRef = lastInteractionRef ?? { current: -Infinity };
-    const markInteraction = () => {
+    const pauseReasonRef = autoSpinPauseReasonRef ?? { current: "none" as AutoSpinPauseReason };
+    const markInteraction = (reason: AutoSpinPauseReason) => {
       interactionRef.current = performance.now();
+      pauseReasonRef.current = reason;
+    };
+    const markMapInteraction = (event?: unknown) => {
+      const originalEvent = (event as { originalEvent?: unknown } | undefined)?.originalEvent;
+      if (event && !originalEvent) return;
+      markInteraction("user-drag");
+    };
+    let mapCanvas: HTMLCanvasElement | null = null;
+    let gestureActive = false;
+    const setCursor = (cursor: "grab" | "grabbing") => {
+      if (mapCanvas) mapCanvas.style.cursor = cursor;
+    };
+    const onGestureStart = (event?: unknown) => {
+      gestureActive = true;
+      markMapInteraction(event);
+      setCursor("grabbing");
+    };
+    const onGestureEnd = (event?: unknown) => {
+      gestureActive = false;
+      markMapInteraction(event);
+      setCursor("grab");
+    };
+    const onCanvasPointerDown = () => {
+      gestureActive = true;
+      markInteraction("user-drag");
+      setCursor("grabbing");
+    };
+    const onCanvasPointerUp = () => {
+      gestureActive = false;
+      markInteraction("user-drag");
+      setCursor("grab");
     };
 
     import("mapbox-gl").then((mod: MapboxModule) => {
@@ -114,14 +159,17 @@ export function DawnGlobe({
           maxZoom: config.surface.maxZoom,
           projection: "globe",
           attributionControl: false,
-          interactive: !isMobile,
+          interactive: true,
+          cooperativeGestures: false,
           doubleClickZoom: false,
           boxZoom: false,
           // Idle interaction is drag-rotate only; the visitor cannot zoom the
           // surface (the dive drives zoom via jumpTo, which needs the high maxZoom).
           scrollZoom: false,
-          dragRotate: !isMobile,
+          dragPan: true,
+          dragRotate: false,
           pitchWithRotate: false,
+          touchZoomRotate: !isMobile,
           touchPitch: false,
           keyboard: false,
         });
@@ -157,28 +205,24 @@ export function DawnGlobe({
       // so auto-spin only resumes after a few seconds of stillness. Our own
       // auto-spin setCenter fires "move" (not "drag"/"rotate"/"pitch"), so it
       // never counts as interaction.
-      const canvas = map.getCanvas();
-      canvas.style.cursor = "grab";
-      const onGestureStart = () => {
-        markInteraction();
-        canvas.style.cursor = "grabbing";
-      };
-      const onGestureEnd = () => {
-        markInteraction();
-        canvas.style.cursor = "grab";
-      };
+      mapCanvas = map.getCanvas();
+      mapCanvas.style.cursor = "grab";
       map.on("dragstart", onGestureStart);
       map.on("rotatestart", onGestureStart);
       map.on("pitchstart", onGestureStart);
+      map.on("movestart", markMapInteraction);
       map.on("dragend", onGestureEnd);
       map.on("rotateend", onGestureEnd);
       map.on("pitchend", onGestureEnd);
-      map.on("drag", markInteraction);
-      map.on("rotate", markInteraction);
-      map.on("pitch", markInteraction);
-      map.on("mousedown", markInteraction);
-      map.on("touchstart", markInteraction);
-      map.on("wheel", markInteraction);
+      map.on("drag", markMapInteraction);
+      map.on("rotate", markMapInteraction);
+      map.on("pitch", markMapInteraction);
+      map.on("mousedown", markMapInteraction);
+      map.on("touchstart", markMapInteraction);
+      map.on("wheel", markMapInteraction);
+      mapCanvas.addEventListener("pointerdown", onCanvasPointerDown);
+      window.addEventListener("pointerup", onCanvasPointerUp);
+      window.addEventListener("pointercancel", onCanvasPointerUp);
 
       const frame = (ts: number) => {
         if (!map || cancelled) return;
@@ -204,21 +248,38 @@ export function DawnGlobe({
             containerRef.current.style.transformOrigin = `${ax}% ${ay}%`;
             containerRef.current.style.transform = `scale(${scale})`;
           }
-          if (mapStateObj) mapStateObj.autoSpin = false;
+          pauseReasonRef.current = "diving";
+          if (mapStateObj) {
+            mapStateObj.autoSpin = false;
+            mapStateObj.autoSpinPauseReason = "diving";
+          }
         } else {
           if (containerRef.current && containerRef.current.style.transform) {
             containerRef.current.style.transform = "";
           }
           const pinned = rotationPausedRef?.current ?? false;
           const idle = performance.now() - interactionRef.current > RESUME_AFTER_MS;
-          const spinning = !reducedMotion && !pinned && idle && !document.hidden;
+          let pauseReason: AutoSpinPauseReason = "none";
+          if (reducedMotion) pauseReason = "reduced-motion";
+          else if (pinned) pauseReason = "pinned";
+          else if (document.hidden) pauseReason = "document-hidden";
+          else if (gestureActive) pauseReason = "user-drag";
+          else if (!idle) {
+            pauseReason =
+              pauseReasonRef.current === "none" ? "user-drag" : pauseReasonRef.current;
+          }
+          const spinning = pauseReason === "none";
           if (spinning) {
+            pauseReasonRef.current = "none";
             const c = map.getCenter();
             c.lng =
               ((c.lng + config.surface.autoRotateDegPerSec * dt + 180) % 360) - 180;
             map.setCenter(c);
           }
-          if (mapStateObj) mapStateObj.autoSpin = spinning;
+          if (mapStateObj) {
+            mapStateObj.autoSpin = spinning;
+            mapStateObj.autoSpinPauseReason = pauseReason;
+          }
         }
 
         if (mapStateObj) {
@@ -228,7 +289,8 @@ export function DawnGlobe({
           mapStateObj.bearing = map.getBearing();
           mapStateObj.lng = c.lng;
           mapStateObj.lat = c.lat;
-          }
+          mapStateObj.lastInteractionAt = interactionRef.current;
+        }
         raf = requestAnimationFrame(frame);
       };
       raf = requestAnimationFrame(frame);
@@ -240,6 +302,9 @@ export function DawnGlobe({
       mapRef.current = null;
       onMapRef.current?.(null);
       if (mapStateObj) mapStateObj.ready = false;
+      if (mapCanvas) mapCanvas.removeEventListener("pointerdown", onCanvasPointerDown);
+      window.removeEventListener("pointerup", onCanvasPointerUp);
+      window.removeEventListener("pointercancel", onCanvasPointerUp);
       if (map) map.remove();
     };
     // Initialise once; live values are read through refs / config is stable.

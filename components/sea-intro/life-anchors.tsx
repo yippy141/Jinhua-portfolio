@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { lifeAnchors } from "@/data/places";
+import type { AutoSpinPauseReason } from "./dawn-globe";
 
 type MapboxMap = import("mapbox-gl").Map;
 
@@ -22,6 +23,8 @@ type LifeAnchorsProps = {
   rotationPausedRef: React.RefObject<boolean>;
   // Soft pause: any beacon interaction stamps this so auto-spin waits ~3s.
   lastInteractionRef: React.RefObject<number>;
+  autoSpinPauseReasonRef: React.RefObject<AutoSpinPauseReason>;
+  onPinnedChange?: (pinned: boolean) => void;
   // Reported to the debug panel.
   beaconStateRef: React.RefObject<BeaconState>;
   isMobile: boolean;
@@ -56,6 +59,8 @@ export function LifeAnchors({
   mapRef,
   rotationPausedRef,
   lastInteractionRef,
+  autoSpinPauseReasonRef,
+  onPinnedChange,
   beaconStateRef,
   isMobile,
 }: LifeAnchorsProps) {
@@ -72,14 +77,22 @@ export function LifeAnchors({
   const activeIndex = lifeAnchors.findIndex((p) => p.id === activeId);
   const active = activeIndex >= 0 ? lifeAnchors[activeIndex] : null;
 
-  const interact = () => {
+  const interact = useCallback((reason: AutoSpinPauseReason = "beacon") => {
     if (lastInteractionRef) lastInteractionRef.current = performance.now();
-  };
+    autoSpinPauseReasonRef.current = reason;
+  }, [autoSpinPauseReasonRef, lastInteractionRef]);
 
   // Pinning hard-pauses the idle globe rotation; report state to the debug panel.
   useEffect(() => {
-    rotationPausedRef.current = pinnedId !== null;
-  }, [pinnedId, rotationPausedRef]);
+    const pinned = pinnedId !== null;
+    if (onPinnedChange) onPinnedChange(pinned);
+    else rotationPausedRef.current = pinned;
+    if (pinnedId) autoSpinPauseReasonRef.current = "pinned";
+    return () => {
+      if (onPinnedChange) onPinnedChange(false);
+      else rotationPausedRef.current = false;
+    };
+  }, [pinnedId, rotationPausedRef, autoSpinPauseReasonRef, onPinnedChange]);
   useEffect(() => {
     if (beaconStateRef) beaconStateRef.current = { activeId, pinnedId };
   }, [activeId, pinnedId, beaconStateRef]);
@@ -87,11 +100,14 @@ export function LifeAnchors({
   // Escape dismisses a pinned caption.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setPinnedId(null);
+      if (e.key === "Escape") {
+        interact("beacon");
+        setPinnedId(null);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [interact]);
 
   // Project each place to screen each frame; markers track the rotating globe.
   useEffect(() => {
@@ -144,6 +160,8 @@ export function LifeAnchors({
             type="button"
             aria-label={displayName(place)}
             aria-describedby={isActive ? captionId : undefined}
+            data-place-kind="life-anchor"
+            data-recent={place.recent ? "true" : "false"}
             onMouseEnter={() => {
               interact();
               setHoveredId(place.id);
@@ -167,11 +185,18 @@ export function LifeAnchors({
               className="absolute rounded-full border border-sonar/60 motion-safe:animate-[beaconPulse_3.6s_ease-in-out_infinite]"
               style={{ width: size + 8, height: size + 8, animationDelay: `${i * 0.42}s` }}
             />
+            {place.recent ? (
+              <span
+                aria-hidden="true"
+                className="absolute rounded-full border border-oxblood-soft/80"
+                style={{ width: size + 14, height: size + 14 }}
+              />
+            ) : null}
             {/* core dot, sized by priority */}
             <span
               aria-hidden="true"
               className={`rounded-full shadow-[0_1px_6px_rgba(7,16,15,0.8)] transition-colors duration-200 ${
-                isActive ? "bg-sonar" : "bg-ink"
+                isActive ? "bg-sonar" : "bg-tide"
               }`}
               style={{ width: size, height: size }}
             />
@@ -218,6 +243,7 @@ export function LifeAnchors({
             <button
               type="button"
               onClick={() => {
+                interact("beacon");
                 setPinnedId(null);
                 setHoveredId(null);
                 setFocusedId(null);

@@ -61,7 +61,39 @@ export type WhaleRegistryEntry = {
 export const WHALE_REGISTRY_VERSION = 1;
 export const NARWHAL_SESSION_PROBABILITY = 0.06;
 
-export const whaleRegistry: WhaleRegistryEntry[] = [];
+export const whaleRegistry: WhaleRegistryEntry[] = [
+  {
+    id: "blue-whale",
+    commonName: "Blue whale",
+    latinName: "Balaenoptera musculus",
+    depthBand: "deep",
+    asset: {
+      src: "/whales/blue-whale.svg",
+      width: 550,
+      height: 550,
+      source: {
+        license: "Unknown",
+        attribution: "SVG Repo",
+        url: "https://www.svgrepo.com/",
+      },
+      verified: true,
+    },
+    direction: "left-to-right",
+    rarity: 1,
+    enabled: true,
+    tuning: {
+      band: "deep",
+      yPercent: 80,
+      scale: 0.38,
+      opacity: 0.12,
+      blurPx: 1.4,
+      durationSeconds: 96,
+      bobPixels: 2.5,
+      captionXPercent: 52,
+      captionYPercent: 64,
+    },
+  },
+];
 
 function isWhaleSvgPath(src: string): src is `/whales/${string}.svg` {
   return src.startsWith("/whales/") && src.endsWith(".svg");

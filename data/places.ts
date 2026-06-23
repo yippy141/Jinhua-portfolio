@@ -2,26 +2,41 @@
 //
 // Typed registry of meaningful places shown as quiet beacons on the orbital
 // surface. "life-anchor" places are cities with a real personal connection;
-// "visited" is reserved for a future travel layer and is not rendered yet.
+// "visited" places are smaller, label-only travel dots.
 // Coordinates are public city centroids, never private addresses.
 //
 // Summaries are short and first-person (see VOICE.md). They appear only on hover,
-// keyboard focus, or when pinned; there are no permanently visible city labels.
+// keyboard focus, or when pinned for life anchors. Visited dots show only the
+// city name. There are no permanently visible city labels.
 
 export type PlaceKind = "life-anchor" | "visited";
 
-export interface Place {
+type BasePlace = {
   id: string;
   city: string;
   region?: string; // country or region
   coordinates: [number, number]; // [lng, lat], public city centroid
   kind: PlaceKind;
+  lastVisited?: string; // ISO date, for the future "visited" layer
+  recent?: boolean; // provisional "past year" flag until exact dates are added
+  priority: number; // 1 = most prominent (current base); higher = quieter
+  labelOnly?: boolean;
+};
+
+export type LifeAnchorPlace = BasePlace & {
+  kind: "life-anchor";
   summary: string; // hover / focus caption
   roles?: string[]; // what I did there (derived from the summary, no new facts)
   period?: string; // when, when there is a clear one
-  lastVisited?: string; // ISO date, for the future "visited" layer
-  priority: number; // 1 = most prominent (current base); higher = quieter
-}
+  labelOnly?: false;
+};
+
+export type VisitedPlace = BasePlace & {
+  kind: "visited";
+  labelOnly: true;
+};
+
+export type Place = LifeAnchorPlace | VisitedPlace;
 
 // City centroids (public, from standard gazetteer coordinates).
 export const places: Place[] = [
@@ -34,6 +49,7 @@ export const places: Place[] = [
       "I completed my MA at SAIS and worked across several political-risk and technology-policy roles. It is my current base.",
     roles: ["MA, SAIS", "Political-risk and technology-policy roles"],
     period: "Current base",
+    recent: true,
     priority: 1,
   },
   {
@@ -45,6 +61,7 @@ export const places: Place[] = [
     summary:
       "I was born here and later returned to study international relations at UBC.",
     roles: ["Born here", "BA in international relations, UBC"],
+    recent: true,
     priority: 2,
   },
   {
@@ -56,6 +73,7 @@ export const places: Place[] = [
     summary:
       "I spent much of my childhood and teenage years here and graduated from high school in the city.",
     roles: ["Childhood and teenage years", "Graduated high school"],
+    recent: true,
     priority: 2,
   },
   {
@@ -66,6 +84,7 @@ export const places: Place[] = [
     summary:
       "Home to relatives and the place where I helped build Sampan, an early-stage technology startup.",
     roles: ["Family", "Sampan, early-stage startup"],
+    recent: true,
     priority: 2,
   },
   {
@@ -88,6 +107,7 @@ export const places: Place[] = [
     kind: "life-anchor",
     summary: "Home to relatives and many of my Chinese New Year memories.",
     roles: ["Family"],
+    recent: true,
     priority: 3,
   },
   {
@@ -111,7 +131,557 @@ export const places: Place[] = [
     period: "Summer 2018",
     priority: 3,
   },
+  {
+    id: "hangzhou",
+    city: "Hangzhou",
+    region: "China",
+    coordinates: [120.1551, 30.2741],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "nanjing",
+    city: "Nanjing",
+    region: "China",
+    coordinates: [118.7969, 32.0603],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "yangshuo",
+    city: "Yangshuo",
+    region: "China",
+    coordinates: [110.4966, 24.7785],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "lijiang",
+    city: "Lijiang",
+    region: "China",
+    coordinates: [100.233, 26.8721],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "macau",
+    city: "Macau",
+    coordinates: [113.5439, 22.1987],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "shenzhen",
+    city: "Shenzhen",
+    region: "China",
+    coordinates: [114.0579, 22.5431],
+    kind: "visited",
+    labelOnly: true,
+    recent: true,
+    priority: 3,
+  },
+  {
+    id: "changchun",
+    city: "Changchun",
+    region: "China",
+    coordinates: [125.3235, 43.8171],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "seoul",
+    city: "Seoul",
+    region: "South Korea",
+    coordinates: [126.978, 37.5665],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "tokyo",
+    city: "Tokyo",
+    region: "Japan",
+    coordinates: [139.6917, 35.6895],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "sapporo",
+    city: "Sapporo",
+    region: "Japan",
+    coordinates: [141.3545, 43.0618],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "taipei",
+    city: "Taipei",
+    region: "Taiwan",
+    coordinates: [121.5654, 25.033],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "kaohsiung",
+    city: "Kaohsiung",
+    region: "Taiwan",
+    coordinates: [120.3014, 22.6273],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "taichung",
+    city: "Taichung",
+    region: "Taiwan",
+    coordinates: [120.6736, 24.1477],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "kuala-lumpur",
+    city: "Kuala Lumpur",
+    region: "Malaysia",
+    coordinates: [101.6869, 3.139],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "manila",
+    city: "Manila",
+    region: "Philippines",
+    coordinates: [120.9842, 14.5995],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "penang",
+    city: "Penang",
+    region: "Malaysia",
+    coordinates: [100.3354, 5.4141],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "hanoi",
+    city: "Hanoi",
+    region: "Vietnam",
+    coordinates: [105.8342, 21.0278],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "ho-chi-minh-city",
+    city: "Ho Chi Minh City",
+    region: "Vietnam",
+    coordinates: [106.6297, 10.8231],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "bangkok",
+    city: "Bangkok",
+    region: "Thailand",
+    coordinates: [100.5018, 13.7563],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "phuket",
+    city: "Phuket",
+    region: "Thailand",
+    coordinates: [98.3923, 7.8804],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "dubai",
+    city: "Dubai",
+    region: "United Arab Emirates",
+    coordinates: [55.2708, 25.2048],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "st-petersburg",
+    city: "St. Petersburg",
+    region: "Russia",
+    coordinates: [30.3351, 59.9311],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "helsinki",
+    city: "Helsinki",
+    region: "Finland",
+    coordinates: [24.9384, 60.1699],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "stockholm",
+    city: "Stockholm",
+    region: "Sweden",
+    coordinates: [18.0686, 59.3293],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "tallinn",
+    city: "Tallinn",
+    region: "Estonia",
+    coordinates: [24.7536, 59.437],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "gdansk",
+    city: "Gdansk",
+    region: "Poland",
+    coordinates: [18.6466, 54.352],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "copenhagen",
+    city: "Copenhagen",
+    region: "Denmark",
+    coordinates: [12.5683, 55.6761],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "rostock",
+    city: "Rostock",
+    region: "Germany",
+    coordinates: [12.0991, 54.0924],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "berlin",
+    city: "Berlin",
+    region: "Germany",
+    coordinates: [13.405, 52.52],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "dresden",
+    city: "Dresden",
+    region: "Germany",
+    coordinates: [13.7373, 51.0504],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "frankfurt",
+    city: "Frankfurt",
+    region: "Germany",
+    coordinates: [8.6821, 50.1109],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "prague",
+    city: "Prague",
+    region: "Czechia",
+    coordinates: [14.4378, 50.0755],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "budapest",
+    city: "Budapest",
+    region: "Hungary",
+    coordinates: [19.0402, 47.4979],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "vienna",
+    city: "Vienna",
+    region: "Austria",
+    coordinates: [16.3738, 48.2082],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "amsterdam",
+    city: "Amsterdam",
+    region: "Netherlands",
+    coordinates: [4.9041, 52.3676],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "brussels",
+    city: "Brussels",
+    region: "Belgium",
+    coordinates: [4.3517, 50.8503],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "rome",
+    city: "Rome",
+    region: "Italy",
+    coordinates: [12.4964, 41.9028],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "milan",
+    city: "Milan",
+    region: "Italy",
+    coordinates: [9.19, 45.4642],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "florence",
+    city: "Florence",
+    region: "Italy",
+    coordinates: [11.2558, 43.7696],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "london",
+    city: "London",
+    region: "United Kingdom",
+    coordinates: [-0.1276, 51.5072],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "manchester",
+    city: "Manchester",
+    region: "United Kingdom",
+    coordinates: [-2.2426, 53.4808],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "edinburgh",
+    city: "Edinburgh",
+    region: "United Kingdom",
+    coordinates: [-3.1883, 55.9533],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "cambridge",
+    city: "Cambridge",
+    region: "United Kingdom",
+    coordinates: [0.1218, 52.2053],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "barcelona",
+    city: "Barcelona",
+    region: "Spain",
+    coordinates: [2.1734, 41.3851],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "malaga",
+    city: "Malaga",
+    region: "Spain",
+    coordinates: [-4.4214, 36.7213],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "marbella",
+    city: "Marbella",
+    region: "Spain",
+    coordinates: [-4.8858, 36.5101],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "malta",
+    city: "Malta",
+    coordinates: [14.5146, 35.8989],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "new-york-city",
+    city: "New York City",
+    region: "United States",
+    coordinates: [-74.006, 40.7128],
+    kind: "visited",
+    labelOnly: true,
+    recent: true,
+    priority: 3,
+  },
+  {
+    id: "boston",
+    city: "Boston",
+    region: "United States",
+    coordinates: [-71.0589, 42.3601],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "philadelphia",
+    city: "Philadelphia",
+    region: "United States",
+    coordinates: [-75.1652, 39.9526],
+    kind: "visited",
+    labelOnly: true,
+    recent: true,
+    priority: 3,
+  },
+  {
+    id: "baltimore",
+    city: "Baltimore",
+    region: "United States",
+    coordinates: [-76.6122, 39.2904],
+    kind: "visited",
+    labelOnly: true,
+    recent: true,
+    priority: 3,
+  },
+  {
+    id: "chicago",
+    city: "Chicago",
+    region: "United States",
+    coordinates: [-87.6298, 41.8781],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "toronto",
+    city: "Toronto",
+    region: "Canada",
+    coordinates: [-79.3832, 43.6532],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "montreal",
+    city: "Montreal",
+    region: "Canada",
+    coordinates: [-73.5673, 45.5017],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "san-francisco",
+    city: "San Francisco",
+    region: "United States",
+    coordinates: [-122.4194, 37.7749],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "san-jose",
+    city: "San Jose",
+    region: "United States",
+    coordinates: [-121.8863, 37.3382],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "los-angeles",
+    city: "Los Angeles",
+    region: "United States",
+    coordinates: [-118.2437, 34.0522],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "san-diego",
+    city: "San Diego",
+    region: "United States",
+    coordinates: [-117.1611, 32.7157],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "seattle",
+    city: "Seattle",
+    region: "United States",
+    coordinates: [-122.3321, 47.6062],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "havana",
+    city: "Havana",
+    region: "Cuba",
+    coordinates: [-82.3666, 23.1136],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
 ];
 
-// Only life-anchor markers are rendered in this task.
-export const lifeAnchors = places.filter((p) => p.kind === "life-anchor");
+export function isLifeAnchor(place: Place): place is LifeAnchorPlace {
+  return place.kind === "life-anchor";
+}
+
+export function isVisitedPlace(place: Place): place is VisitedPlace {
+  return place.kind === "visited";
+}
+
+export const lifeAnchors = places.filter(isLifeAnchor);
+export const visitedPlaces = places.filter(isVisitedPlace);

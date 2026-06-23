@@ -27,9 +27,12 @@ type SurfaceMenuProps = {
 
 export function SurfaceMenu({ onDive, onSkip, disabled }: SurfaceMenuProps) {
   return (
-    <div className="absolute inset-0 z-30 flex flex-col" inert={disabled ? true : undefined}>
+    <div
+      className="pointer-events-none absolute inset-0 z-30 flex flex-col"
+      inert={disabled ? true : undefined}
+    >
       {/* Top: wordmark + primary navigation, kept accessible. */}
-      <header className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-7">
+      <header className="pointer-events-auto flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-7">
         <Link
           href="/"
           className="rounded-[3px] font-serif text-xl text-ink drop-shadow-[0_1px_10px_rgba(7,16,15,0.6)] transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
@@ -65,14 +68,14 @@ export function SurfaceMenu({ onDive, onSkip, disabled }: SurfaceMenuProps) {
             Projects on emerging technology and international affairs.
           </p>
 
-          <div className="mt-8">
+          <div className="pointer-events-auto mt-8">
             <DiveAperture onDive={onDive} disabled={disabled} />
           </div>
 
           <button
             type="button"
             onClick={onSkip}
-            className="mt-5 rounded-[2px] font-sans text-sm text-ink-2 underline-offset-4 transition-colors hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
+            className="pointer-events-auto mt-5 rounded-[2px] font-sans text-sm text-ink-2 underline-offset-4 transition-colors hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
           >
             Skip intro
           </button>

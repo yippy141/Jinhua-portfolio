@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { DawnGlobe } from "./dawn-globe";
-import type { MapState } from "./dawn-globe";
+import type { AutoSpinPauseReason, MapState } from "./dawn-globe";
 import { DiveTransitionScene } from "./dive-transition-scene";
 import { HomeScene } from "./home-scene";
 import { IntroDebugPanel } from "./intro-debug-panel";
 import { LifeAnchors } from "./life-anchors";
 import type { BeaconState } from "./life-anchors";
 import { SurfaceMenu } from "./surface-menu";
+import { VisitedCityDots } from "./visited-city-dots";
 import { createDiveClock } from "./dive-clock";
 import type { DiveClock } from "./dive-clock";
 import type { ApertureCenter } from "./dive-aperture";
@@ -33,6 +34,7 @@ function isDiveTargetId(v: string | null): v is DiveTargetId {
 // transition until the water plane has fully occluded it, then is removed.
 
 type Arrival = "none" | "dive" | "reduced";
+type MarkerPauseSource = "life-anchor" | "visited";
 
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
@@ -80,9 +82,16 @@ export function SeaIntroV2() {
     lat: 0,
     ready: false,
     autoSpin: false,
+    autoSpinPauseReason: "none",
+    lastInteractionAt: -Infinity,
   });
   const rotationPausedRef = useRef(false);
+  const markerPinnedRef = useRef<Record<MarkerPauseSource, boolean>>({
+    "life-anchor": false,
+    visited: false,
+  });
   const lastInteractionRef = useRef(-Infinity);
+  const autoSpinPauseReasonRef = useRef<AutoSpinPauseReason>("none");
   const beaconStateRef = useRef<BeaconState>({ activeId: null, pinnedId: null });
   const diveStartRef = useRef(0);
   const mapRemovedAtRef = useRef<number | null>(null);
@@ -101,11 +110,26 @@ export function SeaIntroV2() {
 
   // ── derived layer flags (set only on threshold change) ──
   const [mapOccluded, setMapOccluded] = useState(false);
-  const [depthsRevealed, setDepthsRevealed] = useState(false);
   const [paused, setPaused] = useState(false);
+  const mapOccludedRef = useRef(false);
+  const depthsRevealedRef = useRef(false);
 
   const arrivalRef = useRef<Arrival>("none");
   const [arrival, setArrival] = useState<Arrival>("none");
+
+  const setMarkerPinned = useCallback((source: MarkerPauseSource, pinned: boolean) => {
+    markerPinnedRef.current[source] = pinned;
+    rotationPausedRef.current =
+      markerPinnedRef.current["life-anchor"] || markerPinnedRef.current.visited;
+  }, []);
+  const setLifeAnchorPinned = useCallback(
+    (pinned: boolean) => setMarkerPinned("life-anchor", pinned),
+    [setMarkerPinned],
+  );
+  const setVisitedPinned = useCallback(
+    (pinned: boolean) => setMarkerPinned("visited", pinned),
+    [setMarkerPinned],
+  );
 
   // Master loop runs only while diving. Advances the clock, derives flags, and
   // resolves to the depths when the dive completes (never auto-finishes in debug).
@@ -123,12 +147,18 @@ export function SeaIntroV2() {
         clock.progress = clock.elapsedMs / clock.durationMs;
       }
       const occluded = clock.progress >= config.timing.occludeProgress;
-      setMapOccluded(occluded);
+      if (mapOccludedRef.current !== occluded) {
+        mapOccludedRef.current = occluded;
+        setMapOccluded(occluded);
+      }
       // The map is removed (DawnGlobe unmounts) the instant it is fully occluded.
       if (occluded && mapRemovedAtRef.current === null && diveStartRef.current > 0) {
         mapRemovedAtRef.current = Math.round(performance.now() - diveStartRef.current);
       }
-      setDepthsRevealed(clock.progress >= config.timing.depthsRevealProgress);
+      const revealed = clock.progress >= config.timing.depthsRevealProgress;
+      if (depthsRevealedRef.current !== revealed) {
+        depthsRevealedRef.current = revealed;
+      }
       if (clock.progress >= 1 && !clock.paused && !debug) {
         finishDive();
         clock.running = false;
@@ -156,8 +186,9 @@ export function SeaIntroV2() {
     c.elapsedMs = 0;
     c.paused = false;
     setPaused(false);
+    mapOccludedRef.current = false;
+    depthsRevealedRef.current = false;
     setMapOccluded(false);
-    setDepthsRevealed(false);
     mapRemovedAtRef.current = null;
   };
 
@@ -217,8 +248,11 @@ export function SeaIntroV2() {
     c.elapsedMs = c.progress * c.durationMs;
     c.paused = true;
     setPaused(true);
-    setMapOccluded(c.progress >= config.timing.occludeProgress);
-    setDepthsRevealed(c.progress >= config.timing.depthsRevealProgress);
+    const occluded = c.progress >= config.timing.occludeProgress;
+    const revealed = c.progress >= config.timing.depthsRevealProgress;
+    mapOccludedRef.current = occluded;
+    depthsRevealedRef.current = revealed;
+    setMapOccluded(occluded);
     arrivalRef.current = "dive";
     setArrival("dive");
     if (state !== "diving") intro.force("diving");
@@ -246,6 +280,10 @@ export function SeaIntroV2() {
     setPaused(c.paused);
   };
 
+  const showSurfaceOrDive = state === "surface" || state === "diving";
+  const showDiveTransition = state === "diving";
+  const showDepthsLayer = state === "depths";
+
   const debugPanel = debug ? (
     <IntroDebugPanel
       clockRef={clockRef}
@@ -254,6 +292,10 @@ export function SeaIntroV2() {
       beaconStateRef={beaconStateRef}
       paused={paused}
       diveTarget={diveTarget}
+      introState={state}
+      diveTransitionMounted={showDiveTransition}
+      particleFieldMounted={showDepthsLayer}
+      ambientFaunaMounted={showDepthsLayer}
       occludeProgress={config.timing.occludeProgress}
       crossProgress={config.scene.crossProgress}
       depthsRevealProgress={config.timing.depthsRevealProgress}
@@ -272,15 +314,13 @@ export function SeaIntroV2() {
       <>
         <HomeScene
           onReplay={introCapable ? handleReplay : undefined}
+          showParticleField={resolved && state === "depths"}
           showAmbientFauna={resolved && state === "depths"}
         />
         {debugPanel}
       </>
     );
   }
-
-  const showSurfaceOrDive = state === "surface" || state === "diving";
-  const showDepthsLayer = depthsRevealed || state === "depths";
 
   return (
     <div className="absolute inset-0">
@@ -300,18 +340,15 @@ export function SeaIntroV2() {
           mapStateRef={mapStateRef}
           rotationPausedRef={rotationPausedRef}
           lastInteractionRef={lastInteractionRef}
+          autoSpinPauseReasonRef={autoSpinPauseReasonRef}
         />
       ) : null}
 
-      {/* Spatial transition: clouds always, water + underwater during the dive.
-          Fades out as the depths take over so the scenes converge. */}
-      {showSurfaceOrDive ? (
+      {/* Spatial transition mounts only during the dive, so the idle surface is
+          just Mapbox, beacons, and menu chrome. */}
+      {showDiveTransition ? (
         <div
-          className="absolute inset-0 z-20"
-          style={{
-            opacity: depthsRevealed ? 0 : 1,
-            transition: `opacity 700ms ${EASE}`,
-          }}
+          className="pointer-events-none absolute inset-0 z-20"
         >
           <DiveTransitionScene
             clockRef={clockRef}
@@ -327,17 +364,28 @@ export function SeaIntroV2() {
         <SurfaceMenu onDive={handleDive} onSkip={handleSurfaceSkip} disabled={false} />
       ) : null}
 
-      {/* Life-anchor beacons: above the menu so the markers stay clickable
+      {/* Place markers: above the menu so the markers stay clickable
           (the overlay is transparent, so the menu underneath still works), and
           hidden the moment the dive begins. */}
       {state === "surface" ? (
-        <LifeAnchors
-          mapRef={mapRef}
-          rotationPausedRef={rotationPausedRef}
-          lastInteractionRef={lastInteractionRef}
-          beaconStateRef={beaconStateRef}
-          isMobile={isMobile}
-        />
+        <>
+          <VisitedCityDots
+            mapRef={mapRef}
+            lastInteractionRef={lastInteractionRef}
+            autoSpinPauseReasonRef={autoSpinPauseReasonRef}
+            onPinnedChange={setVisitedPinned}
+            isMobile={isMobile}
+          />
+          <LifeAnchors
+            mapRef={mapRef}
+            rotationPausedRef={rotationPausedRef}
+            lastInteractionRef={lastInteractionRef}
+            autoSpinPauseReasonRef={autoSpinPauseReasonRef}
+            onPinnedChange={setLifeAnchorPinned}
+            beaconStateRef={beaconStateRef}
+            isMobile={isMobile}
+          />
+        </>
       ) : null}
 
       {/* Diving: input lock + an always-available quiet Skip + SR announcement. */}
@@ -373,6 +421,7 @@ export function SeaIntroV2() {
           <HomeScene
             onReplay={introCapable ? handleReplay : undefined}
             entrance={arrival === "dive" && !reducedMotion}
+            showParticleField={state === "depths"}
             showAmbientFauna={state === "depths"}
           />
         </div>

@@ -118,7 +118,7 @@ function createPlacements(whales: WhaleRegistryEntry[]): WhaleSwimPlacement[] {
   return whales.map((whale, index) => ({
     id: whale.id,
     whale,
-    delaySeconds: index * -17,
+    delaySeconds: whale.tuning.durationSeconds * -(0.26 + index * 0.12),
     laneOffsetPercent: index % 2 === 0 ? -2 : 2,
     direction:
       whale.direction ??

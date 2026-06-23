@@ -267,7 +267,7 @@ function initScene(
   };
 
   const loop = () => {
-    render();
+    if (!document.hidden) render();
     raf = requestAnimationFrame(loop);
   };
   if (reducedMotion) render();

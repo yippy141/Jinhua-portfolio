@@ -7,6 +7,7 @@ import type { DiveClock } from "./dive-clock";
 import type { MapState } from "./dawn-globe";
 import type { BeaconState } from "./life-anchors";
 import { DIVE_TARGETS, type DiveTargetId } from "./sea-intro-config";
+import type { IntroState } from "./use-sea-intro-state";
 
 // Development-only tuning surface, enabled with ?introDebug=1. Intentionally
 // plain: it is not production UI. Reads the live clock and Mapbox camera state,
@@ -20,6 +21,10 @@ type IntroDebugPanelProps = {
   beaconStateRef: React.RefObject<BeaconState>;
   paused: boolean;
   diveTarget: DiveTargetId;
+  introState: IntroState;
+  diveTransitionMounted: boolean;
+  particleFieldMounted: boolean;
+  ambientFaunaMounted: boolean;
   occludeProgress: number;
   crossProgress: number;
   depthsRevealProgress: number;
@@ -50,6 +55,10 @@ export function IntroDebugPanel({
   beaconStateRef,
   paused,
   diveTarget,
+  introState,
+  diveTransitionMounted,
+  particleFieldMounted,
+  ambientFaunaMounted,
   occludeProgress,
   crossProgress,
   depthsRevealProgress,
@@ -69,8 +78,11 @@ export function IntroDebugPanel({
     lat: 0,
     ready: false,
     autoSpin: false,
+    autoSpinPauseReason: "none",
+    lastInteractionAt: -Infinity,
   });
   const [removedAt, setRemovedAt] = useState<number | null>(null);
+  const [lastInteractionAgeMs, setLastInteractionAgeMs] = useState<number | null>(null);
   const [beacon, setBeacon] = useState<BeaconState>({
     activeId: null,
     pinnedId: null,
@@ -84,6 +96,12 @@ export function IntroDebugPanel({
       if (mapStateRef.current) setMap({ ...mapStateRef.current });
       if (beaconStateRef.current) setBeacon({ ...beaconStateRef.current });
       setRemovedAt(mapRemovedAtRef.current);
+      const lastInteraction = mapStateRef.current?.lastInteractionAt ?? -Infinity;
+      setLastInteractionAgeMs(
+        lastInteraction === -Infinity
+          ? null
+          : Math.max(0, performance.now() - lastInteraction),
+      );
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -96,6 +114,10 @@ export function IntroDebugPanel({
     progress > crossProgress
       ? Math.round(Math.max(0, Math.min(1, 1 - (progress - 0.84) / 0.12)) * 100)
       : 0;
+  const lastInteraction =
+    lastInteractionAgeMs === null
+      ? "never"
+      : `${lastInteractionAgeMs.toFixed(0)}ms ago`;
   void depthsRevealProgress;
 
   const btn =
@@ -110,6 +132,7 @@ export function IntroDebugPanel({
 
       <div className="mb-2 leading-5 text-white/70">
         phase: <span className="text-white">{phase}</span>
+        {" · "}state: <span className="text-white">{introState}</span>
         <br />
         target: <span className="text-white">{DIVE_TARGETS[diveTarget].label}</span>
         <br />
@@ -131,6 +154,15 @@ export function IntroDebugPanel({
         <br />
         auto-spin{" "}
         <span className="text-white">{map.autoSpin ? "running" : "paused"}</span>
+        {" · "}reason{" "}
+        <span className="text-white">{map.autoSpinPauseReason}</span>
+        <br />
+        last interaction <span className="text-white">{lastInteraction}</span>
+        <br />
+        mounted dive <span className="text-white">{diveTransitionMounted ? "yes" : "no"}</span>{" "}
+        · particles <span className="text-white">{particleFieldMounted ? "yes" : "no"}</span>
+        <br />
+        fauna <span className="text-white">{ambientFaunaMounted ? "yes" : "no"}</span>
         <br />
         beacon active <span className="text-white">{beacon.activeId ?? "—"}</span> ·
         pinned <span className="text-white">{beacon.pinnedId ?? "—"}</span>

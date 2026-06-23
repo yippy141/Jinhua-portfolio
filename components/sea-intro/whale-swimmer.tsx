@@ -22,6 +22,7 @@ type WhaleSwimmerProps = {
 };
 
 const EASE = "cubic-bezier(0.45, 0, 0.2, 1)";
+const SILHOUETTE_CLASS = "brightness-0 invert";
 
 export function WhaleSwimmer({ placement, paused }: WhaleSwimmerProps) {
   const { whale, direction, delaySeconds, laneOffsetPercent } = placement;
@@ -67,7 +68,7 @@ export function WhaleSwimmer({ placement, paused }: WhaleSwimmerProps) {
   return (
     <figure
       aria-hidden="true"
-      className="sea-fauna-swimmer absolute left-0 m-0 w-[clamp(8rem,18vw,22rem)]"
+      className="sea-fauna-swimmer pointer-events-none absolute left-0 m-0 w-[clamp(8rem,18vw,22rem)]"
       data-depth-band={whale.depthBand}
       style={wrapperStyle}
     >
@@ -82,7 +83,7 @@ export function WhaleSwimmer({ placement, paused }: WhaleSwimmerProps) {
           width={whale.asset.width}
           height={whale.asset.height}
           unoptimized
-          className="block h-auto w-full select-none"
+          className={`block h-auto w-full select-none ${SILHOUETTE_CLASS}`}
         />
         {tail ? (
           <Image
@@ -92,7 +93,7 @@ export function WhaleSwimmer({ placement, paused }: WhaleSwimmerProps) {
             width={tail.width}
             height={tail.height}
             unoptimized
-            className="sea-fauna-tail absolute inset-0 h-auto w-full select-none"
+            className={`sea-fauna-tail absolute inset-0 h-auto w-full select-none ${SILHOUETTE_CLASS}`}
             style={tailStyle}
           />
         ) : null}
