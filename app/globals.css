@@ -131,22 +131,32 @@ body {
   }
 }
 
-/* Sea fauna: dormant until data/whales.ts has approved public/whales SVGs. */
+/* Sea fauna: approved SVGs only, kept behind the depths project field. */
 @keyframes seaFaunaSwimLtr {
   from {
-    transform: translate3d(-24vw, 0, 0) scale(var(--fauna-scale));
+    transform: translate3d(-42vw, 0, 0) scale(var(--fauna-scale));
   }
   to {
-    transform: translate3d(124vw, 0, 0) scale(var(--fauna-scale));
+    transform: translate3d(142vw, 0, 0) scale(var(--fauna-scale));
   }
 }
 
 @keyframes seaFaunaSwimRtl {
   from {
-    transform: translate3d(124vw, 0, 0) scaleX(-1) scale(var(--fauna-scale));
+    transform: translate3d(142vw, 0, 0) scaleX(-1) scale(var(--fauna-scale));
   }
   to {
-    transform: translate3d(-24vw, 0, 0) scaleX(-1) scale(var(--fauna-scale));
+    transform: translate3d(-42vw, 0, 0) scaleX(-1) scale(var(--fauna-scale));
+  }
+}
+
+@keyframes seaFaunaPitch {
+  0%,
+  100% {
+    transform: rotate(calc(var(--fauna-pitch) * -1));
+  }
+  50% {
+    transform: rotate(var(--fauna-pitch));
   }
 }
 
@@ -182,17 +192,85 @@ body {
   }
 }
 
+/* Ambient thoughts: sparse typographic drift for the settled depths state. */
+@keyframes ambientThoughtDriftLtr {
+  from {
+    transform: translate3d(-44vw, 0, 0);
+  }
+  to {
+    transform: translate3d(144vw, 0, 0);
+  }
+}
+
+@keyframes ambientThoughtDriftRtl {
+  from {
+    transform: translate3d(144vw, 0, 0);
+  }
+  to {
+    transform: translate3d(-44vw, 0, 0);
+  }
+}
+
+@keyframes ambientThoughtBob {
+  0%,
+  100% {
+    transform: translate3d(0, calc(var(--thought-bob) * -0.5), 0);
+  }
+  50% {
+    transform: translate3d(0, calc(var(--thought-bob) * 0.5), 0);
+  }
+}
+
+.ambient-thought {
+  text-shadow: 0 0 18px rgba(79, 179, 191, 0.08);
+}
+
+.ambient-thought-bob {
+  animation-name: ambientThoughtBob;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+}
+
+[data-ambient-thought-paused="true"] .ambient-thought,
+[data-ambient-thought-paused="true"] .ambient-thought-bob {
+  animation-play-state: paused;
+}
+
 .sea-fauna-bob {
   animation-name: seaFaunaBob;
   animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
   animation-iteration-count: infinite;
 }
 
-.sea-fauna-tail {
+.sea-fauna-pitch {
+  animation-name: seaFaunaPitch;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+  transform-origin: 50% 55%;
+}
+
+.sea-fauna-svg svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sea-fauna-svg svg,
+.sea-fauna-svg svg * {
+  fill: currentColor;
+}
+
+.sea-fauna-media {
+  color: rgba(237, 239, 234, 0.92);
+}
+
+.sea-fauna-media [data-sea-fauna-tail="true"] {
   animation-name: seaFaunaTailWag;
-  animation-duration: 3.8s;
+  animation-duration: var(--fauna-tail-duration, 3.8s);
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+  transform-box: fill-box;
+  transform-origin: var(--fauna-tail-origin, 20% 50%);
 }
 
 .sea-fauna-tusk {
@@ -207,16 +285,23 @@ body {
 }
 
 [data-sea-fauna-paused="true"] .sea-fauna-swimmer,
+[data-sea-fauna-paused="true"] .sea-fauna-pitch,
 [data-sea-fauna-paused="true"] .sea-fauna-bob,
-[data-sea-fauna-paused="true"] .sea-fauna-tail,
+[data-sea-fauna-paused="true"] [data-sea-fauna-tail="true"],
 [data-sea-fauna-paused="true"] .sea-fauna-tusk {
   animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ambient-thought,
+  .ambient-thought-bob {
+    animation: none;
+  }
+
   .sea-fauna-swimmer,
+  .sea-fauna-pitch,
   .sea-fauna-bob,
-  .sea-fauna-tail,
+  .sea-fauna-media [data-sea-fauna-tail="true"],
   .sea-fauna-tusk {
     animation: none;
   }

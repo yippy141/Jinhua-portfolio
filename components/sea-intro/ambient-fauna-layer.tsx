@@ -6,7 +6,9 @@ import { useReducedMotion } from "motion/react";
 import {
   hasRenderableWhaleAsset,
   NARWHAL_SESSION_PROBABILITY,
+  WHALE_DEPTH_MODIFIERS,
   WHALE_REGISTRY_VERSION,
+  WHALE_SPECIES_SCALE,
   whaleRegistry,
   type DepthBand,
   type WhaleRegistryEntry,
@@ -19,6 +21,8 @@ import {
 
 const SESSION_KEY = `sea-fauna-selection-v${WHALE_REGISTRY_VERSION}`;
 const MAX_VISIBLE_ANIMALS = 3;
+
+type StoredWhalePlacement = Omit<WhaleSwimPlacement, "whale">;
 
 function makeRng(seed: number) {
   let value = seed >>> 0;
@@ -39,6 +43,21 @@ function createSessionSeed(): number {
   return Math.floor(Math.random() * 4294967295);
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function randomBetween(
+  rng: () => number,
+  range: readonly [number, number],
+): number {
+  return range[0] + (range[1] - range[0]) * rng();
+}
+
+function randomJitter(rng: () => number, amount: number): number {
+  return (rng() * 2 - 1) * amount;
+}
+
 function weightedPick(
   whales: WhaleRegistryEntry[],
   rng: () => number,
@@ -54,24 +73,64 @@ function weightedPick(
   return whales[whales.length - 1] ?? null;
 }
 
-function readStoredSelection(renderableIds: Set<string>): string[] | null {
+function isStoredPlacement(value: unknown): value is StoredWhalePlacement {
+  if (!value || typeof value !== "object") return false;
+  const entry = value as Record<string, unknown>;
+  return (
+    typeof entry.id === "string" &&
+    typeof entry.delaySeconds === "number" &&
+    typeof entry.yPercent === "number" &&
+    typeof entry.scale === "number" &&
+    typeof entry.opacity === "number" &&
+    typeof entry.blurPx === "number" &&
+    typeof entry.durationSeconds === "number" &&
+    typeof entry.bobPixels === "number" &&
+    typeof entry.bobDurationSeconds === "number" &&
+    typeof entry.pitchDegrees === "number" &&
+    typeof entry.pitchDurationSeconds === "number" &&
+    (entry.direction === "left-to-right" || entry.direction === "right-to-left")
+  );
+}
+
+function readStoredPlacements(
+  renderableById: Map<string, WhaleRegistryEntry>,
+): WhaleSwimPlacement[] | null {
   try {
     const raw = window.sessionStorage.getItem(SESSION_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return null;
-    const ids = parsed.filter((id): id is string => {
-      return typeof id === "string" && renderableIds.has(id);
-    });
-    return ids.length > 0 ? ids.slice(0, MAX_VISIBLE_ANIMALS) : null;
+    const placements = parsed
+      .filter(isStoredPlacement)
+      .map((stored) => {
+        const whale = renderableById.get(stored.id);
+        return whale ? { ...stored, whale } : null;
+      })
+      .filter((placement): placement is WhaleSwimPlacement => Boolean(placement))
+      .slice(0, MAX_VISIBLE_ANIMALS);
+    return placements.length > 0 ? placements : null;
   } catch {
     return null;
   }
 }
 
-function storeSelection(ids: string[]) {
+function storePlacements(placements: WhaleSwimPlacement[]) {
   try {
-    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(ids));
+    const stored = placements.map((placement) => ({
+      id: placement.id,
+      delaySeconds: placement.delaySeconds,
+      yPercent: placement.yPercent,
+      scale: placement.scale,
+      opacity: placement.opacity,
+      blurPx: placement.blurPx,
+      durationSeconds: placement.durationSeconds,
+      bobPixels: placement.bobPixels,
+      bobDurationSeconds: placement.bobDurationSeconds,
+      pitchDegrees: placement.pitchDegrees,
+      pitchDurationSeconds: placement.pitchDurationSeconds,
+      direction: placement.direction,
+    }));
+    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(stored));
   } catch {
     // Storage can be unavailable in private or hardened browsing modes.
   }
@@ -114,16 +173,69 @@ function selectWhales(
   return selected;
 }
 
-function createPlacements(whales: WhaleRegistryEntry[]): WhaleSwimPlacement[] {
-  return whales.map((whale, index) => ({
-    id: whale.id,
-    whale,
-    delaySeconds: whale.tuning.durationSeconds * -(0.26 + index * 0.12),
-    laneOffsetPercent: index % 2 === 0 ? -2 : 2,
-    direction:
-      whale.direction ??
-      (index % 2 === 0 ? "right-to-left" : "left-to-right"),
-  }));
+function createPlacements(
+  whales: WhaleRegistryEntry[],
+  rng: () => number,
+): WhaleSwimPlacement[] {
+  return whales.map((whale, index) => {
+    const depth = WHALE_DEPTH_MODIFIERS[whale.depthBand];
+    const durationSeconds = Math.max(
+      42,
+      whale.tuning.durationSeconds +
+        randomJitter(rng, whale.tuning.durationJitterSeconds),
+    );
+    const laneOffset = index % 2 === 0 ? -2 : 2;
+    const yPercent = clamp(
+      whale.tuning.yPercent +
+        laneOffset +
+        randomJitter(rng, whale.tuning.yJitterPercent),
+      10,
+      88,
+    );
+    const scale = Number(
+      (
+        WHALE_SPECIES_SCALE[whale.species] *
+        depth.scale *
+        whale.tuning.scale *
+        randomBetween(rng, [0.96, 1.04])
+      ).toFixed(3),
+    );
+    const bobPixels = Math.max(
+      0,
+      whale.tuning.bobPixels +
+        randomJitter(rng, whale.tuning.bobJitterPixels),
+    );
+    const pitchDurationSeconds = Math.max(
+      16,
+      whale.tuning.pitchDurationSeconds +
+        randomJitter(rng, whale.tuning.pitchJitterSeconds),
+    );
+
+    return {
+      id: whale.id,
+      whale,
+      direction:
+        whale.direction ??
+        (index % 2 === 0 ? "right-to-left" : "left-to-right"),
+      delaySeconds: -durationSeconds * randomBetween(rng, [0.15, 0.72]),
+      yPercent,
+      scale,
+      opacity: Number(randomBetween(rng, depth.opacityRange).toFixed(3)),
+      blurPx: Number(randomBetween(rng, depth.blurRangePx).toFixed(2)),
+      durationSeconds: Number(durationSeconds.toFixed(2)),
+      bobPixels: Number(bobPixels.toFixed(2)),
+      bobDurationSeconds: Number(
+        Math.max(18, durationSeconds * randomBetween(rng, [0.26, 0.36])).toFixed(2),
+      ),
+      pitchDegrees: Number(
+        Math.max(
+          0,
+          whale.tuning.pitchDegrees * randomBetween(rng, [0.82, 1.18]),
+        ).toFixed(2),
+      ),
+      pitchDurationSeconds: Number(pitchDurationSeconds.toFixed(2)),
+    };
+  });
 }
 
 export function AmbientFaunaLayer() {
@@ -143,24 +255,19 @@ export function AmbientFaunaLayer() {
     let cancelled = false;
     const id = window.setTimeout(() => {
       const renderableById = new Map(renderable.map((whale) => [whale.id, whale]));
-      const stored = readStoredSelection(new Set(renderableById.keys()));
+      const stored = readStoredPlacements(renderableById);
       if (cancelled) return;
 
       if (stored) {
-        setPlacements(
-          createPlacements(
-            stored
-              .map((storedId) => renderableById.get(storedId))
-              .filter((whale): whale is WhaleRegistryEntry => Boolean(whale)),
-          ),
-        );
+        setPlacements(stored);
         return;
       }
 
       const rng = makeRng(createSessionSeed());
       const selected = selectWhales(renderable, rng);
-      storeSelection(selected.map((whale) => whale.id));
-      setPlacements(createPlacements(selected));
+      const nextPlacements = createPlacements(selected, rng);
+      storePlacements(nextPlacements);
+      setPlacements(nextPlacements);
     }, 0);
 
     return () => {

@@ -7,18 +7,18 @@
 //
 // Summaries are short and first-person (see VOICE.md). They appear only on hover,
 // keyboard focus, or when pinned for life anchors. Visited dots show only the
-// city name. There are no permanently visible city labels.
+// city or place label. There are no permanently visible place labels.
 
 export type PlaceKind = "life-anchor" | "visited";
 
 type BasePlace = {
   id: string;
   city: string;
+  label?: string;
   region?: string; // country or region
   coordinates: [number, number]; // [lng, lat], public city centroid
   kind: PlaceKind;
   lastVisited?: string; // ISO date, for the future "visited" layer
-  recent?: boolean; // provisional "past year" flag until exact dates are added
   priority: number; // 1 = most prominent (current base); higher = quieter
   labelOnly?: boolean;
 };
@@ -49,7 +49,6 @@ export const places: Place[] = [
       "I completed my MA at SAIS and worked across several political-risk and technology-policy roles. It is my current base.",
     roles: ["MA, SAIS", "Political-risk and technology-policy roles"],
     period: "Current base",
-    recent: true,
     priority: 1,
   },
   {
@@ -61,7 +60,6 @@ export const places: Place[] = [
     summary:
       "I was born here and later returned to study international relations at UBC.",
     roles: ["Born here", "BA in international relations, UBC"],
-    recent: true,
     priority: 2,
   },
   {
@@ -73,7 +71,6 @@ export const places: Place[] = [
     summary:
       "I spent much of my childhood and teenage years here and graduated from high school in the city.",
     roles: ["Childhood and teenage years", "Graduated high school"],
-    recent: true,
     priority: 2,
   },
   {
@@ -84,7 +81,6 @@ export const places: Place[] = [
     summary:
       "Home to relatives and the place where I helped build Sampan, an early-stage technology startup.",
     roles: ["Family", "Sampan, early-stage startup"],
-    recent: true,
     priority: 2,
   },
   {
@@ -107,7 +103,6 @@ export const places: Place[] = [
     kind: "life-anchor",
     summary: "Home to relatives and many of my Chinese New Year memories.",
     roles: ["Family"],
-    recent: true,
     priority: 3,
   },
   {
@@ -161,8 +156,19 @@ export const places: Place[] = [
   {
     id: "lijiang",
     city: "Lijiang",
-    region: "China",
+    label: "Lijiang, Yunnan",
+    region: "Yunnan",
     coordinates: [100.233, 26.8721],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "dali",
+    city: "Dali",
+    label: "Dali, Yunnan",
+    region: "Yunnan",
+    coordinates: [100.2676, 25.6065],
     kind: "visited",
     labelOnly: true,
     priority: 4,
@@ -182,7 +188,6 @@ export const places: Place[] = [
     coordinates: [114.0579, 22.5431],
     kind: "visited",
     labelOnly: true,
-    recent: true,
     priority: 3,
   },
   {
@@ -217,6 +222,16 @@ export const places: Place[] = [
     city: "Sapporo",
     region: "Japan",
     coordinates: [141.3545, 43.0618],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
+    id: "niseko",
+    city: "Niseko",
+    label: "Niseko, Hokkaido",
+    region: "Hokkaido",
+    coordinates: [140.6874, 42.8048],
     kind: "visited",
     labelOnly: true,
     priority: 4,
@@ -456,6 +471,16 @@ export const places: Place[] = [
     priority: 4,
   },
   {
+    id: "normandy",
+    city: "Normandy",
+    label: "Normandy, France",
+    region: "France",
+    coordinates: [-0.3707, 49.1829],
+    kind: "visited",
+    labelOnly: true,
+    priority: 4,
+  },
+  {
     id: "rome",
     city: "Rome",
     region: "Italy",
@@ -560,7 +585,6 @@ export const places: Place[] = [
     coordinates: [-74.006, 40.7128],
     kind: "visited",
     labelOnly: true,
-    recent: true,
     priority: 3,
   },
   {
@@ -579,7 +603,6 @@ export const places: Place[] = [
     coordinates: [-75.1652, 39.9526],
     kind: "visited",
     labelOnly: true,
-    recent: true,
     priority: 3,
   },
   {
@@ -589,7 +612,6 @@ export const places: Place[] = [
     coordinates: [-76.6122, 39.2904],
     kind: "visited",
     labelOnly: true,
-    recent: true,
     priority: 3,
   },
   {

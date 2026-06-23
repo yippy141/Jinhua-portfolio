@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { ParticleField } from "@/components/particle-field";
 
-import { AmbientFaunaLayer } from "./ambient-fauna-layer";
+import { AmbientThoughtLayer } from "./ambient-thought-layer";
 import { ProjectDriftField } from "./project-drift-field";
 import { ReturnToSurface } from "./return-to-surface";
 import { SeaNav } from "./sea-nav";
@@ -41,15 +41,15 @@ type HomeSceneProps = {
   entrance?: boolean;
   // Heavy WebGL atmosphere starts only once the depths are the active state.
   showParticleField?: boolean;
-  // Ambient animals are allowed only after the intro state has settled in depths.
-  showAmbientFauna?: boolean;
+  // Ambient thoughts are allowed only after the intro state has settled in depths.
+  showAmbientThoughts?: boolean;
 };
 
 export function HomeScene({
   onReplay,
   entrance = false,
   showParticleField = true,
-  showAmbientFauna = false,
+  showAmbientThoughts = false,
 }: HomeSceneProps) {
   const [revealed, setRevealed] = useState(!entrance);
   // Once settled we drop transforms/filters entirely so FrontDoor's fixed
@@ -103,7 +103,7 @@ export function HomeScene({
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 [background:linear-gradient(0deg,rgba(7,16,15,0.92),transparent)]"
       />
-      {showAmbientFauna ? <AmbientFaunaLayer /> : null}
+      {showAmbientThoughts ? <AmbientThoughtLayer /> : null}
 
       {/* Navigation */}
       <div style={layer(delays.chrome)}>

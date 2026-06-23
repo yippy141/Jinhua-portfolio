@@ -6,6 +6,7 @@ import { phaseAtProgress, phaseStart } from "./dive-clock";
 import type { DiveClock } from "./dive-clock";
 import type { MapState } from "./dawn-globe";
 import type { BeaconState } from "./life-anchors";
+import { AMBIENT_THOUGHT_DEBUG_KEY } from "@/data/ambient-thoughts";
 import { DIVE_TARGETS, type DiveTargetId } from "./sea-intro-config";
 import type { IntroState } from "./use-sea-intro-state";
 
@@ -24,7 +25,8 @@ type IntroDebugPanelProps = {
   introState: IntroState;
   diveTransitionMounted: boolean;
   particleFieldMounted: boolean;
-  ambientFaunaMounted: boolean;
+  ambientThoughtLayerMounted: boolean;
+  ambientThoughtReducedMotion: boolean;
   occludeProgress: number;
   crossProgress: number;
   depthsRevealProgress: number;
@@ -58,7 +60,8 @@ export function IntroDebugPanel({
   introState,
   diveTransitionMounted,
   particleFieldMounted,
-  ambientFaunaMounted,
+  ambientThoughtLayerMounted,
+  ambientThoughtReducedMotion,
   occludeProgress,
   crossProgress,
   depthsRevealProgress,
@@ -87,6 +90,10 @@ export function IntroDebugPanel({
     activeId: null,
     pinnedId: null,
   });
+  const [ambientThoughtDebug, setAmbientThoughtDebug] = useState<{
+    activeCount: number;
+    seed: number | null;
+  }>({ activeCount: 0, seed: null });
 
   useEffect(() => {
     let raf = 0;
@@ -102,11 +109,27 @@ export function IntroDebugPanel({
           ? null
           : Math.max(0, performance.now() - lastInteraction),
       );
+      try {
+        const raw = window.sessionStorage.getItem(AMBIENT_THOUGHT_DEBUG_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        setAmbientThoughtDebug({
+          activeCount:
+            ambientThoughtLayerMounted && typeof parsed?.activeCount === "number"
+              ? parsed.activeCount
+              : 0,
+          seed:
+            ambientThoughtLayerMounted && typeof parsed?.seed === "number"
+              ? parsed.seed
+              : null,
+        });
+      } catch {
+        setAmbientThoughtDebug({ activeCount: 0, seed: null });
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [clockRef, mapStateRef, mapRemovedAtRef, beaconStateRef]);
+  }, [clockRef, mapStateRef, mapRemovedAtRef, beaconStateRef, ambientThoughtLayerMounted]);
 
   const phase = phaseAtProgress(progress);
   const occlusion = Math.round(smoothstep(0.46, occludeProgress, progress) * 100);
@@ -162,7 +185,15 @@ export function IntroDebugPanel({
         mounted dive <span className="text-white">{diveTransitionMounted ? "yes" : "no"}</span>{" "}
         · particles <span className="text-white">{particleFieldMounted ? "yes" : "no"}</span>
         <br />
-        fauna <span className="text-white">{ambientFaunaMounted ? "yes" : "no"}</span>
+        thoughts <span className="text-white">{ambientThoughtLayerMounted ? "yes" : "no"}</span>
+        {" · "}words <span className="text-white">{ambientThoughtDebug.activeCount}</span>
+        <br />
+        thought motion{" "}
+        <span className="text-white">
+          {ambientThoughtReducedMotion ? "reduced" : "drift"}
+        </span>
+        {" · "}seed{" "}
+        <span className="text-white">{ambientThoughtDebug.seed ?? "—"}</span>
         <br />
         beacon active <span className="text-white">{beacon.activeId ?? "—"}</span> ·
         pinned <span className="text-white">{beacon.pinnedId ?? "—"}</span>

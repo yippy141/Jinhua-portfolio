@@ -44,15 +44,22 @@ function angularDist(a: [number, number], b: [number, number]): number {
 
 const CULL_DEGREES = 76; // beyond this from the map centre, treat as back-facing
 
-function displayName(p: { city: string; region?: string }): string {
+function displayName(p: { city: string; label?: string; region?: string }): string {
+  if (p.label) return p.label;
   return p.region ? `${p.city}, ${p.region}` : p.city;
 }
 
 // Quietly larger dot for a higher-priority anchor (1 = current base).
 function dotSize(priority: number): number {
-  if (priority <= 1) return 12;
-  if (priority === 2) return 10;
-  return 8;
+  if (priority <= 1) return 14;
+  if (priority === 2) return 13;
+  return 12;
+}
+
+function pulseSize(priority: number): number {
+  if (priority <= 1) return 34;
+  if (priority === 2) return 32;
+  return 30;
 }
 
 export function LifeAnchors({
@@ -103,6 +110,15 @@ export function LifeAnchors({
       if (e.key === "Escape") {
         interact("beacon");
         setPinnedId(null);
+        setHoveredId(null);
+        setFocusedId(null);
+        const active = document.activeElement;
+        if (
+          active instanceof HTMLElement &&
+          active.dataset.placeKind === "life-anchor"
+        ) {
+          active.blur();
+        }
       }
     };
     window.addEventListener("keydown", onKey);
@@ -151,6 +167,7 @@ export function LifeAnchors({
       {lifeAnchors.map((place, i) => {
         const isActive = place.id === activeId;
         const size = dotSize(place.priority);
+        const ringSize = pulseSize(place.priority);
         return (
           <button
             key={place.id}
@@ -161,7 +178,6 @@ export function LifeAnchors({
             aria-label={displayName(place)}
             aria-describedby={isActive ? captionId : undefined}
             data-place-kind="life-anchor"
-            data-recent={place.recent ? "true" : "false"}
             onMouseEnter={() => {
               interact();
               setHoveredId(place.id);
@@ -177,26 +193,24 @@ export function LifeAnchors({
               setPinnedId((cur) => (cur === place.id ? null : place.id));
             }}
             className="pointer-events-auto absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
-            style={{ transition: "opacity 200ms ease" }}
+            style={{
+              opacity: 0,
+              pointerEvents: "none",
+            }}
           >
             {/* staggered quiet pulse ring */}
             <span
               aria-hidden="true"
-              className="absolute rounded-full border border-sonar/60 motion-safe:animate-[beaconPulse_3.6s_ease-in-out_infinite]"
-              style={{ width: size + 8, height: size + 8, animationDelay: `${i * 0.42}s` }}
+              className="absolute rounded-full border border-sonar/70 shadow-[0_0_0_1px_rgba(7,16,15,0.5)] motion-safe:animate-[beaconPulse_3.6s_ease-in-out_infinite]"
+              style={{ width: ringSize, height: ringSize, animationDelay: `${i * 0.42}s` }}
             />
-            {place.recent ? (
-              <span
-                aria-hidden="true"
-                className="absolute rounded-full border border-oxblood-soft/80"
-                style={{ width: size + 14, height: size + 14 }}
-              />
-            ) : null}
             {/* core dot, sized by priority */}
             <span
               aria-hidden="true"
-              className={`rounded-full shadow-[0_1px_6px_rgba(7,16,15,0.8)] transition-colors duration-200 ${
-                isActive ? "bg-sonar" : "bg-tide"
+              className={`rounded-full ring-1 ring-paper shadow-[0_1px_7px_rgba(7,16,15,0.88)] transition-[background-color,box-shadow,transform] duration-200 ${
+                isActive
+                  ? "scale-110 bg-sonar shadow-[0_0_0_2px_rgba(7,16,15,0.72),0_0_14px_rgba(79,179,191,0.5)]"
+                  : "scale-100 bg-tide"
               }`}
               style={{ width: size, height: size }}
             />

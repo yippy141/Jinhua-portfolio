@@ -45,7 +45,11 @@ function markerOpacity(distance: number, cullDegrees: number, forced: boolean) {
 }
 
 function dotSize(place: VisitedPlace) {
-  return place.priority <= 3 ? 5 : 4;
+  return place.priority <= 3 ? 9 : 8;
+}
+
+function displayName(place: VisitedPlace): string {
+  return place.label ?? place.city;
 }
 
 export function VisitedCityDots({
@@ -85,6 +89,15 @@ export function VisitedCityDots({
       if (event.key === "Escape") {
         interact("beacon");
         setPinnedId(null);
+        setHoveredId(null);
+        setFocusedId(null);
+        const active = document.activeElement;
+        if (
+          active instanceof HTMLElement &&
+          active.dataset.placeKind === "visited"
+        ) {
+          active.blur();
+        }
       }
     };
     window.addEventListener("keydown", onKey);
@@ -137,6 +150,7 @@ export function VisitedCityDots({
       {visitedPlaces.map((place, index) => {
         const size = dotSize(place);
         const isActive = place.id === activeId;
+        const coreSize = isActive ? Math.min(size + 2, 11) : size;
 
         return (
           <button
@@ -145,10 +159,10 @@ export function VisitedCityDots({
               btnRefs.current[index] = el;
             }}
             type="button"
-            aria-label={place.city}
+            aria-label={displayName(place)}
             aria-describedby={isActive ? captionId : undefined}
             data-place-kind="visited"
-            data-recent={place.recent ? "true" : "false"}
+            tabIndex={-1}
             onMouseEnter={() => {
               interact();
               setHoveredId(place.id);
@@ -163,21 +177,17 @@ export function VisitedCityDots({
               interact();
               setPinnedId((current) => (current === place.id ? null : place.id));
             }}
-            className="pointer-events-auto absolute left-0 top-0 grid h-6 w-6 place-items-center rounded-full transition-opacity duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-sonar"
+            className="pointer-events-auto absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-sonar"
+            style={{ opacity: 0, pointerEvents: "none" }}
           >
-            {place.recent ? (
-              <span
-                aria-hidden="true"
-                className="absolute rounded-full border border-oxblood-soft/75"
-                style={{ width: size + 8, height: size + 8 }}
-              />
-            ) : null}
             <span
               aria-hidden="true"
-              className={`rounded-full bg-confidence-medium shadow-[0_1px_5px_rgba(7,16,15,0.7)] transition-colors duration-200 ${
-                isActive ? "ring-1 ring-ink/70" : ""
+              className={`rounded-full bg-confidence-medium ring-1 ring-paper shadow-[0_1px_6px_rgba(7,16,15,0.78)] transition-[box-shadow,transform,width,height] duration-200 ${
+                isActive
+                  ? "scale-105 shadow-[0_0_0_2px_rgba(7,16,15,0.66),0_0_10px_rgba(154,107,39,0.42)]"
+                  : "scale-100"
               }`}
-              style={{ width: size, height: size }}
+              style={{ width: coreSize, height: coreSize }}
             />
           </button>
         );
@@ -192,7 +202,7 @@ export function VisitedCityDots({
         >
           <div className="ml-3 border border-rule bg-paper-2/95 px-2.5 py-1.5 shadow-[0_8px_8px_rgba(4,9,8,0.28)]">
             <p className="font-sans text-[13px] leading-none text-ink">
-              {active.city}
+              {displayName(active)}
             </p>
           </div>
         </div>
@@ -206,7 +216,7 @@ export function VisitedCityDots({
         >
           <div className="flex items-center justify-between gap-4">
             <p className="font-serif text-lg leading-tight text-ink">
-              {active.city}
+              {displayName(active)}
             </p>
             <button
               type="button"
@@ -227,18 +237,12 @@ export function VisitedCityDots({
 
       <div className="pointer-events-none absolute bottom-4 right-4 max-w-[13rem] border border-rule bg-paper-2/90 px-2.5 py-2 font-sans text-[11px] leading-4 text-ink-2 shadow-[0_8px_8px_rgba(4,9,8,0.24)] sm:bottom-5 sm:right-5 sm:px-3 sm:text-[12px] sm:leading-5">
         <div className="flex items-center gap-2">
-          <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-tide ring-1 ring-sonar/70" />
+          <span aria-hidden="true" className="h-3 w-3 rounded-full bg-tide ring-1 ring-paper shadow-[0_1px_5px_rgba(7,16,15,0.75)]" />
           <span>Lived / studied / worked</span>
         </div>
         <div className="flex items-center gap-2">
-          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-confidence-medium" />
+          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-confidence-medium ring-1 ring-paper shadow-[0_1px_4px_rgba(7,16,15,0.7)]" />
           <span>Visited</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span aria-hidden="true" className="grid h-3.5 w-3.5 place-items-center rounded-full border border-oxblood-soft/80">
-            <span className="h-1.5 w-1.5 rounded-full bg-confidence-medium" />
-          </span>
-          <span>Visited in the past year</span>
         </div>
       </div>
     </div>

@@ -295,7 +295,8 @@ export function SeaIntroV2() {
       introState={state}
       diveTransitionMounted={showDiveTransition}
       particleFieldMounted={showDepthsLayer}
-      ambientFaunaMounted={showDepthsLayer}
+      ambientThoughtLayerMounted={showDepthsLayer}
+      ambientThoughtReducedMotion={reducedMotion}
       occludeProgress={config.timing.occludeProgress}
       crossProgress={config.scene.crossProgress}
       depthsRevealProgress={config.timing.depthsRevealProgress}
@@ -315,7 +316,7 @@ export function SeaIntroV2() {
         <HomeScene
           onReplay={introCapable ? handleReplay : undefined}
           showParticleField={resolved && state === "depths"}
-          showAmbientFauna={resolved && state === "depths"}
+          showAmbientThoughts={resolved && state === "depths"}
         />
         {debugPanel}
       </>
@@ -422,7 +423,7 @@ export function SeaIntroV2() {
             onReplay={introCapable ? handleReplay : undefined}
             entrance={arrival === "dive" && !reducedMotion}
             showParticleField={state === "depths"}
-            showAmbientFauna={state === "depths"}
+            showAmbientThoughts={state === "depths"}
           />
         </div>
       ) : null}

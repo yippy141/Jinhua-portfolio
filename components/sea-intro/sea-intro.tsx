@@ -84,7 +84,7 @@ export function SeaIntro() {
       <HomeScene
         onReplay={introCapable ? handleReplay : undefined}
         showParticleField={resolved && state === "depths"}
-        showAmbientFauna={resolved && state === "depths"}
+        showAmbientThoughts={resolved && state === "depths"}
       />
     );
   }
