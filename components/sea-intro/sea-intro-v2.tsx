@@ -1,8 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import {
+  getLocalizedLifeAnchors,
+  getLocalizedVisitedPlaces,
+} from "@/data/i18n";
+import type { Locale } from "@/i18n/routing";
 import { DawnGlobe } from "./dawn-globe";
 import type { AutoSpinPauseReason, MapState } from "./dawn-globe";
 import { DiveTransitionScene } from "./dive-transition-scene";
@@ -40,6 +45,7 @@ type MarkerPauseSource = "life-anchor" | "visited";
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 export function SeaIntroV2() {
+  const locale = useLocale() as Locale;
   const surfaceText = useTranslations("sea.surface");
   const ariaText = useTranslations("sea.aria");
   const intro = useSeaIntroState();
@@ -73,6 +79,14 @@ export function SeaIntroV2() {
   const config = useMemo(
     () => resolveConfig(isMobile, diveTarget),
     [isMobile, diveTarget],
+  );
+  const localizedLifeAnchors = useMemo(
+    () => getLocalizedLifeAnchors(locale),
+    [locale],
+  );
+  const localizedVisitedPlaces = useMemo(
+    () => getLocalizedVisitedPlaces(locale),
+    [locale],
   );
 
   // Live map handle + camera state (debug + beacons), and rotation pause flag.
@@ -374,6 +388,7 @@ export function SeaIntroV2() {
       {state === "surface" ? (
         <>
           <VisitedCityDots
+            places={localizedVisitedPlaces}
             mapRef={mapRef}
             lastInteractionRef={lastInteractionRef}
             autoSpinPauseReasonRef={autoSpinPauseReasonRef}
@@ -381,6 +396,7 @@ export function SeaIntroV2() {
             isMobile={isMobile}
           />
           <LifeAnchors
+            places={localizedLifeAnchors}
             mapRef={mapRef}
             rotationPausedRef={rotationPausedRef}
             lastInteractionRef={lastInteractionRef}

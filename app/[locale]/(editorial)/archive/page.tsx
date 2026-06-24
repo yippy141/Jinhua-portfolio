@@ -40,7 +40,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
 
       <ArchiveList
         projects={projects}
-        showDescriptions={locale === "en"}
+        showDescriptions
       />
     </div>
   );

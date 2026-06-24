@@ -27,11 +27,12 @@
       "return": "返回海面"
     },
     "aria": {
-      "entering": "Entering the archive."
+      "entering": "正在进入项目。"
     },
     "globeLegend": {
       "lifeAnchor": "生活、求学或工作",
-      "visited": "去过"
+      "visited": "去过",
+      "close": "关闭"
     }
   },
   "archiveList": {
@@ -49,15 +50,15 @@
   },
   "projects": {
     "back": "返回项目",
-    "openProject": "Open project",
-    "viewSource": "View source",
+    "openProject": "打开项目",
+    "viewSource": "查看源代码",
     "sections": {
-      "whatItDoes": "What it does",
-      "whatYouCanExplore": "What you can explore",
-      "whyIBuiltIt": "Why I built it",
-      "evidenceAndLimits": "Evidence and limits",
-      "myRole": "My role",
-      "status": "Status"
+      "whatItDoes": "项目内容",
+      "whatYouCanExplore": "可探索内容",
+      "whyIBuiltIt": "项目缘起",
+      "evidenceAndLimits": "证据与局限",
+      "myRole": "我的角色",
+      "currentStatus": "当前状态"
     },
     "types": {
       "tool": "工具",

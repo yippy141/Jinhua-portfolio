@@ -1,4 +1,11 @@
-import type { Project, ProjectDetail, ProjectSlug } from "@/data/projects";
+import type {
+  Project,
+  ProjectDetail,
+  ProjectLink,
+  ProjectPreview,
+  ProjectSlug,
+} from "@/data/projects";
+import type { PlaceId } from "@/data/places";
 
 export type TranslationStatus = "complete" | "pending";
 
@@ -46,11 +53,48 @@ export type ContactContent = {
   introduction: string;
 };
 
+export type MethodologyListItem = {
+  term: string;
+  gloss: string;
+  className?: string;
+};
+
+export type MethodologyContent = {
+  metadata: PageMetadataContent;
+  title: string;
+  introduction: string;
+  ruleTitle: string;
+  rule: string;
+  sourceRecordTitle: string;
+  sourceRecordFields: readonly MethodologyListItem[];
+  evidenceClassesTitle: string;
+  evidenceClasses: readonly MethodologyListItem[];
+  confidenceTitle: string;
+  confidenceLevels: readonly MethodologyListItem[];
+  claimStatusTitle: string;
+  claimStatuses: readonly MethodologyListItem[];
+  limitsTitle: string;
+  limits: string;
+  buildTitle: string;
+  build: string;
+  correctionsTitle: string;
+  corrections: {
+    beforeLink: string;
+    linkLabel: string;
+    afterLink: string;
+  };
+};
+
 export type LocalePageContent = {
   about: AboutContent;
   research: ResearchContent;
   archive: ArchiveContent;
   contact: ContactContent;
+};
+
+export type PlaceTextOverlay = {
+  name: string;
+  summary?: string;
 };
 
 export type ProjectContentOverlay = {
@@ -60,6 +104,8 @@ export type ProjectContentOverlay = {
   description?: string;
   tags?: readonly string[];
   detail?: ProjectDetail;
+  linkLabels?: Readonly<Record<string, string>>;
+  previewAlt?: string;
   translationStatus: TranslationStatus;
   pendingNotice?: string;
 };
@@ -67,12 +113,21 @@ export type ProjectContentOverlay = {
 export type LocaleContent = {
   site: SiteMetadataContent;
   pages: LocalePageContent;
+  methodology: MethodologyContent;
   projects: Record<ProjectSlug, ProjectContentOverlay>;
+  places: Record<PlaceId, PlaceTextOverlay>;
 };
 
 export type LocalizedProject = Omit<
   Project,
-  "title" | "node" | "dek" | "description" | "tags" | "detail"
+  | "title"
+  | "node"
+  | "dek"
+  | "description"
+  | "tags"
+  | "detail"
+  | "links"
+  | "preview"
 > & {
   title: string;
   node: string;
@@ -80,6 +135,8 @@ export type LocalizedProject = Omit<
   description: string;
   tags: readonly string[];
   detail?: ProjectDetail;
+  links: readonly ProjectLink[];
+  preview: ProjectPreview;
   translationStatus: TranslationStatus;
   pendingNotice?: string;
   hasLocalizedEditorial: boolean;

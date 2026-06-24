@@ -28,6 +28,60 @@ function assert(condition, message) {
   }
 }
 
+function sliceBraced(text, openIndex) {
+  let depth = 0;
+  let quote = "";
+  let escaped = false;
+
+  for (let i = openIndex; i < text.length; i++) {
+    const char = text[i];
+
+    if (quote) {
+      if (escaped) {
+        escaped = false;
+      } else if (char === "\\") {
+        escaped = true;
+      } else if (char === quote) {
+        quote = "";
+      }
+      continue;
+    }
+
+    if (char === "\"" || char === "'" || char === "`") {
+      quote = char;
+      continue;
+    }
+
+    if (char === "{") {
+      depth++;
+    } else if (char === "}") {
+      depth--;
+      if (depth === 0) return text.slice(openIndex, i + 1);
+    }
+  }
+
+  throw new Error("Could not read braced object.");
+}
+
+function projectEntry(text, slug) {
+  const start = text.indexOf(`"${slug}": {`);
+  assert(start >= 0, `Missing explicit Chinese project entry for ${slug}.`);
+  return sliceBraced(text, text.indexOf("{", start));
+}
+
+function sharedProjectBlock(projectsText, slug, allSlugs) {
+  const slugIndex = projectsText.indexOf(`slug: "${slug}"`);
+  assert(slugIndex >= 0, `Missing shared project data for ${slug}.`);
+  const nextSlugIndex = allSlugs
+    .map((nextSlug) => projectsText.indexOf(`slug: "${nextSlug}"`, slugIndex + 1))
+    .filter((index) => index > slugIndex)
+    .sort((a, b) => a - b)[0];
+  return projectsText.slice(
+    slugIndex,
+    nextSlugIndex > 0 ? nextSlugIndex : projectsText.length,
+  );
+}
+
 const enMessages = readJson("messages/en.json");
 const zhMessages = readJson("messages/zh-Hans.json");
 const enKeys = flattenKeys(enMessages).sort();
@@ -38,56 +92,92 @@ assert(
   "messages/en.json and messages/zh-Hans.json do not have matching keys.",
 );
 
+const enContent = readText("data/i18n/en.ts");
 const zhContent = readText("data/i18n/zh-Hans.ts");
-const approvedChineseCopy = [
-  "叶锦华｜研究与项目",
-  "叶锦华的个人网站，记录他围绕人工智能、半导体、关键矿产、国际关系与科技政策所做的研究、工具和写作。",
-  "我研究技术如何改变权力。",
-  "我是叶锦华（Jinhua Yip），做科技政策研究。",
-  "研究、工具与写作",
-  "这里放着我做的互动工具、研究框架和文章，主题包括国际关系、人工智能治理、政治经济和战略影响。",
-  "全部项目",
-  "这里是我正在做和已经完成的项目。",
-  "联系我",
-  "如果你想聊科技政策、数据可视化，或者有合作想法，欢迎来信。",
-  "中文介绍正在整理中。",
-];
-
-for (const copy of approvedChineseCopy) {
-  assert(
-    zhContent.includes(copy),
-    `Missing approved Chinese copy in data/i18n/zh-Hans.ts: ${copy}`,
-  );
-}
-
-const zhMessagesText = readText("messages/zh-Hans.json");
-for (const copy of ["叶锦华", "我的一些项目。", "下潜", "跳过开场"]) {
-  assert(
-    zhMessagesText.includes(copy),
-    `Missing approved Chinese UI copy in messages/zh-Hans.json: ${copy}`,
-  );
-}
-
 const projectsText = readText("data/projects.ts");
+const placesText = readText("data/places.ts");
+
 const projectSlugs = [...projectsText.matchAll(/slug: "([^"]+)"/g)].map(
   (match) => match[1],
 );
 
+assert(projectSlugs.length === 8, "Expected exactly eight shared projects.");
+
 for (const slug of projectSlugs) {
-  const slugIndex = zhContent.indexOf(`"${slug}"`);
-  assert(slugIndex >= 0, `Missing explicit Chinese project entry for ${slug}.`);
-  const nextSlugIndex = projectSlugs
-    .map((nextSlug) => zhContent.indexOf(`"${nextSlug}"`, slugIndex + 1))
-    .filter((index) => index > slugIndex)
-    .sort((a, b) => a - b)[0];
-  const entry = zhContent.slice(
-    slugIndex,
-    nextSlugIndex > 0 ? nextSlugIndex : zhContent.length,
+  const entry = projectEntry(zhContent, slug);
+
+  for (const field of ["title", "node", "dek", "description", "tags"]) {
+    assert(
+      entry.includes(`${field}:`),
+      `Chinese project entry for ${slug} is missing ${field}.`,
+    );
+  }
+
+  assert(
+    /tags:\s*\[[\s\S]*?"[^"]+"/.test(entry),
+    `Chinese project entry for ${slug} has no tag values.`,
   );
   assert(
-    entry.includes("pendingProject(") || entry.includes("translationStatus: \"pending\""),
-    `Chinese project entry for ${slug} is not explicitly marked pending.`,
+    entry.includes('translationStatus: "complete"'),
+    `Chinese project entry for ${slug} is not marked complete.`,
   );
+
+  const sharedBlock = sharedProjectBlock(projectsText, slug, projectSlugs);
+  const sharedLabels = new Set(
+    [...sharedBlock.matchAll(/label: "([^"]+)"/g)].map((match) => match[1]),
+  );
+  const linkLabelsIndex = entry.indexOf("linkLabels:");
+  if (linkLabelsIndex >= 0) {
+    const labelsObjectStart = entry.indexOf("{", linkLabelsIndex);
+    const labelsObject = sliceBraced(entry, labelsObjectStart);
+    const localizedKeys = [...labelsObject.matchAll(/"([^"]+)":/g)].map(
+      (match) => match[1],
+    );
+    for (const label of localizedKeys) {
+      assert(
+        sharedLabels.has(label),
+        `Chinese link label for ${slug} does not match a shared link label: ${label}`,
+      );
+    }
+  }
+}
+
+for (const required of [
+  "methodology:",
+  "sourceRecordFields:",
+  "evidenceClasses:",
+  "confidenceLevels:",
+  "claimStatuses:",
+]) {
+  assert(enContent.includes(required), `English content is missing ${required}`);
+  assert(zhContent.includes(required), `Chinese content is missing ${required}`);
+}
+
+const placeIds = [...placesText.matchAll(/id: "([^"]+)"/g)].map(
+  (match) => match[1],
+);
+const placeTextIndex = zhContent.indexOf("const placeText = {");
+assert(placeTextIndex >= 0, "Chinese place text overlay is missing.");
+const placeTextObject = sliceBraced(
+  zhContent,
+  zhContent.indexOf("{", placeTextIndex),
+);
+const placeOverlayIds = new Set(
+  [...placeTextObject.matchAll(/^\s*(?:"([^"]+)"|([A-Za-z]\w*)):\s*{/gm)].map(
+    (match) => match[1] ?? match[2],
+  ),
+);
+
+for (const id of placeIds) {
+  assert(placeOverlayIds.has(id), `Chinese place overlay is missing ${id}.`);
+}
+
+const pendingNotice = ["中文介绍", "正在整理中。"].join("");
+for (const [path, text] of [
+  ["data/i18n/zh-Hans.ts", zhContent],
+  ["messages/zh-Hans.json", readText("messages/zh-Hans.json")],
+]) {
+  assert(!text.includes(pendingNotice), `${path} still contains the pending notice.`);
 }
 
 for (const structuralKey of [
@@ -95,14 +185,17 @@ for (const structuralKey of [
   "homeNode",
   "preview:",
   "links:",
+  "href:",
   "entities:",
+  "labelOnly",
+  "priority:",
   " x:",
   " y:",
   " r:",
 ]) {
   assert(
     !zhContent.includes(structuralKey),
-    `Chinese overlay appears to duplicate structural project data: ${structuralKey}`,
+    `Chinese overlay appears to duplicate structural data: ${structuralKey}`,
   );
 }
 

@@ -28,21 +28,14 @@ export async function generateMetadata({
   const project = getLocalizedProjectBySlug(locale, slug);
   if (!project) return {};
 
-  const isPendingChinese =
-    locale === "zh-Hans" && project.translationStatus === "pending";
-
   return localizedMetadata(
     locale,
     `/projects/${slug}`,
     {
       title: project.title,
-      description: isPendingChinese
-        ? (project.pendingNotice ?? project.title)
-        : project.dek,
+      description: project.dek,
     },
     {
-      alternates: false,
-      noindex: isPendingChinese,
       openGraphType: "article",
     },
   );
@@ -59,17 +52,30 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const t = await getTranslations({ locale, namespace: "projects" });
   const openLinks = project.links.filter((l) => !isSource(l.href));
   const sourceLinks = project.links.filter((l) => isSource(l.href));
-  const isPendingChinese =
-    locale === "zh-Hans" && project.translationStatus === "pending";
 
   // Long-form sections only render when their material exists; projects with
   // different underlying content are not forced into an identical template.
   const sections: { heading: string; body: string }[] = [
-    { heading: "What it does", body: project.description },
-    { heading: "What you can explore", body: project.detail?.whatYouCanExplore ?? "" },
-    { heading: "Why I built it", body: project.detail?.whyIBuiltIt ?? "" },
-    { heading: "Evidence and limits", body: project.detail?.evidenceAndLimits ?? "" },
-    { heading: "My role", body: project.detail?.myRole ?? "" },
+    {
+      heading: t("sections.whatItDoes"),
+      body: project.detail?.whatItDoes ?? project.description,
+    },
+    {
+      heading: t("sections.whatYouCanExplore"),
+      body: project.detail?.whatYouCanExplore ?? "",
+    },
+    {
+      heading: t("sections.whyIBuiltIt"),
+      body: project.detail?.whyIBuiltIt ?? "",
+    },
+    {
+      heading: t("sections.evidenceAndLimits"),
+      body: project.detail?.evidenceAndLimits ?? "",
+    },
+    {
+      heading: t("sections.myRole"),
+      body: project.detail?.myRole ?? "",
+    },
   ].filter((s) => s.body.length > 0);
 
   const statusLine = project.detail?.currentStatus
@@ -93,15 +99,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <h1 className="mt-3 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-ink sm:text-5xl">
           {project.title}
         </h1>
-        {isPendingChinese ? (
-          <p className="mt-5 max-w-[52ch] font-serif text-xl leading-[1.7] text-ink-2">
-            {project.pendingNotice}
-          </p>
-        ) : (
-          <p className="mt-5 max-w-[52ch] font-serif text-xl leading-[1.5] text-ink-2">
-            {project.dek}
-          </p>
-        )}
+        <p className="mt-5 max-w-[52ch] font-serif text-xl leading-[1.5] text-ink-2">
+          {project.dek}
+        </p>
 
         {(openLinks.length > 0 || sourceLinks.length > 0) && (
           <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -143,25 +143,23 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </div>
 
       <div className="mt-12 space-y-10">
-        {isPendingChinese
-          ? null
-          : sections.map((section, i) => (
-              <section
-                key={section.heading}
-                className={i > 0 ? "border-t border-rule pt-10" : undefined}
-              >
-                <h2 className="font-sans text-sm text-ink-2">
-                  {section.heading}
-                </h2>
-                <p className="mt-3 max-w-[64ch] font-serif text-lg leading-[1.65] text-ink">
-                  {section.body}
-                </p>
-              </section>
-            ))}
+        {sections.map((section, i) => (
+          <section
+            key={section.heading}
+            className={i > 0 ? "border-t border-rule pt-10" : undefined}
+          >
+            <h2 className="font-sans text-sm text-ink-2">
+              {section.heading}
+            </h2>
+            <p className="mt-3 max-w-[64ch] font-serif text-lg leading-[1.65] text-ink">
+              {section.body}
+            </p>
+          </section>
+        ))}
 
         <section className="border-t border-rule pt-10">
           <h2 className="font-sans text-sm text-ink-2">
-            {t("sections.status")}
+            {t("sections.currentStatus")}
           </h2>
           <p className="mt-3 font-serif text-lg leading-[1.65] text-ink">
             {statusLine}

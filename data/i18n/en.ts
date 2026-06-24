@@ -1,6 +1,11 @@
 import { projects, type Project, type ProjectSlug } from "@/data/projects";
+import { places, type Place, type PlaceId } from "@/data/places";
 
-import type { LocaleContent, ProjectContentOverlay } from "./types";
+import type {
+  LocaleContent,
+  PlaceTextOverlay,
+  ProjectContentOverlay,
+} from "./types";
 
 const projectList: readonly Project[] = projects;
 
@@ -18,6 +23,21 @@ const projectContent = Object.fromEntries(
     } satisfies ProjectContentOverlay,
   ]),
 ) as unknown as Record<ProjectSlug, ProjectContentOverlay>;
+
+function placeName(place: Place): string {
+  if (place.label) return place.label;
+  return place.region ? `${place.city}, ${place.region}` : place.city;
+}
+
+const placeText = Object.fromEntries(
+  places.map((place) => [
+    place.id,
+    {
+      name: placeName(place),
+      ...(place.kind === "life-anchor" ? { summary: place.summary } : {}),
+    } satisfies PlaceTextOverlay,
+  ]),
+) as Record<PlaceId, PlaceTextOverlay>;
 
 export const enContent = {
   site: {
@@ -86,5 +106,131 @@ export const enContent = {
       introduction: "",
     },
   },
+  methodology: {
+    metadata: {
+      title: "Methodology",
+      description: "The evidence standard that governs every atlas on this site.",
+    },
+    title: "Methodology",
+    introduction:
+      "Every atlas on this site follows one evidence standard. This page states it once, so the standard does not vary from project to project.",
+    ruleTitle: "The rule",
+    rule:
+      "Every public claim traces to a source record. If a number or a statement appears in an atlas, a record behind it names the source, when it was published, when it was retrieved, and how much weight it deserves. No orphan facts.",
+    sourceRecordTitle: "What a source record contains",
+    sourceRecordFields: [
+      {
+        term: "source",
+        gloss: "The publication or document the claim comes from, with a link out.",
+      },
+      {
+        term: "published / retrieved",
+        gloss: "When the source was published and when it was last checked.",
+      },
+      {
+        term: "evidence class",
+        gloss: "What kind of source it is. The ladder is below.",
+      },
+      {
+        term: "confidence",
+        gloss: "How much weight the claim deserves, stated plainly.",
+      },
+      {
+        term: "locator",
+        gloss:
+          "The page, table, row, or timestamp the claim came from, so a reader can check it.",
+      },
+      {
+        term: "uncertainty note",
+        gloss: "What is unclear, when something is.",
+      },
+    ],
+    evidenceClassesTitle: "Evidence classes, strongest to weakest",
+    evidenceClasses: [
+      {
+        term: "official",
+        gloss: "Primary documents: official reports, order books, filings.",
+      },
+      {
+        term: "press_release",
+        gloss: "A company or government announcement.",
+      },
+      {
+        term: "filing",
+        gloss: "An investor or regulatory filing.",
+      },
+      {
+        term: "regulator",
+        gloss: "A regulator or standards body.",
+      },
+      {
+        term: "media_context",
+        gloss: "Reputable media, used for context rather than as primary proof.",
+      },
+      {
+        term: "third_party_dataset",
+        gloss: "An external dataset, used within its rights.",
+      },
+      {
+        term: "manual_estimate",
+        gloss: "My own estimate, always labeled as one.",
+      },
+      {
+        term: "mock",
+        gloss: "A placeholder. Never shown as real data.",
+      },
+    ],
+    confidenceTitle: "Confidence, in plain words",
+    confidenceLevels: [
+      {
+        term: "high",
+        gloss: "Multiple strong primary sources agree.",
+        className: "text-confidence-high",
+      },
+      {
+        term: "medium",
+        gloss: "The direction is clear, but sourcing is thin or partly secondary.",
+        className: "text-confidence-medium",
+      },
+      {
+        term: "low",
+        gloss: "A single weak source, or an inference.",
+        className: "text-confidence-low",
+      },
+    ],
+    claimStatusTitle: "Claim status",
+    claimStatuses: [
+      {
+        term: "confirmed",
+        gloss: "Confirmed by a primary source.",
+      },
+      {
+        term: "reported",
+        gloss: "Announced or reported, not yet confirmed in primary records.",
+      },
+      {
+        term: "projected",
+        gloss: "Forward-looking: a plan, target, or forecast.",
+      },
+      {
+        term: "mock",
+        gloss:
+          "A placeholder, visibly labeled and styled so it cannot be mistaken for real.",
+      },
+    ],
+    limitsTitle: "Limits",
+    limits:
+      "These atlases work from the public record. They are not real-time, and they carry no privileged information. Where the record is thin, the atlas says so rather than filling the gap. An absence in an atlas means the public record is thin, not that the thing does not exist.",
+    buildTitle: "How these are built",
+    build:
+      "These projects are built with AI assistance for code and data structuring. Source selection and analysis are my own judgment.",
+    correctionsTitle: "Corrections",
+    corrections: {
+      beforeLink: "If you find an error, ",
+      linkLabel: "tell me",
+      afterLink: ". Corrections are noted when a project is updated.",
+    },
+  },
   projects: projectContent,
+  places: placeText,
 } satisfies LocaleContent;
