@@ -1,11 +1,7 @@
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
-const navItems = [
-  { href: "/about", label: "About" },
-  { href: "/research", label: "Research" },
-  { href: "/archive", label: "Archive" },
-  { href: "/contact", label: "Contact" },
-];
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { Link } from "@/i18n/navigation";
 
 const socialLinks = [
   {
@@ -43,7 +39,16 @@ const socialLinks = [
   },
 ];
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const locale = await getLocale();
+  const t = await getTranslations("nav");
+  const navItems = [
+    { href: "/about", label: t("about") },
+    { href: "/research", label: t("research") },
+    { href: "/archive", label: t("archive") },
+    { href: "/contact", label: t("contact") },
+  ];
+
   return (
     <header className="border-b border-rule bg-paper/90">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 py-6 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-10">
@@ -51,7 +56,7 @@ export function SiteHeader() {
           href="/"
           className="w-fit font-serif text-2xl leading-none text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
         >
-          Jinhua Yip
+          {locale === "zh-Hans" ? "叶锦华" : "Jinhua Yip"}
         </Link>
         <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
           <nav aria-label="Primary navigation">
@@ -68,6 +73,8 @@ export function SiteHeader() {
               ))}
             </ul>
           </nav>
+
+          <LanguageSwitcher />
 
           <nav aria-label="Social links">
             <ul className="flex items-center gap-3">

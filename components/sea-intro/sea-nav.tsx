@@ -1,18 +1,23 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
 
 import { SocialCluster } from "@/components/icons";
-
-const navItems = [
-  { href: "/about", label: "About" },
-  { href: "/research", label: "Research" },
-  { href: "/archive", label: "Archive" },
-  { href: "/contact", label: "Contact" },
-];
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { Link } from "@/i18n/navigation";
 
 // The portfolio name + navigation, shared by the surface and the depths so the
-// chrome is identical across the intro. Kept as a server component (no client
-// state) so it can render in either tree.
+// chrome is identical across the intro.
 export function SeaNav() {
+  const nav = useTranslations("nav");
+  const surface = useTranslations("sea.surface");
+  const navItems = [
+    { href: "/about", label: nav("about") },
+    { href: "/research", label: nav("research") },
+    { href: "/archive", label: nav("archive") },
+    { href: "/contact", label: nav("contact") },
+  ];
+
   return (
     <header
       id="sea-nav"
@@ -22,7 +27,7 @@ export function SeaNav() {
         href="/"
         className="block w-fit rounded-[3px] font-serif text-2xl leading-none text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
       >
-        Jinhua Yip
+        {surface("name")}
       </Link>
 
       <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
@@ -40,6 +45,7 @@ export function SeaNav() {
             ))}
           </ul>
         </nav>
+        <LanguageSwitcher className="hover:text-ink focus-visible:outline-sonar" />
         <SocialCluster size={16} />
       </div>
     </header>

@@ -61,7 +61,34 @@ function hasWebGL(): boolean {
   }
 }
 
+function isLocalPreviewHost(): boolean {
+  if (typeof window === "undefined") return true;
+
+  const hostname = window.location.hostname;
+  return (
+    hostname === "localhost" ||
+    hostname === "::1" ||
+    hostname === "0.0.0.0" ||
+    hostname.startsWith("127.")
+  );
+}
+
+function shouldRememberIntroCompletion(): boolean {
+  return !isLocalPreviewHost();
+}
+
+function reportLocalGlobeCapability(webgl: boolean) {
+  if (!isLocalPreviewHost() || (hasMapboxToken && webgl)) return;
+
+  console.info("[sea-intro] Globe unavailable on localhost.", {
+    hasMapboxToken,
+    webgl,
+  });
+}
+
 function sessionComplete(): boolean {
+  if (!shouldRememberIntroCompletion()) return false;
+
   try {
     return window.sessionStorage.getItem(SESSION_KEY) === "1";
   } catch {
@@ -81,6 +108,8 @@ function forceReplayRequested(): boolean {
 }
 
 function markSessionComplete() {
+  if (!shouldRememberIntroCompletion()) return;
+
   try {
     window.sessionStorage.setItem(SESSION_KEY, "1");
   } catch {
@@ -125,19 +154,24 @@ export function useSeaIntroState(): SeaIntroController {
   // Resolve the real entry state once, on the client.
   useEffect(() => {
     const reduced = prefersReducedMotion();
-    const capable = hasMapboxToken && hasWebGL();
-    setReducedMotion(reduced);
-    setIntroCapable(capable);
-    setResolved(true);
+    const webgl = hasWebGL();
+    const capable = hasMapboxToken && webgl;
+    reportLocalGlobeCapability(webgl);
 
     const force = forceReplayRequested();
-    if (!capable || (sessionComplete() && !force)) {
+    const nextState =
+      !capable || (sessionComplete() && !force) ? "depths" : "surface";
+
+    const raf = requestAnimationFrame(() => {
+      setReducedMotion(reduced);
+      setIntroCapable(capable);
+      setResolved(true);
       // Returning visitor (without a force flag), or no globe possible: land in
       // the depths silently.
-      dispatch({ type: "RESOLVE", state: "depths" });
-      return;
-    }
-    dispatch({ type: "RESOLVE", state: "surface" });
+      dispatch({ type: "RESOLVE", state: nextState });
+    });
+
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   const dive = useCallback(() => dispatch({ type: "DIVE" }), []);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { DawnGlobe } from "./dawn-globe";
@@ -39,6 +40,8 @@ type MarkerPauseSource = "life-anchor" | "visited";
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 export function SeaIntroV2() {
+  const surfaceText = useTranslations("sea.surface");
+  const ariaText = useTranslations("sea.aria");
   const intro = useSeaIntroState();
   const { state, resolved, reducedMotion, introCapable, finishDive } = intro;
 
@@ -315,7 +318,7 @@ export function SeaIntroV2() {
       <>
         <HomeScene
           onReplay={introCapable ? handleReplay : undefined}
-          showParticleField={resolved && state === "depths"}
+          showParticleField={introCapable && resolved && state === "depths"}
           showAmbientThoughts={resolved && state === "depths"}
         />
         {debugPanel}
@@ -398,10 +401,10 @@ export function SeaIntroV2() {
             onClick={handleDivingSkip}
             className="absolute right-6 top-6 z-40 rounded-[2px] font-sans text-sm text-ink-2/90 underline-offset-4 transition-colors hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
           >
-            Skip intro
+            {surfaceText("skip")}
           </button>
           <div aria-live="polite" className="sr-only">
-            Entering the archive.
+            {ariaText("entering")}
           </div>
         </>
       ) : null}

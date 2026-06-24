@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 
+import { getLocaleContent } from "@/data/i18n";
+import { localizedMetadata } from "@/i18n/metadata";
+import { setStaticLocale, type LocaleParams } from "@/i18n/locale";
+import { isLocale, routing } from "@/i18n/routing";
+
 const contactLinks = [
   {
     label: "Email",
@@ -23,20 +28,36 @@ const contactLinks = [
   },
 ];
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Contact information for Jinhua Yip.",
+type ContactPageProps = {
+  params: LocaleParams;
 };
 
-export default function ContactPage() {
+export async function generateMetadata({
+  params,
+}: ContactPageProps): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  const locale = isLocale(rawLocale) ? rawLocale : routing.defaultLocale;
+  const content = getLocaleContent(locale).pages.contact;
+  return localizedMetadata(locale, "/contact", content.metadata);
+}
+
+export default async function ContactPage({ params }: ContactPageProps) {
+  const locale = await setStaticLocale(params);
+  const content = getLocaleContent(locale).pages.contact;
+
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-18">
       <p aria-hidden="true" className="mb-4 font-sans text-sm text-oxblood">
-        Contact
+        {locale === "en" ? "Contact" : "联系"}
       </p>
       <h1 className="font-serif text-4xl font-medium leading-tight tracking-tight text-ink sm:text-5xl">
-        Get in touch
+        {content.heading}
       </h1>
+      {content.introduction ? (
+        <p className="mt-5 max-w-[44ch] font-serif text-lg leading-relaxed text-ink-2">
+          {content.introduction}
+        </p>
+      ) : null}
 
       <dl className="mt-10 divide-y divide-rule border-y border-rule">
         {contactLinks.map((item) => (

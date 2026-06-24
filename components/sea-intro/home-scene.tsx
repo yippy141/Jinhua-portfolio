@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Icon } from "@/components/icons";
 import { ParticleField } from "@/components/particle-field";
+import { Link } from "@/i18n/navigation";
 
 import { AmbientThoughtLayer } from "./ambient-thought-layer";
 import { ProjectDriftField } from "./project-drift-field";
@@ -17,12 +18,6 @@ import { INTRO_CONFIG } from "./sea-intro-config";
 // original homepage body is a smaller, settled hero and a quiet "Return to
 // surface" control. When the visitor arrives through the dive, the layers enter
 // in a staggered depth reveal rather than one flat opacity fade.
-
-const hero = {
-  headline: "Welcome to my Sea of Consciousness",
-  blurb:
-    "My personal repository of projects on emerging technology and international affairs.",
-};
 
 // Stagger derived from the typed reveal offsets so it tunes alongside the dive.
 const STAGGER_SPAN = 760;
@@ -51,6 +46,7 @@ export function HomeScene({
   showParticleField = true,
   showAmbientThoughts = false,
 }: HomeSceneProps) {
+  const depths = useTranslations("sea.depths");
   const [revealed, setRevealed] = useState(!entrance);
   // Once settled we drop transforms/filters entirely so FrontDoor's fixed
   // dossier positioning is never trapped inside a transformed ancestor.
@@ -123,17 +119,17 @@ export function HomeScene({
             tabIndex={-1}
             className="text-balance font-serif text-[1.9rem] font-medium leading-[1.08] tracking-tight text-ink outline-none sm:text-4xl"
           >
-            {hero.headline}
+            {depths("heading")}
           </h1>
           <p className="mt-4 max-w-[440px] font-sans text-[15px] leading-relaxed text-ink/70">
-            {hero.blurb}
+            {depths("blurb")}
           </p>
           <div className="mt-6">
             <Link
               href="/archive"
               className="group inline-flex items-center gap-1.5 rounded-[2px] font-sans text-[15px] text-ink underline-offset-4 transition-colors duration-200 hover:text-oxblood hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sonar"
             >
-              Browse all projects
+              {depths("browse")}
               <Icon name="arrow" size={15} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
           </div>

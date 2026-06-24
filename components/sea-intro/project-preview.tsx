@@ -1,13 +1,10 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 import { Icon } from "@/components/icons";
-import {
-  projectStatusLabels,
-  projectTypeLabels,
-  type Project,
-} from "@/data/projects";
+import type { Project } from "@/data/projects";
 
 import { ProjectPreviewMedia } from "./project-preview-media";
 
@@ -19,6 +16,7 @@ type ProjectPreviewProps = {
   flagship: boolean;
   pos: { left: number; top: number };
   reducedMotion: boolean;
+  showDescription: boolean;
 };
 
 export function ProjectPreview({
@@ -26,7 +24,10 @@ export function ProjectPreview({
   flagship,
   pos,
   reducedMotion,
+  showDescription,
 }: ProjectPreviewProps) {
+  const t = useTranslations("projects");
+
   return (
     <motion.aside
       role="dialog"
@@ -39,9 +40,9 @@ export function ProjectPreview({
     >
       <div className="flex items-center justify-between font-sans text-[12px] text-ink-2">
         <span>
-          {projectTypeLabels[project.type]} · {project.year}
+          {t(`types.${project.type}`)} · {project.year}
         </span>
-        <span className="text-sonar">{projectStatusLabels[project.status]}</span>
+        <span className="text-sonar">{t(`statuses.${project.status}`)}</span>
       </div>
 
       <div className="mt-3">
@@ -58,11 +59,13 @@ export function ProjectPreview({
       <h2 className="mt-3 font-serif text-[18px] leading-tight text-ink">
         {project.title}
       </h2>
-      <p className="mt-1.5 font-serif text-[13px] leading-snug text-ink-2">
-        {project.dek}
-      </p>
+      {showDescription ? (
+        <p className="mt-1.5 font-serif text-[13px] leading-snug text-ink-2">
+          {project.dek}
+        </p>
+      ) : null}
       <div className="mt-3 flex items-center gap-1.5 border-t border-rule pt-3 text-oxblood">
-        <span className="font-sans text-[13px]">Open project</span>
+        <span className="font-sans text-[13px]">{t("openProject")}</span>
         <Icon name="arrow" size={14} />
       </div>
     </motion.aside>

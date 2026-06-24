@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { Link } from "@/i18n/navigation";
+import { localizedMetadata } from "@/i18n/metadata";
+import { setStaticLocale, type LocaleParams } from "@/i18n/locale";
+import { isLocale, routing } from "@/i18n/routing";
 
 const sourceRecordFields = [
   {
@@ -105,11 +108,29 @@ const claimStatuses = [
   },
 ];
 
-export const metadata: Metadata = {
-  title: "Methodology",
-  description: "The evidence standard that governs every atlas on this site.",
-  alternates: { canonical: "/methodology" },
+type MethodologyPageProps = {
+  params: LocaleParams;
 };
+
+export async function generateMetadata({
+  params,
+}: MethodologyPageProps): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  const locale = isLocale(rawLocale) ? rawLocale : routing.defaultLocale;
+
+  return localizedMetadata(
+    locale,
+    "/methodology",
+    {
+      title: "Methodology",
+      description: "The evidence standard that governs every atlas on this site.",
+    },
+    {
+      alternates: false,
+      noindex: locale === "zh-Hans",
+    },
+  );
+}
 
 function MethodologyList({
   items,
@@ -156,7 +177,11 @@ function MethodologySection({
   );
 }
 
-export default function MethodologyPage() {
+export default async function MethodologyPage({
+  params,
+}: MethodologyPageProps) {
+  await setStaticLocale(params);
+
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
       <SiteHeader />
