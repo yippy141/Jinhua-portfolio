@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 
 import { Icon } from "@/components/icons";
-import type { Project } from "@/data/projects";
+import type { LocalizedProject } from "@/data/i18n";
 
 import { ProjectPreviewMedia } from "./project-preview-media";
 
@@ -12,7 +12,7 @@ import { ProjectPreviewMedia } from "./project-preview-media";
 // sentence case (no uppercase mono row), and the media is a real video where the
 // project declares one.
 type ProjectPreviewProps = {
-  project: Project;
+  project: LocalizedProject;
   flagship: boolean;
   pos: { left: number; top: number };
   reducedMotion: boolean;
@@ -31,7 +31,7 @@ export function ProjectPreview({
   return (
     <motion.aside
       role="dialog"
-      aria-label={`${project.title} preview`}
+      aria-label={project.preview.alt}
       initial={reducedMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}

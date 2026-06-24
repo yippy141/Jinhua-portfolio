@@ -2,11 +2,12 @@
 
 import { useReducedMotion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { projects } from "@/data/projects";
+import { getLocalizedProjects } from "@/data/i18n";
 import { NodeIcon } from "@/components/node-icons";
 import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 
 import { ProjectDriftNode } from "./project-drift-node";
 import { ProjectFieldDebug } from "./project-field-debug";
@@ -21,16 +22,15 @@ import {
 // (project-drift-node), a hover/focus dossier (project-preview), and a stable
 // list on phones. Replaces FrontDoor.
 
-const nodes = [...projects];
-const flagshipId = nodes.find((n) => n.tier === "flagship")?.id ?? nodes[0]?.id;
-
 type DossierPos = { left: number; top: number };
 
 export function ProjectDriftField() {
   const prefersReducedMotion = useReducedMotion() ?? false;
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
   const t = useTranslations("projects");
-  const showProjectDescriptions = locale === "en";
+  const nodes = useMemo(() => getLocalizedProjects(locale), [locale]);
+  const flagshipId =
+    nodes.find((node) => node.tier === "flagship")?.id ?? nodes[0]?.id;
   const {
     fieldRef,
     settled,
@@ -132,7 +132,7 @@ export function ProjectDriftField() {
           flagship={active.id === flagshipId}
           pos={dossierPos}
           reducedMotion={prefersReducedMotion}
-          showDescription={showProjectDescriptions}
+          showDescription={active.hasLocalizedEditorial}
         />
       ) : null}
 
@@ -162,7 +162,7 @@ export function ProjectDriftField() {
                 <span className="mt-2 block font-serif text-xl leading-tight text-ink">
                   {node.node}
                 </span>
-                {showProjectDescriptions ? (
+                {node.hasLocalizedEditorial ? (
                   <span className="mt-1.5 block font-serif text-sm leading-snug text-ink-2">
                     {node.dek}
                   </span>

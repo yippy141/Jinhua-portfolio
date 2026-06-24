@@ -697,6 +697,8 @@ export const places: Place[] = [
   },
 ];
 
+export type PlaceId = (typeof places)[number]["id"];
+
 export function isLifeAnchor(place: Place): place is LifeAnchorPlace {
   return place.kind === "life-anchor";
 }

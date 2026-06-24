@@ -33,8 +33,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const englishProjects = projects.map((project) => ({
-    url: absoluteUrl(`/projects/${project.slug}`),
+    url: absoluteUrl(publicPath("en", `/projects/${project.slug}`)),
+    alternates: alternatesFor(`/projects/${project.slug}`),
   }));
 
-  return [...englishCore, ...chineseCore, ...englishProjects];
+  const chineseProjects = projects.map((project) => ({
+    url: absoluteUrl(publicPath("zh-Hans", `/projects/${project.slug}`)),
+    alternates: alternatesFor(`/projects/${project.slug}`),
+  }));
+
+  return [...englishCore, ...chineseCore, ...englishProjects, ...chineseProjects];
 }

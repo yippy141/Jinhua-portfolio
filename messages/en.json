@@ -31,7 +31,8 @@
     },
     "globeLegend": {
       "lifeAnchor": "Lived / studied / worked",
-      "visited": "Visited"
+      "visited": "Visited",
+      "close": "Close"
     }
   },
   "archiveList": {
@@ -50,14 +51,14 @@
   "projects": {
     "back": "Back to projects",
     "openProject": "Open project",
-    "viewSource": "View source",
+    "viewSource": "Source code",
     "sections": {
       "whatItDoes": "What it does",
       "whatYouCanExplore": "What you can explore",
       "whyIBuiltIt": "Why I built it",
       "evidenceAndLimits": "Evidence and limits",
       "myRole": "My role",
-      "status": "Status"
+      "currentStatus": "Current status"
     },
     "types": {
       "tool": "Tool",

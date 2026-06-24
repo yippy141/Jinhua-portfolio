@@ -9,13 +9,13 @@ import {
   type RefObject,
 } from "react";
 
-import { visitedPlaces } from "@/data/places";
-import type { VisitedPlace } from "@/data/places";
+import type { LocalizedVisitedPlace } from "@/data/i18n";
 import type { AutoSpinPauseReason } from "./dawn-globe";
 
 type MapboxMap = import("mapbox-gl").Map;
 
 type VisitedCityDotsProps = {
+  places: LocalizedVisitedPlace[];
   mapRef: RefObject<MapboxMap | null>;
   lastInteractionRef: RefObject<number>;
   autoSpinPauseReasonRef: RefObject<AutoSpinPauseReason>;
@@ -45,15 +45,16 @@ function markerOpacity(distance: number, cullDegrees: number, forced: boolean) {
   return 0.34 + fade * 0.6;
 }
 
-function dotSize(place: VisitedPlace) {
+function dotSize(place: LocalizedVisitedPlace) {
   return place.priority <= 3 ? 9 : 8;
 }
 
-function displayName(place: VisitedPlace): string {
+function displayName(place: LocalizedVisitedPlace): string {
   return place.label ?? place.city;
 }
 
 export function VisitedCityDots({
+  places,
   mapRef,
   lastInteractionRef,
   autoSpinPauseReasonRef,
@@ -64,15 +65,15 @@ export function VisitedCityDots({
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const captionRef = useRef<HTMLDivElement>(null);
   const posRef = useRef<{ x: number; y: number; vis: boolean }[]>(
-    visitedPlaces.map(() => ({ x: -9999, y: -9999, vis: false })),
+    places.map(() => ({ x: -9999, y: -9999, vis: false })),
   );
 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const activeId = pinnedId ?? hoveredId ?? focusedId;
-  const activeIndex = visitedPlaces.findIndex((place) => place.id === activeId);
-  const active = activeIndex >= 0 ? visitedPlaces[activeIndex] : null;
+  const activeIndex = places.findIndex((place) => place.id === activeId);
+  const active = activeIndex >= 0 ? places[activeIndex] : null;
 
   const interact = useCallback((reason: AutoSpinPauseReason = "beacon") => {
     lastInteractionRef.current = performance.now();
@@ -115,8 +116,8 @@ export function VisitedCityDots({
         const zoom = map.getZoom();
         const cullDegrees = zoom < 2.5 ? 46 : 52;
 
-        for (let i = 0; i < visitedPlaces.length; i++) {
-          const place = visitedPlaces[i];
+        for (let i = 0; i < places.length; i++) {
+          const place = places[i];
           const pt = map.project(place.coordinates);
           const distance = angularDist([center.lng, center.lat], place.coordinates);
           const visible = distance <= cullDegrees;
@@ -143,13 +144,13 @@ export function VisitedCityDots({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [activeId, activeIndex, focusedId, isMobile, mapRef]);
+  }, [activeId, activeIndex, focusedId, isMobile, mapRef, places]);
 
   const captionId = "visited-city-caption";
 
   return (
     <div className="pointer-events-none absolute inset-0 z-20">
-      {visitedPlaces.map((place, index) => {
+      {places.map((place, index) => {
         const size = dotSize(place);
         const isActive = place.id === activeId;
         const coreSize = isActive ? Math.min(size + 2, 11) : size;
@@ -228,10 +229,10 @@ export function VisitedCityDots({
                 setHoveredId(null);
                 setFocusedId(null);
               }}
-              aria-label="Dismiss"
+              aria-label={legendText("close")}
               className="rounded-[2px] font-sans text-sm text-ink-2 underline-offset-4 hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sonar"
             >
-              Close
+              {legendText("close")}
             </button>
           </div>
         </div>

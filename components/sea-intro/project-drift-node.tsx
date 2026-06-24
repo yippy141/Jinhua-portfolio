@@ -1,17 +1,17 @@
 "use client";
 
-import { NodeIcon } from "@/components/node-icons";
-import type { projects } from "@/data/projects";
-import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
-type FieldNode = (typeof projects)[number];
+import { NodeIcon } from "@/components/node-icons";
+import type { LocalizedProject } from "@/data/i18n";
+import { Link } from "@/i18n/navigation";
 
 // A single drifting project symbol. Collapsed it shows only the icon; a short
 // label appears (driven by the physics hook) only when the node is comfortably
 // isolated or focused. The outer div is positioned by the physics writeTransforms
 // via `nodeRef`; the inner div plays the staggered depth entrance.
 type ProjectDriftNodeProps = {
-  node: FieldNode;
+  node: LocalizedProject;
   isFlagship: boolean;
   isActive: boolean;
   size: number;
@@ -37,6 +37,7 @@ export function ProjectDriftNode({
   onOpen,
   onClose,
 }: ProjectDriftNodeProps) {
+  const t = useTranslations("projects");
   const color = isFlagship
     ? "var(--oxblood)"
     : isActive
@@ -77,7 +78,7 @@ export function ProjectDriftNode({
         >
           <Link
             href={`/projects/${node.slug}`}
-            aria-label={`Open ${node.title}`}
+            aria-label={`${t("openProject")}: ${node.title}`}
             onMouseEnter={(e) => onOpen(node.id, e.currentTarget)}
             onMouseLeave={onClose}
             onFocus={(e) => onOpen(node.id, e.currentTarget)}

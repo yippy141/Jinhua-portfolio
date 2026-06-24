@@ -1,8 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { lifeAnchors } from "@/data/places";
+import type { LocalizedLifeAnchorPlace } from "@/data/i18n";
 import type { AutoSpinPauseReason } from "./dawn-globe";
 
 type MapboxMap = import("mapbox-gl").Map;
@@ -18,6 +19,7 @@ type MapboxMap = import("mapbox-gl").Map;
 export type BeaconState = { activeId: string | null; pinnedId: string | null };
 
 type LifeAnchorsProps = {
+  places: LocalizedLifeAnchorPlace[];
   mapRef: React.RefObject<MapboxMap | null>;
   // Hard pause (a pinned caption keeps the globe still until dismissed).
   rotationPausedRef: React.RefObject<boolean>;
@@ -63,6 +65,7 @@ function pulseSize(priority: number): number {
 }
 
 export function LifeAnchors({
+  places,
   mapRef,
   rotationPausedRef,
   lastInteractionRef,
@@ -71,18 +74,19 @@ export function LifeAnchors({
   beaconStateRef,
   isMobile,
 }: LifeAnchorsProps) {
+  const globeText = useTranslations("sea.globeLegend");
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const captionRef = useRef<HTMLDivElement>(null);
   const posRef = useRef<{ x: number; y: number; vis: boolean }[]>(
-    lifeAnchors.map(() => ({ x: -9999, y: -9999, vis: false })),
+    places.map(() => ({ x: -9999, y: -9999, vis: false })),
   );
 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const activeId = pinnedId ?? hoveredId ?? focusedId;
-  const activeIndex = lifeAnchors.findIndex((p) => p.id === activeId);
-  const active = activeIndex >= 0 ? lifeAnchors[activeIndex] : null;
+  const activeIndex = places.findIndex((p) => p.id === activeId);
+  const active = activeIndex >= 0 ? places[activeIndex] : null;
 
   const interact = useCallback((reason: AutoSpinPauseReason = "beacon") => {
     if (lastInteractionRef) lastInteractionRef.current = performance.now();
@@ -132,8 +136,8 @@ export function LifeAnchors({
       const map = mapRef.current;
       if (map) {
         const center = map.getCenter();
-        for (let i = 0; i < lifeAnchors.length; i++) {
-          const p = lifeAnchors[i];
+        for (let i = 0; i < places.length; i++) {
+          const p = places[i];
           const pt = map.project(p.coordinates);
           const back =
             angularDist([center.lng, center.lat], p.coordinates) > CULL_DEGREES;
@@ -158,13 +162,13 @@ export function LifeAnchors({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [mapRef, activeId, activeIndex, focusedId, isMobile]);
+  }, [mapRef, activeId, activeIndex, focusedId, isMobile, places]);
 
   const captionId = "life-anchor-caption";
 
   return (
     <div className="pointer-events-none absolute inset-0 z-30">
-      {lifeAnchors.map((place, i) => {
+      {places.map((place, i) => {
         const isActive = place.id === activeId;
         const size = dotSize(place.priority);
         const ringSize = pulseSize(place.priority);
@@ -262,10 +266,10 @@ export function LifeAnchors({
                 setHoveredId(null);
                 setFocusedId(null);
               }}
-              aria-label="Dismiss"
+              aria-label={globeText("close")}
               className="rounded-[2px] font-sans text-sm text-ink-2 underline-offset-4 hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sonar"
             >
-              Close
+              {globeText("close")}
             </button>
           </div>
         </div>

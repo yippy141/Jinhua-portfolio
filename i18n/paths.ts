@@ -8,12 +8,10 @@ export const completedCorePaths = [
   "/research",
   "/archive",
   "/contact",
-] as const;
-
-export const englishCorePaths = [
-  ...completedCorePaths,
   "/methodology",
 ] as const;
+
+export const englishCorePaths = completedCorePaths;
 
 export function publicPath(locale: Locale, pathname: string): string {
   const normalized = pathname === "" ? "/" : pathname;

@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useReducedMotion } from "motion/react";
 
-import { projects } from "@/data/projects";
+import { projects, type ProjectTier } from "@/data/projects";
 
 // The project-field layout + physics, extracted from ProjectDriftField so the
 // component stays presentational. Behaviour is unchanged: measure the real
@@ -41,13 +41,14 @@ const MAX_SPEED = 30; // px/s
 const DRIFT_AMP = 9;
 const DRIFT_FREQ = 0.16;
 const RELAYOUT_AFTER_ENTRANCE_MS = 1900;
+const WIDE_QUERY = "(min-width: 768px)";
 
-export function radiusForTier(tier: FieldNode["tier"]): number {
+export function radiusForTier(tier: ProjectTier): number {
   if (tier === "flagship") return 23;
   if (tier === "lab") return 18;
   return 16;
 }
-export function iconSizeForTier(tier: FieldNode["tier"]): number {
+export function iconSizeForTier(tier: ProjectTier): number {
   if (tier === "flagship") return 40;
   if (tier === "lab") return 30;
   return 26;
@@ -91,6 +92,36 @@ function pushOutOfRect(p: Body, rad: number, r: Rect, margin: number) {
 function clampToField(p: Body, rad: number, w: number, h: number) {
   p.x = Math.min(Math.max(p.x, FIELD_PAD + rad), w - FIELD_PAD - rad);
   p.y = Math.min(Math.max(p.y, FIELD_PAD + rad), h - FIELD_PAD - rad);
+}
+
+function subscribeWideQuery(onStoreChange: () => void) {
+  const mq = window.matchMedia(WIDE_QUERY);
+  mq.addEventListener("change", onStoreChange);
+  return () => mq.removeEventListener("change", onStoreChange);
+}
+
+function getWideSnapshot() {
+  return window.matchMedia(WIDE_QUERY).matches;
+}
+
+function getWideServerSnapshot() {
+  return false;
+}
+
+function subscribeDebugQuery() {
+  return () => {};
+}
+
+function getDebugSnapshot() {
+  try {
+    return new URLSearchParams(window.location.search).get("introDebug") === "1";
+  } catch {
+    return false;
+  }
+}
+
+function getDebugServerSnapshot() {
+  return false;
 }
 
 function measureExclusions(field: HTMLElement): Rect[] {
@@ -191,10 +222,17 @@ export type ProjectFieldController = {
 
 export function useProjectFieldPhysics(): ProjectFieldController {
   const prefersReducedMotion = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
-  const [isWide, setIsWide] = useState(false);
+  const isWide = useSyncExternalStore(
+    subscribeWideQuery,
+    getWideSnapshot,
+    getWideServerSnapshot,
+  );
+  const debug = useSyncExternalStore(
+    subscribeDebugQuery,
+    getDebugSnapshot,
+    getDebugServerSnapshot,
+  );
   const [settled, setSettled] = useState(false);
-  const [debug, setDebug] = useState(false);
   const [seed, setSeed] = useState(1337);
   const [debugSnap, setDebugSnap] = useState<DebugSnap | null>(null);
 
@@ -234,23 +272,7 @@ export function useProjectFieldPhysics(): ProjectFieldController {
     activeRef.current = id;
   }, []);
 
-  useEffect(() => {
-    setMounted(true);
-    const mq = window.matchMedia("(min-width: 768px)");
-    const update = () => setIsWide(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    try {
-      setDebug(
-        new URLSearchParams(window.location.search).get("introDebug") === "1",
-      );
-    } catch {
-      // ignore
-    }
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  const animate = mounted && isWide && !prefersReducedMotion;
+  const animate = isWide && !prefersReducedMotion;
 
   const writeTransforms = useCallback(() => {
     for (let i = 0; i < nodes.length; i++) {
@@ -344,7 +366,7 @@ export function useProjectFieldPhysics(): ProjectFieldController {
 
   // Initial layout + re-layout after the depths entrance settles + ResizeObserver.
   useEffect(() => {
-    if (!mounted || !isWide) return;
+    if (!isWide) return;
     const raf1 = requestAnimationFrame(() => settleLayout(true));
     const t = window.setTimeout(
       () => settleLayout(false),
@@ -372,7 +394,7 @@ export function useProjectFieldPhysics(): ProjectFieldController {
       window.clearTimeout(t);
       if (ro) ro.disconnect();
     };
-  }, [mounted, isWide, settleLayout, debug]);
+  }, [isWide, settleLayout, debug]);
 
   // Log field size once the reveal has completed.
   useEffect(() => {

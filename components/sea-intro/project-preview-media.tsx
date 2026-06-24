@@ -48,6 +48,7 @@ function ProjectPreviewMediaImpl({
   const reduced = reducedMotion ?? systemReducedMotion;
   const videoSrc = preview.kind === "video" ? preview.video ?? null : null;
   const poster = preview.posters[0];
+  const label = preview.alt || `${title} preview`;
 
   useEffect(() => {
     const el = videoRef.current;
@@ -71,7 +72,7 @@ function ProjectPreviewMediaImpl({
         loop
         playsInline
         preload="metadata"
-        aria-label={`${title} preview`}
+        aria-label={label}
         className={`block border border-rule object-cover ${className}`}
       />
     );
@@ -83,7 +84,7 @@ function ProjectPreviewMediaImpl({
     return (
       <span
         role="img"
-        aria-label={`${title} preview`}
+        aria-label={label}
         className={`block border border-rule bg-cover bg-center ${className}`}
         style={{ backgroundImage: `url(${poster})` }}
       />
