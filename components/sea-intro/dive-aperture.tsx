@@ -13,9 +13,10 @@ export type ApertureCenter = { x: number; y: number };
 type DiveApertureProps = {
   onDive: (center: ApertureCenter) => void;
   disabled?: boolean;
+  label: string;
 };
 
-export function DiveAperture({ onDive, disabled }: DiveApertureProps) {
+export function DiveAperture({ onDive, disabled, label }: DiveApertureProps) {
   const [firing, setFiring] = useState(false);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -35,7 +36,7 @@ export function DiveAperture({ onDive, disabled }: DiveApertureProps) {
     <button
       type="button"
       onClick={handleClick}
-      aria-label="Dive in"
+      aria-label={label}
       className="group relative grid h-[104px] w-[104px] place-items-center rounded-full text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-sonar"
     >
       {/* idle waterline ring */}
@@ -57,7 +58,7 @@ export function DiveAperture({ onDive, disabled }: DiveApertureProps) {
       ) : null}
 
       <span className="z-10 font-serif text-[19px] leading-none text-ink transition-transform duration-200 group-active:scale-95">
-        Dive in
+        {label}
       </span>
     </button>
   );

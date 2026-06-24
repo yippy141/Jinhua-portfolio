@@ -1,0 +1,82 @@
+{
+  "skip": {
+    "content": "Skip to content"
+  },
+  "nav": {
+    "about": "About",
+    "research": "Research",
+    "archive": "Archive",
+    "contact": "Contact",
+    "resume": "Resume"
+  },
+  "language": {
+    "label": "中文",
+    "aria": "Switch to Chinese"
+  },
+  "sea": {
+    "surface": {
+      "name": "Jinhua Yip",
+      "blurb": "A collection of my projects.",
+      "dive": "Dive in",
+      "skip": "Skip intro"
+    },
+    "depths": {
+      "heading": "Welcome to my Sea of Consciousness",
+      "blurb": "My personal repository of projects on emerging technology and international affairs.",
+      "browse": "Browse all projects",
+      "return": "Return to surface"
+    },
+    "aria": {
+      "entering": "Entering the archive."
+    },
+    "globeLegend": {
+      "lifeAnchor": "Lived / studied / worked",
+      "visited": "Visited"
+    }
+  },
+  "archiveList": {
+    "filterLabel": "Filter projects",
+    "filters": {
+      "all": "All",
+      "flagship": "Flagship",
+      "lab": "Lab",
+      "research": "Research",
+      "writing": "Writing"
+    },
+    "projectSingular": "project",
+    "projectPlural": "projects",
+    "open": "Open"
+  },
+  "projects": {
+    "back": "Back to projects",
+    "openProject": "Open project",
+    "viewSource": "View source",
+    "sections": {
+      "whatItDoes": "What it does",
+      "whatYouCanExplore": "What you can explore",
+      "whyIBuiltIt": "Why I built it",
+      "evidenceAndLimits": "Evidence and limits",
+      "myRole": "My role",
+      "status": "Status"
+    },
+    "types": {
+      "tool": "Tool",
+      "research": "Research",
+      "publication": "Publication",
+      "essay": "Essay"
+    },
+    "statuses": {
+      "live": "Live project",
+      "beta": "Beta",
+      "published": "Published",
+      "in-progress": "In progress",
+      "concept": "Concept"
+    }
+  },
+  "footer": {
+    "summary": "Selected research, essays, and editorial projects.",
+    "location": "Washington, DC",
+    "methodology": "Evidence standard",
+    "contact": "Contact"
+  }
+}

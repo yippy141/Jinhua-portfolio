@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run validate:i18n",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "validate:i18n": "node scripts/validate-i18n.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -14,6 +16,7 @@
     "mapbox-gl": "^3.25.0",
     "motion": "^12.38.0",
     "next": "16.2.4",
+    "next-intl": "^4.13.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "three": "^0.184.0"

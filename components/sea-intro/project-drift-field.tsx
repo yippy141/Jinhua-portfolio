@@ -1,15 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useReducedMotion } from "motion/react";
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
-import {
-  projects,
-  projectStatusLabels,
-  projectTypeLabels,
-} from "@/data/projects";
+import { projects } from "@/data/projects";
 import { NodeIcon } from "@/components/node-icons";
+import { Link } from "@/i18n/navigation";
 
 import { ProjectDriftNode } from "./project-drift-node";
 import { ProjectFieldDebug } from "./project-field-debug";
@@ -31,6 +28,9 @@ type DossierPos = { left: number; top: number };
 
 export function ProjectDriftField() {
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const locale = useLocale();
+  const t = useTranslations("projects");
+  const showProjectDescriptions = locale === "en";
   const {
     fieldRef,
     settled,
@@ -45,6 +45,7 @@ export function ProjectDriftField() {
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [dossierPos, setDossierPos] = useState<DossierPos | null>(null);
+  const [fallbackVisible, setFallbackVisible] = useState(false);
 
   const open = useCallback(
     (id: string, element: HTMLElement) => {
@@ -83,15 +84,24 @@ export function ProjectDriftField() {
     return () => window.removeEventListener("keydown", onKey);
   }, [close]);
 
+  useEffect(() => {
+    if (settled) return;
+
+    const timeout = window.setTimeout(() => setFallbackVisible(true), 900);
+    return () => window.clearTimeout(timeout);
+  }, [settled]);
+
   const active = activeId ? nodes.find((n) => n.id === activeId) : null;
+  const fieldVisible = settled || fallbackVisible;
 
   return (
     <>
-      {/* DRIFTING FIELD: md up. Hidden until a settled layout exists. */}
+      {/* DRIFTING FIELD: md up. If measured physics cannot settle, fall back to
+          the project data coordinates instead of leaving the field blank. */}
       <div
         ref={fieldRef}
         className="pointer-events-none absolute inset-0 hidden md:block"
-        style={{ opacity: settled ? 1 : 0, transition: "opacity 300ms ease" }}
+        style={{ opacity: fieldVisible ? 1 : 0, transition: "opacity 300ms ease" }}
       >
         {nodes.map((node, index) => (
           <ProjectDriftNode
@@ -102,6 +112,7 @@ export function ProjectDriftField() {
             size={iconSizeForTier(node.tier)}
             revealDelay={120 + index * 70}
             settled={settled}
+            fallbackVisible={fallbackVisible}
             nodeRef={nodeRef(index)}
             labelRef={labelRef(index)}
             onOpen={open}
@@ -121,6 +132,7 @@ export function ProjectDriftField() {
           flagship={active.id === flagshipId}
           pos={dossierPos}
           reducedMotion={prefersReducedMotion}
+          showDescription={showProjectDescriptions}
         />
       ) : null}
 
@@ -141,18 +153,20 @@ export function ProjectDriftField() {
               <span className="min-w-0">
                 <span className="flex items-center justify-between gap-3 font-sans text-[12px] text-ink-2">
                   <span>
-                    {projectTypeLabels[node.type]} · {node.year}
+                    {t(`types.${node.type}`)} · {node.year}
                   </span>
                   <span className={node.tier === "flagship" ? "text-oxblood" : undefined}>
-                    {projectStatusLabels[node.status]}
+                    {t(`statuses.${node.status}`)}
                   </span>
                 </span>
                 <span className="mt-2 block font-serif text-xl leading-tight text-ink">
                   {node.node}
                 </span>
-                <span className="mt-1.5 block font-serif text-sm leading-snug text-ink-2">
-                  {node.dek}
-                </span>
+                {showProjectDescriptions ? (
+                  <span className="mt-1.5 block font-serif text-sm leading-snug text-ink-2">
+                    {node.dek}
+                  </span>
+                ) : null}
               </span>
             </Link>
           </li>

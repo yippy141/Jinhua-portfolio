@@ -90,7 +90,50 @@ Methodology-link sentence:
 | Surface | Approved copy |
 | --- | --- |
 | Page label | `项目` |
+| Heading | `全部项目` |
 | Introduction | `这里是我正在做和已经完成的项目。` |
+
+Archive UI labels:
+
+| English source | Approved Chinese copy |
+| --- | --- |
+| All | `全部` |
+| Flagship | `重点` |
+| Lab | `实验` |
+| Research | `研究` |
+| Writing | `写作` |
+| Open | `查看` |
+| project / projects | `个项目` |
+
+Project type and status labels used in the archive:
+
+| English source | Approved Chinese copy |
+| --- | --- |
+| Tool | `工具` |
+| Research | `研究` |
+| Publication | `出版物` |
+| Writing | `写作` |
+| Beta | `测试版` |
+| In progress | `进行中` |
+| Published | `已发表` |
+
+Short archive tag labels:
+
+| English source | Approved Chinese copy |
+| --- | --- |
+| IR theory | `国际关系理论` |
+| AI governance | `人工智能治理` |
+| semiconductors | `半导体` |
+| export controls | `出口管制` |
+| commercial space | `商业航天` |
+| compute | `算力` |
+| rare earths | `稀土` |
+| supply chains | `供应链` |
+| private-sector influence | `私营部门影响` |
+| foreign policy | `外交政策` |
+| maritime | `海事` |
+| essays | `文章` |
+| notes | `笔记` |
 
 ## Contact Copy
 
@@ -119,6 +162,12 @@ Keep these platform names unchanged:
 No individual Chinese project titles are approved in V0. Keep the English title
 for each project until a later approved copy file says otherwise.
 
+Phase 1 temporary project-page notice:
+
+```txt
+中文介绍正在整理中。
+```
+
 | Slug | Current English title | Chinese title status |
 | --- | --- | --- |
 | `ir-worldview-inventory` | `IR Worldview Inventory` | Not approved. Keep English title for now. |
@@ -134,7 +183,7 @@ for each project until a later approved copy file says otherwise.
 
 - Full Chinese Methodology page prose.
 - Chinese project descriptions, deks, detail sections, link labels, tags, and
-  alt text.
+  alt text, except the short archive tag labels recorded above.
 - Chinese project titles.
 - Project-specific methodology, source, confidence, and claim-status copy.
 

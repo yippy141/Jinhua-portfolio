@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   useCallback,
   useEffect,
@@ -59,6 +60,7 @@ export function VisitedCityDots({
   onPinnedChange,
   isMobile,
 }: VisitedCityDotsProps) {
+  const legendText = useTranslations("sea.globeLegend");
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const captionRef = useRef<HTMLDivElement>(null);
   const posRef = useRef<{ x: number; y: number; vis: boolean }[]>(
@@ -237,14 +239,14 @@ export function VisitedCityDots({
 
       <div className="pointer-events-none absolute bottom-4 right-4 max-w-[13rem] border border-rule bg-paper-2/90 px-2.5 py-2 font-sans text-[11px] leading-4 text-ink-2 shadow-[0_8px_8px_rgba(4,9,8,0.24)] sm:bottom-5 sm:right-5 sm:px-3 sm:text-[12px] sm:leading-5">
         <div className="grid grid-cols-[minmax(0,1fr)_2rem] items-center gap-2">
-          <span className="text-right">Lived / studied / worked</span>
+          <span className="text-right">{legendText("lifeAnchor")}</span>
           <span aria-hidden="true" className="relative grid h-8 w-8 place-items-center justify-self-end">
             <span className="absolute h-7 w-7 rounded-full border border-sonar/60 shadow-[0_0_0_1px_rgba(7,16,15,0.5)]" />
             <span className="h-3.5 w-3.5 rounded-full bg-tide ring-1 ring-paper shadow-[0_1px_5px_rgba(7,16,15,0.75)]" />
           </span>
         </div>
         <div className="grid grid-cols-[minmax(0,1fr)_2rem] items-center gap-2">
-          <span className="text-right">Visited</span>
+          <span className="text-right">{legendText("visited")}</span>
           <span aria-hidden="true" className="grid h-8 w-8 place-items-center justify-self-end">
             <span className="h-2.5 w-2.5 rounded-full ring-1 ring-[#07100f] shadow-[0_0_0_1px_rgba(237,239,234,0.32),0_1px_5px_rgba(7,16,15,0.82),0_0_8px_rgba(154,107,39,0.4)] [background:color-mix(in_srgb,var(--confidence-medium)_78%,var(--oxblood-soft)_22%)]" />
           </span>

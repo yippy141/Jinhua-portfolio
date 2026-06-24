@@ -1,48 +1,77 @@
 "use client";
 
-import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import {
-  projects,
-  projectStatusLabels,
-  projectTypeLabels,
-  type Project,
-} from "@/data/projects";
+import type { LocalizedProject } from "@/data/i18n";
+import type { Locale } from "@/i18n/routing";
+import { Link as IntlLink } from "@/i18n/navigation";
 
 // The filter bar mixes two axes on purpose: Flagship and Lab read the project
 // `tier`, while Research and Writing read the project `type`. All shows
 // everything.
-const filters = ["All", "Flagship", "Lab", "Research", "Writing"] as const;
+const filters = ["all", "flagship", "lab", "research", "writing"] as const;
 type Filter = (typeof filters)[number];
 
-function matchesFilter(project: Project, filter: Filter): boolean {
+function matchesFilter(project: LocalizedProject, filter: Filter): boolean {
   switch (filter) {
-    case "All":
+    case "all":
       return true;
-    case "Flagship":
+    case "flagship":
       return project.tier === "flagship";
-    case "Lab":
+    case "lab":
       return project.tier === "lab";
-    case "Research":
+    case "research":
       return project.type === "research";
-    case "Writing":
+    case "writing":
       return project.type === "essay";
   }
 }
 
 // Flagships sort to the top, then labs, then anything still at the concept
 // stage. Within a tier, projects keep their data-file order.
-const tierRank: Record<Project["tier"], number> = {
+const tierRank: Record<LocalizedProject["tier"], number> = {
   flagship: 0,
   lab: 1,
   concept: 2,
 };
 
-export function ArchiveList() {
+const zhTagLabels: Record<string, string> = {
+  "IR theory": "国际关系理论",
+  "AI governance": "人工智能治理",
+  compute: "算力",
+  semiconductors: "半导体",
+  "export controls": "出口管制",
+  "commercial space": "商业航天",
+  "rare earths": "稀土",
+  "supply chains": "供应链",
+  "private-sector influence": "私营部门影响",
+  "foreign policy": "外交政策",
+  maritime: "海事",
+  essays: "文章",
+  notes: "笔记",
+};
+
+function localizeTag(locale: Locale, tag: string): string {
+  if (locale !== "zh-Hans") return tag;
+  return zhTagLabels[tag] ?? tag;
+}
+
+type ArchiveListProps = {
+  projects: LocalizedProject[];
+  showDescriptions: boolean;
+};
+
+export function ArchiveList({
+  projects,
+  showDescriptions,
+}: ArchiveListProps) {
   const prefersReducedMotion = useReducedMotion();
-  const [active, setActive] = useState<Filter>("All");
+  const locale = useLocale() as Locale;
+  const t = useTranslations("archiveList");
+  const projectText = useTranslations("projects");
+  const [active, setActive] = useState<Filter>("all");
 
   const rows = projects
     .filter((project) => matchesFilter(project, active))
@@ -52,7 +81,11 @@ export function ArchiveList() {
     <div className="mt-12">
       {/* Filter bar + count */}
       <div className="flex flex-col gap-4 border-y border-rule py-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter projects">
+        <div
+          className="flex flex-wrap gap-1.5"
+          role="group"
+          aria-label={t("filterLabel")}
+        >
           {filters.map((filter) => {
             const isOn = filter === active;
             return (
@@ -65,13 +98,14 @@ export function ArchiveList() {
                   isOn ? "bg-ink text-paper" : "text-ink-2 hover:text-ink"
                 }`}
               >
-                {filter}
+                {t(`filters.${filter}`)}
               </button>
             );
           })}
         </div>
         <p className="font-sans text-[13px] text-ink-2">
-          {rows.length} {rows.length === 1 ? "project" : "projects"}
+          {rows.length}{" "}
+          {rows.length === 1 ? t("projectSingular") : t("projectPlural")}
         </p>
       </div>
 
@@ -85,7 +119,7 @@ export function ArchiveList() {
       >
         {rows.map((project) => (
           <li key={project.slug} className="border-b border-rule">
-            <Link
+            <IntlLink
               href={`/projects/${project.slug}`}
               className="group grid gap-3 rounded-[3px] px-0 py-6 transition-colors duration-200 hover:bg-paper-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oxblood sm:px-4 md:grid-cols-[8.5rem_1fr_11rem] md:gap-9"
             >
@@ -96,10 +130,10 @@ export function ArchiveList() {
                     project.tier === "flagship" ? "text-oxblood" : "text-ink-2"
                   }`}
                 >
-                  {projectTypeLabels[project.type]}
+                  {projectText(`types.${project.type}`)}
                 </span>
                 <span className="font-sans text-[13px] text-ink-2">
-                  {projectStatusLabels[project.status]}
+                  {projectText(`statuses.${project.status}`)}
                 </span>
               </div>
 
@@ -108,12 +142,16 @@ export function ArchiveList() {
                 <h2 className="font-serif text-2xl font-medium leading-snug text-ink">
                   {project.title}
                 </h2>
-                <p className="mt-2 max-w-[52ch] font-serif text-base leading-relaxed text-ink-2">
-                  {project.dek}
-                </p>
+                {showDescriptions && project.hasLocalizedEditorial ? (
+                  <p className="mt-2 max-w-[52ch] font-serif text-base leading-relaxed text-ink-2">
+                    {project.dek}
+                  </p>
+                ) : null}
                 {project.tags.length > 0 && (
                   <p className="mt-3 font-sans text-[13px] text-ink-2">
-                    {project.tags.join(" · ")}
+                    {project.tags
+                      .map((tag) => localizeTag(locale, tag))
+                      .join(" · ")}
                   </p>
                 )}
               </div>
@@ -127,10 +165,10 @@ export function ArchiveList() {
                   aria-hidden="true"
                   className="font-sans text-[13px] text-oxblood transition-transform duration-200 group-hover:translate-x-0.5"
                 >
-                  Open →
+                  {t("open")} →
                 </span>
               </div>
-            </Link>
+            </IntlLink>
           </li>
         ))}
       </motion.ul>

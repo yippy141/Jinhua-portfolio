@@ -75,6 +75,24 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+html:lang(zh-Hans) {
+  --font-sans: "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC",
+    "Microsoft YaHei", sans-serif;
+  --font-serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+}
+
+html:lang(zh-Hans) body {
+  line-height: 1.78;
+}
+
+html:lang(zh-Hans) :is(nav, a, button, h1, h2, h3, p, span) {
+  letter-spacing: 0;
+}
+
+html:lang(zh-Hans) :is(i, em, .italic) {
+  font-style: normal;
+}
+
 ::selection {
   background: var(--ink);
   color: var(--paper);

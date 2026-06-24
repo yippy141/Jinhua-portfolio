@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-
 import { NodeIcon } from "@/components/node-icons";
 import type { projects } from "@/data/projects";
+import { Link } from "@/i18n/navigation";
 
 type FieldNode = (typeof projects)[number];
 
@@ -18,6 +17,7 @@ type ProjectDriftNodeProps = {
   size: number;
   revealDelay: number;
   settled: boolean;
+  fallbackVisible: boolean;
   nodeRef: (el: HTMLDivElement | null) => void;
   labelRef: (el: HTMLSpanElement | null) => void;
   onOpen: (id: string, el: HTMLElement) => void;
@@ -31,6 +31,7 @@ export function ProjectDriftNode({
   size,
   revealDelay,
   settled,
+  fallbackVisible,
   nodeRef,
   labelRef,
   onOpen,
@@ -41,22 +42,31 @@ export function ProjectDriftNode({
     : isActive
       ? "var(--sonar)"
       : "var(--ink-2)";
+  const visible = settled || fallbackVisible;
+  const fallbackPosition = !settled ? node.homeNode.coordinates : null;
 
   return (
     <div
       ref={nodeRef}
       className="absolute left-0 top-0 will-change-transform"
-      style={{ zIndex: isActive ? 7 : 4 }}
+      style={{
+        zIndex: isActive ? 7 : 4,
+        ...(fallbackPosition
+          ? { left: fallbackPosition.left, top: fallbackPosition.top }
+          : {}),
+      }}
     >
       <div className="-translate-x-1/2 -translate-y-1/2">
         <div
           style={
-            settled
+            visible
               ? {
                   opacity: 1,
                   transform: "none",
                   filter: "none",
-                  transition: `opacity 620ms cubic-bezier(0.22,1,0.36,1) ${revealDelay}ms, transform 620ms cubic-bezier(0.22,1,0.36,1) ${revealDelay}ms, filter 620ms ease ${revealDelay}ms`,
+                  transition: settled
+                    ? `opacity 620ms cubic-bezier(0.22,1,0.36,1) ${revealDelay}ms, transform 620ms cubic-bezier(0.22,1,0.36,1) ${revealDelay}ms, filter 620ms ease ${revealDelay}ms`
+                    : "opacity 360ms cubic-bezier(0.22,1,0.36,1), transform 360ms cubic-bezier(0.22,1,0.36,1), filter 360ms ease",
                 }
               : {
                   opacity: 0,
@@ -92,7 +102,10 @@ export function ProjectDriftNode({
             <span
               ref={labelRef}
               className="whitespace-nowrap font-sans text-[12px] text-ink [text-shadow:0_1px_7px_rgba(3,8,7,0.95)]"
-              style={{ opacity: 0, transition: "opacity 300ms ease" }}
+              style={{
+                opacity: fallbackVisible && !settled ? 1 : 0,
+                transition: "opacity 300ms ease",
+              }}
             >
               {node.node}
             </span>

@@ -1,0 +1,82 @@
+{
+  "skip": {
+    "content": "跳到主要内容"
+  },
+  "nav": {
+    "about": "关于",
+    "research": "研究",
+    "archive": "项目",
+    "contact": "联系",
+    "resume": "简历"
+  },
+  "language": {
+    "label": "EN",
+    "aria": "Switch to English"
+  },
+  "sea": {
+    "surface": {
+      "name": "叶锦华",
+      "blurb": "我的一些项目。",
+      "dive": "下潜",
+      "skip": "跳过开场"
+    },
+    "depths": {
+      "heading": "欢迎来到我的意识之海",
+      "blurb": "这里是我做过和正在做的一些项目。",
+      "browse": "查看全部项目",
+      "return": "返回海面"
+    },
+    "aria": {
+      "entering": "Entering the archive."
+    },
+    "globeLegend": {
+      "lifeAnchor": "生活、求学或工作",
+      "visited": "去过"
+    }
+  },
+  "archiveList": {
+    "filterLabel": "筛选项目",
+    "filters": {
+      "all": "全部",
+      "flagship": "重点",
+      "lab": "实验",
+      "research": "研究",
+      "writing": "写作"
+    },
+    "projectSingular": "个项目",
+    "projectPlural": "个项目",
+    "open": "查看"
+  },
+  "projects": {
+    "back": "返回项目",
+    "openProject": "Open project",
+    "viewSource": "View source",
+    "sections": {
+      "whatItDoes": "What it does",
+      "whatYouCanExplore": "What you can explore",
+      "whyIBuiltIt": "Why I built it",
+      "evidenceAndLimits": "Evidence and limits",
+      "myRole": "My role",
+      "status": "Status"
+    },
+    "types": {
+      "tool": "工具",
+      "research": "研究",
+      "publication": "出版物",
+      "essay": "写作"
+    },
+    "statuses": {
+      "live": "已上线",
+      "beta": "测试版",
+      "published": "已发表",
+      "in-progress": "进行中",
+      "concept": "概念"
+    }
+  },
+  "footer": {
+    "summary": "研究、文章与其他项目。",
+    "location": "华盛顿",
+    "methodology": "方法与局限",
+    "contact": "联系"
+  }
+}
