@@ -15,7 +15,6 @@
 
 import {
   type Project,
-  type ProjectHomeVariant,
   projectStatusLabels,
   projectTierLabels,
   projectTypeLabels,
@@ -44,6 +43,7 @@ export const projects = [
     tier: "flagship",
     type: "tool",
     status: "beta",
+    isAvailable: true,
     year: "2026",
     dek: "A guided questionnaire that shows which schools of international-relations theory most closely match your assumptions.",
     description:
@@ -86,6 +86,7 @@ export const projects = [
     tier: "lab",
     type: "research",
     status: "in-progress",
+    isAvailable: false,
     year: "2026",
     dek: "A searchable map of the organizations building AI-safety capacity across Asia.",
     description:
@@ -117,6 +118,57 @@ export const projects = [
     },
   },
   {
+    id: "aicc",
+    slug: "ai-conversion-atlas",
+    node: "AI Conversion",
+    title: "AI Conversion Atlas",
+    tier: "lab",
+    type: "research",
+    status: "in-progress",
+    isAvailable: false,
+    year: "2026",
+    dek: "A research atlas on which societies can convert frontier AI capability into real industrial, scientific, strategic, and public-welfare outcomes.",
+    description:
+      "The project separates frontier access from deployment, adaptation, distribution, and realized outcomes, beginning with a China-US pilot on manufacturing, robotics, compute, and energy.",
+    tags: ["AI conversion", "industrial capability"],
+    entities: [
+      "ai-governance",
+      "great-power-competition",
+      "compute",
+      "industrial-capability",
+      "china",
+      "supply-chains",
+      "source-backed-atlas",
+    ],
+    links: [
+      { label: "Open the atlas", href: "https://aiconversion.jhyip.com" },
+      { label: "Source code", href: "https://github.com/yippy141/ai-conversion-atlas" },
+      { label: "Read the launch essay", href: "https://substack.com/@yippy2/p/ai-conversion-atlas" },
+    ],
+    detail: {
+      whatYouCanExplore:
+        "Compare frontier access, conversion capacity, adaptation capacity, distribution quality, and realized outcomes without collapsing them into one readiness score.",
+      evidenceAndLimits:
+        "V0 treats China-US claims as hypotheses to test. Missing data are labeled as missing, and qualitative coding is marked explicitly.",
+      currentStatus: "V0 pilot in progress. Public links are launch placeholders.",
+    },
+    preview: {
+      kind: "none",
+      posters: [],
+      alt: "Placeholder preview card for the AI Conversion Atlas.",
+    },
+    x: 69,
+    y: 43,
+    r: 10,
+    video: null,
+    homeNode: {
+      coordinates: { top: "43%", left: "69%" },
+      size: "md",
+      accentColor: "amber",
+      variant: "folio",
+    },
+  },
+  {
     id: "semi",
     slug: "china-semiconductor-atlas",
     node: "Semiconductors",
@@ -124,6 +176,7 @@ export const projects = [
     tier: "lab",
     type: "research",
     status: "in-progress",
+    isAvailable: false,
     year: "2026",
     dek: "A map of Chinese semiconductor-equipment makers and the production steps they serve.",
     description:
@@ -162,6 +215,7 @@ export const projects = [
     tier: "lab",
     type: "research",
     status: "in-progress",
+    isAvailable: false,
     year: "2026",
     dek: "A map of China's commercial space companies, launches, and constellations.",
     description:
@@ -197,6 +251,7 @@ export const projects = [
     tier: "lab",
     type: "tool",
     status: "in-progress",
+    isAvailable: false,
     year: "2026",
     dek: "A tracker for mining, refining, metal, and magnet projects outside China.",
     description:
@@ -237,6 +292,7 @@ export const projects = [
     tier: "lab",
     type: "tool",
     status: "beta",
+    isAvailable: true,
     year: "2026",
     dek: "An index for comparing how private companies can shape foreign policy and conflict risk.",
     description:
@@ -277,6 +333,7 @@ export const projects = [
     tier: "lab",
     type: "research",
     status: "published",
+    isAvailable: true,
     year: "2025",
     dek: "A published chapter on how businesses can raise, lower, or redirect conflict risk.",
     description:
@@ -313,6 +370,7 @@ export const projects = [
     tier: "lab",
     type: "essay",
     status: "published",
+    isAvailable: true,
     year: "2026",
     dek: "Essays and notes on technology, power, and strategy.",
     description: "Essays and notes on technology, power, and strategy.",
@@ -350,6 +408,10 @@ export const projectLinks = [
   ["irwv", "psii"],
   ["irwv", "writing"],
   ["aisa", "semi"],
+  ["aisa", "aicc"],
+  ["aicc", "irwv"],
+  ["aicc", "semi"],
+  ["aicc", "magnet"],
   ["semi", "magnet"],
   ["semi", "space"],
   ["aisa", "space"],

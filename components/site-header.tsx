@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { resumeHrefs } from "@/data/profile";
 import { Link } from "@/i18n/navigation";
 
 const socialLinks = [
@@ -42,6 +43,8 @@ const socialLinks = [
 export async function SiteHeader() {
   const locale = await getLocale();
   const t = await getTranslations("nav");
+  const resumeHref =
+    locale === "zh-Hans" ? resumeHrefs["zh-Hans"] : resumeHrefs.en;
   const navItems = [
     { href: "/about", label: t("about") },
     { href: "/research", label: t("research") },
@@ -71,6 +74,15 @@ export async function SiteHeader() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <a
+                  href={resumeHref}
+                  download
+                  className="underline-offset-4 transition-colors duration-200 hover:text-oxblood hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
+                >
+                  {t("resume")}
+                </a>
+              </li>
             </ul>
           </nav>
 

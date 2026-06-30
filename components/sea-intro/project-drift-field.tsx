@@ -93,6 +93,10 @@ export function ProjectDriftField() {
 
   const active = activeId ? nodes.find((n) => n.id === activeId) : null;
   const fieldVisible = settled || fallbackVisible;
+  const mobileCardBase =
+    "flex items-start gap-3 border border-rule bg-paper-2/40 px-4 py-4 transition-colors duration-200";
+  const mobileCardInteractive =
+    `${mobileCardBase} hover:border-ink-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sonar`;
 
   return (
     <>
@@ -138,15 +142,20 @@ export function ProjectDriftField() {
 
       {/* PHONE LIST: stable, non-physics presentation. Real links, no moving targets. */}
       <ul className="relative z-10 m-0 mt-8 flex list-none flex-col gap-3 p-0 md:hidden">
-        {nodes.map((node) => (
-          <li key={node.id}>
-            <Link
-              href={`/projects/${node.slug}`}
-              className="flex items-start gap-3 border border-rule bg-paper-2/40 px-4 py-4 transition-colors duration-200 hover:border-ink-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sonar"
-            >
+        {nodes.map((node) => {
+          const statusText = node.isAvailable
+            ? t(`statuses.${node.status}`)
+            : t("availableShortly");
+          const cardBody = (
+            <>
               <span
                 className="mt-0.5 shrink-0"
-                style={{ color: node.tier === "flagship" ? "var(--oxblood)" : "var(--ink-2)" }}
+                style={{
+                  color:
+                    node.tier === "flagship"
+                      ? "var(--oxblood)"
+                      : "var(--ink-2)",
+                }}
               >
                 <NodeIcon id={node.id} size={26} />
               </span>
@@ -155,8 +164,14 @@ export function ProjectDriftField() {
                   <span>
                     {t(`types.${node.type}`)} · {node.year}
                   </span>
-                  <span className={node.tier === "flagship" ? "text-oxblood" : undefined}>
-                    {t(`statuses.${node.status}`)}
+                  <span
+                    className={
+                      node.tier === "flagship" && node.isAvailable
+                        ? "text-oxblood"
+                        : undefined
+                    }
+                  >
+                    {statusText}
                   </span>
                 </span>
                 <span className="mt-2 block font-serif text-xl leading-tight text-ink">
@@ -168,9 +183,24 @@ export function ProjectDriftField() {
                   </span>
                 ) : null}
               </span>
-            </Link>
-          </li>
-        ))}
+            </>
+          );
+
+          return (
+            <li key={node.id}>
+              {node.isAvailable ? (
+                <Link
+                  href={`/projects/${node.slug}`}
+                  className={mobileCardInteractive}
+                >
+                  {cardBody}
+                </Link>
+              ) : (
+                <div className={mobileCardBase}>{cardBody}</div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </>
   );

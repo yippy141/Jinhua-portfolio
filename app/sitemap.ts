@@ -32,12 +32,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: alternatesFor(pathname),
   }));
 
-  const englishProjects = projects.map((project) => ({
+  const availableProjects = projects.filter((project) => project.isAvailable);
+
+  const englishProjects = availableProjects.map((project) => ({
     url: absoluteUrl(publicPath("en", `/projects/${project.slug}`)),
     alternates: alternatesFor(`/projects/${project.slug}`),
   }));
 
-  const chineseProjects = projects.map((project) => ({
+  const chineseProjects = availableProjects.map((project) => ({
     url: absoluteUrl(publicPath("zh-Hans", `/projects/${project.slug}`)),
     alternates: alternatesFor(`/projects/${project.slug}`),
   }));

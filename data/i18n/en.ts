@@ -52,7 +52,7 @@ export const enContent = {
         description:
           "Jinhua Yip is a technology-policy researcher working on AI, semiconductors, critical minerals, commercial space, and the role private companies play in foreign policy.",
       },
-      heading: "I research how technology changes power.",
+      heading: "greetings",
       body: [
         "I'm Jinhua Yip, a technology-policy researcher. My work covers artificial intelligence, semiconductors, critical minerals, commercial space, and the role private companies play in foreign policy.",
         "This site is where I turn that research into things people can use: maps, trackers, indices, questionnaires, and explainers. Each project includes its sources, method, and known gaps so readers can inspect the reasoning rather than take the result on trust.",

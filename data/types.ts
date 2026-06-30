@@ -102,6 +102,9 @@ export type Project = {
   tier: ProjectTier;
   type: ProjectType;
   status: ProjectStatus;
+  // One launch switch. When false, the site keeps the project visible but does
+  // not link visitors into unfinished public pages or external project URLs.
+  isAvailable: boolean;
   year: string;
   dek: string; // one-line summary shown under the title
   description: string; // a short paragraph for the project page

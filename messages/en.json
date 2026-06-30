@@ -51,6 +51,7 @@
   "projects": {
     "back": "Back to projects",
     "openProject": "Open project",
+    "availableShortly": "Available shortly",
     "viewSource": "Source code",
     "sections": {
       "whatItDoes": "What it does",

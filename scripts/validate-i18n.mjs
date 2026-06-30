@@ -101,7 +101,7 @@ const projectSlugs = [...projectsText.matchAll(/slug: "([^"]+)"/g)].map(
   (match) => match[1],
 );
 
-assert(projectSlugs.length === 8, "Expected exactly eight shared projects.");
+assert(projectSlugs.length === 9, "Expected exactly nine shared projects.");
 
 for (const slug of projectSlugs) {
   const entry = projectEntry(zhContent, slug);

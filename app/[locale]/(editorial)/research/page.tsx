@@ -62,14 +62,19 @@ export default async function ResearchPage({ params }: ResearchPageProps) {
                     <p className="mb-4 font-sans text-[13px] text-ink-2">
                       {t(`types.${project.type}`)} ·{" "}
                       {t(`statuses.${project.status}`)}
+                      {!project.isAvailable ? ` · ${t("availableShortly")}` : ""}
                     </p>
                     <h3 className="font-serif text-2xl font-medium leading-tight text-ink">
-                      <Link
-                        href={`/projects/${project.slug}`}
-                        className="transition-colors duration-200 hover:text-oxblood hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
-                      >
-                        {project.title}
-                      </Link>
+                      {project.isAvailable ? (
+                        <Link
+                          href={`/projects/${project.slug}`}
+                          className="transition-colors duration-200 hover:text-oxblood hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oxblood"
+                        >
+                          {project.title}
+                        </Link>
+                      ) : (
+                        project.title
+                      )}
                     </h3>
                     {project.hasLocalizedEditorial ? (
                       <p className="mt-4 font-serif text-base leading-relaxed text-ink-2">

@@ -51,6 +51,7 @@
   "projects": {
     "back": "返回项目",
     "openProject": "打开项目",
+    "availableShortly": "即将开放",
     "viewSource": "查看源代码",
     "sections": {
       "whatItDoes": "项目内容",
