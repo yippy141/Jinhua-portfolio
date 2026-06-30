@@ -43,6 +43,28 @@ const projectContent = {
     previewAlt: "亚洲人工智能安全图谱的预览图，展示一张地图界面。",
     translationStatus: "complete",
   },
+  "ai-conversion-atlas": {
+    title: "AI 转化能力图谱",
+    node: "AI 转化",
+    dek: "一份研究型图谱，比较不同社会如何把前沿 AI 能力转化为真实的产业、科研、战略和公共福利结果。",
+    description:
+      "这个项目把前沿能力获取、部署转化、适应能力、分配质量和实际结果分开讨论。V0 版本从中美试点开始，聚焦制造业、机器人、算力和能源。",
+    tags: ["AI 转化", "工业能力"],
+    detail: {
+      whatYouCanExplore:
+        "比较前沿能力获取、转化能力、适应能力、分配质量和实际结果，而不是把它们压成一个笼统的就绪度分数。",
+      evidenceAndLimits:
+        "V0 把中美相关判断作为待检验假设。缺失数据会标为缺失，定性编码会明确标注。",
+      currentStatus: "V0 试点正在进行。公开链接目前是发布占位链接。",
+    },
+    linkLabels: {
+      "Open the atlas": "打开图谱",
+      "Source code": "源代码",
+      "Read the launch essay": "阅读发布文章",
+    },
+    previewAlt: "AI 转化能力图谱的预览图。",
+    translationStatus: "complete",
+  },
   "china-semiconductor-atlas": {
     title: "中国半导体设备图谱",
     node: "半导体设备",
@@ -256,7 +278,7 @@ export const zhHansContent = {
         description:
           "叶锦华的个人网站，记录他围绕人工智能、半导体、关键矿产、国际关系与科技政策所做的研究、工具和写作。",
       },
-      heading: "我研究技术如何改变权力。",
+      heading: "你好",
       body: [
         "我是叶锦华（Jinhua Yip），做科技政策研究。我的工作主要围绕人工智能、半导体、关键矿产和商业航天，也关注私营部门如何影响外交政策。",
         "这个网站放着我把这些研究做成的工具、图谱、指数、问卷和文章。每个项目都会说明资料来源、方法和目前仍不确定的地方，方便读者自己判断。",

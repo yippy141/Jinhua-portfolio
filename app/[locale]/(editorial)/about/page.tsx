@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 
 import { getLocaleContent } from "@/data/i18n";
 import { Link } from "@/i18n/navigation";
@@ -45,11 +46,20 @@ function LinkedSentence({
 export default async function AboutPage({ params }: AboutPageProps) {
   const locale = await setStaticLocale(params);
   const content = getLocaleContent(locale).pages.about;
+  const headingStyle = {
+    "--typewriter-steps": content.heading.length,
+    "--typewriter-width":
+      locale === "zh-Hans"
+        ? `${content.heading.length}em`
+        : `${content.heading.length}ch`,
+  } as CSSProperties;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:px-8 sm:py-20">
       <h1 className="font-serif text-4xl font-medium leading-tight tracking-tight text-ink sm:text-5xl">
-        {content.heading}
+        <span className="typewriter-text" style={headingStyle}>
+          {content.heading}
+        </span>
       </h1>
 
       <div className="mt-10 space-y-6 font-serif text-[1.0625rem] leading-[1.65] text-ink sm:text-lg">

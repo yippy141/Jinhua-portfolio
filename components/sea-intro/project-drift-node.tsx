@@ -45,6 +45,39 @@ export function ProjectDriftNode({
       : "var(--ink-2)";
   const visible = settled || fallbackVisible;
   const fallbackPosition = !settled ? node.homeNode.coordinates : null;
+  const ariaLabel = node.isAvailable
+    ? `${t("openProject")}: ${node.title}`
+    : `${t("availableShortly")}: ${node.title}`;
+  const controlClassName =
+    "pointer-events-auto flex flex-col items-center gap-2 rounded-[4px] p-1 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-sonar";
+  const nodeContents = (
+    <>
+      <span className="relative grid place-items-center">
+        {isFlagship && (
+          <span
+            aria-hidden="true"
+            className="absolute rounded-full border border-oxblood opacity-40"
+            style={{ width: size + 12, height: size + 12 }}
+          />
+        )}
+        <NodeIcon
+          id={node.id}
+          size={size}
+          className="[filter:drop-shadow(0_1px_8px_rgba(3,8,7,0.85))]"
+        />
+      </span>
+      <span
+        ref={labelRef}
+        className="whitespace-nowrap font-sans text-[12px] text-ink [text-shadow:0_1px_7px_rgba(3,8,7,0.95)]"
+        style={{
+          opacity: fallbackVisible && !settled ? 1 : 0,
+          transition: "opacity 300ms ease",
+        }}
+      >
+        {node.node}
+      </span>
+    </>
+  );
 
   return (
     <div
@@ -76,41 +109,33 @@ export function ProjectDriftNode({
                 }
           }
         >
-          <Link
-            href={`/projects/${node.slug}`}
-            aria-label={`${t("openProject")}: ${node.title}`}
-            onMouseEnter={(e) => onOpen(node.id, e.currentTarget)}
-            onMouseLeave={onClose}
-            onFocus={(e) => onOpen(node.id, e.currentTarget)}
-            onBlur={onClose}
-            className="pointer-events-auto flex flex-col items-center gap-2 rounded-[4px] p-1 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-sonar"
-            style={{ color }}
-          >
-            <span className="relative grid place-items-center">
-              {isFlagship && (
-                <span
-                  aria-hidden="true"
-                  className="absolute rounded-full border border-oxblood opacity-40"
-                  style={{ width: size + 12, height: size + 12 }}
-                />
-              )}
-              <NodeIcon
-                id={node.id}
-                size={size}
-                className="[filter:drop-shadow(0_1px_8px_rgba(3,8,7,0.85))]"
-              />
-            </span>
-            <span
-              ref={labelRef}
-              className="whitespace-nowrap font-sans text-[12px] text-ink [text-shadow:0_1px_7px_rgba(3,8,7,0.95)]"
-              style={{
-                opacity: fallbackVisible && !settled ? 1 : 0,
-                transition: "opacity 300ms ease",
-              }}
+          {node.isAvailable ? (
+            <Link
+              href={`/projects/${node.slug}`}
+              aria-label={ariaLabel}
+              onMouseEnter={(e) => onOpen(node.id, e.currentTarget)}
+              onMouseLeave={onClose}
+              onFocus={(e) => onOpen(node.id, e.currentTarget)}
+              onBlur={onClose}
+              className={controlClassName}
+              style={{ color }}
             >
-              {node.node}
-            </span>
-          </Link>
+              {nodeContents}
+            </Link>
+          ) : (
+            <button
+              type="button"
+              aria-label={ariaLabel}
+              onMouseEnter={(e) => onOpen(node.id, e.currentTarget)}
+              onMouseLeave={onClose}
+              onFocus={(e) => onOpen(node.id, e.currentTarget)}
+              onBlur={onClose}
+              className={`${controlClassName} appearance-none border-0 bg-transparent text-center`}
+              style={{ color }}
+            >
+              {nodeContents}
+            </button>
+          )}
         </div>
       </div>
     </div>

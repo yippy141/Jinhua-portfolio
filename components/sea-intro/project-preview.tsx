@@ -64,9 +64,15 @@ export function ProjectPreview({
           {project.dek}
         </p>
       ) : null}
-      <div className="mt-3 flex items-center gap-1.5 border-t border-rule pt-3 text-oxblood">
-        <span className="font-sans text-[13px]">{t("openProject")}</span>
-        <Icon name="arrow" size={14} />
+      <div
+        className={`mt-3 flex items-center gap-1.5 border-t border-rule pt-3 ${
+          project.isAvailable ? "text-oxblood" : "text-ink-2"
+        }`}
+      >
+        <span className="font-sans text-[13px]">
+          {project.isAvailable ? t("openProject") : t("availableShortly")}
+        </span>
+        {project.isAvailable ? <Icon name="arrow" size={14} /> : null}
       </div>
     </motion.aside>
   );

@@ -98,6 +98,48 @@ html:lang(zh-Hans) :is(i, em, .italic) {
   color: var(--paper);
 }
 
+@keyframes typewriterReveal {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--typewriter-width);
+  }
+}
+
+@keyframes typewriterCaret {
+  0%,
+  49% {
+    border-color: currentColor;
+  }
+  50%,
+  100% {
+    border-color: transparent;
+  }
+}
+
+.typewriter-text {
+  --typewriter-steps: 9;
+  --typewriter-width: 9ch;
+  animation:
+    typewriterReveal 900ms steps(var(--typewriter-steps), end) 160ms both,
+    typewriterCaret 800ms steps(1, end) 160ms 3 both;
+  border-right: 1px solid currentColor;
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-text {
+    animation: none;
+    border-right: 0;
+    width: auto;
+  }
+}
+
 /* Sea Intro: restrained crossfade used when reduced-motion visitors cut from
    the surface straight to the depths. */
 @keyframes seaIntroFade {

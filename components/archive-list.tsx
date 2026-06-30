@@ -76,6 +76,10 @@ export function ArchiveList({
   const rows = projects
     .filter((project) => matchesFilter(project, active))
     .sort((a, b) => tierRank[a.tier] - tierRank[b.tier]);
+  const rowBase =
+    "group grid gap-3 rounded-[3px] px-0 py-6 transition-colors duration-200 sm:px-4 md:grid-cols-[8.5rem_1fr_11rem] md:gap-9";
+  const rowInteractive =
+    `${rowBase} hover:bg-paper-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oxblood`;
 
   return (
     <div className="mt-12">
@@ -117,12 +121,9 @@ export function ArchiveList({
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="m-0 list-none p-0"
       >
-        {rows.map((project) => (
-          <li key={project.slug} className="border-b border-rule">
-            <IntlLink
-              href={`/projects/${project.slug}`}
-              className="group grid gap-3 rounded-[3px] px-0 py-6 transition-colors duration-200 hover:bg-paper-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oxblood sm:px-4 md:grid-cols-[8.5rem_1fr_11rem] md:gap-9"
-            >
+        {rows.map((project) => {
+          const rowContent = (
+            <>
               {/* type + status */}
               <div className="flex flex-row items-baseline gap-3 md:flex-col md:gap-1.5 md:pt-1.5">
                 <span
@@ -162,15 +163,36 @@ export function ArchiveList({
                   {project.year}
                 </span>
                 <span
-                  aria-hidden="true"
-                  className="font-sans text-[13px] text-oxblood transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden={project.isAvailable ? "true" : undefined}
+                  className={`font-sans text-[13px] ${
+                    project.isAvailable
+                      ? "text-oxblood transition-transform duration-200 group-hover:translate-x-0.5"
+                      : "text-ink-2"
+                  }`}
                 >
-                  {t("open")} →
+                  {project.isAvailable
+                    ? `${t("open")} →`
+                    : projectText("availableShortly")}
                 </span>
               </div>
-            </IntlLink>
-          </li>
-        ))}
+            </>
+          );
+
+          return (
+            <li key={project.slug} className="border-b border-rule">
+              {project.isAvailable ? (
+                <IntlLink
+                  href={`/projects/${project.slug}`}
+                  className={rowInteractive}
+                >
+                  {rowContent}
+                </IntlLink>
+              ) : (
+                <div className={rowBase}>{rowContent}</div>
+              )}
+            </li>
+          );
+        })}
       </motion.ul>
     </div>
   );

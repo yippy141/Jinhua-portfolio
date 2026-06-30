@@ -25,6 +25,18 @@ const NODE_PATHS: Record<string, ReactNode> = {
       <path d="M8.8 12l2.2 2.2 4.2-4.6" />
     </>
   ),
+  // AI Conversion Atlas: capability flowing into outcomes
+  aicc: (
+    <>
+      <circle cx="5.8" cy="12" r="2.2" />
+      <circle cx="12" cy="12" r="2.2" />
+      <circle cx="18.2" cy="6.6" r="2.2" />
+      <circle cx="18.2" cy="17.4" r="2.2" />
+      <path d="M8 12h1.8" />
+      <path d="M14 10.7l2.4-2.1" />
+      <path d="M14 13.3l2.4 2.1" />
+    </>
+  ),
   // Semiconductor Atlas: a chip
   semi: (
     <>

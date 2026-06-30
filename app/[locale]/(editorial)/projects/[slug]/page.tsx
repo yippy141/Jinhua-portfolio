@@ -37,6 +37,7 @@ export async function generateMetadata({
     },
     {
       openGraphType: "article",
+      noindex: !project.isAvailable,
     },
   );
 }
@@ -50,8 +51,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   if (!project) notFound();
 
   const t = await getTranslations({ locale, namespace: "projects" });
-  const openLinks = project.links.filter((l) => !isSource(l.href));
-  const sourceLinks = project.links.filter((l) => isSource(l.href));
+  const openLinks = project.isAvailable
+    ? project.links.filter((l) => !isSource(l.href))
+    : [];
+  const sourceLinks = project.isAvailable
+    ? project.links.filter((l) => isSource(l.href))
+    : [];
 
   // Long-form sections only render when their material exists; projects with
   // different underlying content are not forced into an identical template.
@@ -129,6 +134,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             ))}
           </div>
         )}
+        {!project.isAvailable ? (
+          <p className="mt-6 font-sans text-[15px] text-ink-2">
+            {t("availableShortly")}
+          </p>
+        ) : null}
       </header>
 
       <div className="mt-10">
