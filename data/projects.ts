@@ -142,7 +142,7 @@ export const projects = [
     ],
     links: [
       { label: "Open the atlas", href: "https://aiconversion.jhyip.com" },
-      { label: "Source code", href: "https://github.com/yippy141/ai-conversion-atlas" },
+      { label: "Source code", href: "https://github.com/yippy141/AI-Carrying-Capacity" },
       { label: "Read the launch essay", href: "https://substack.com/@yippy2/p/ai-conversion-atlas" },
     ],
     detail: {
