@@ -56,7 +56,8 @@ export const enContent = {
       body: [
         "I'm Jinhua Yip, a technology-policy researcher. My work covers artificial intelligence, semiconductors, critical minerals, commercial space, and the role private companies play in foreign policy.",
         "This site is where I turn that research into things people can use: maps, trackers, indices, questionnaires, and explainers. Each project includes its sources, method, and known gaps so readers can inspect the reasoning rather than take the result on trust.",
-        "I studied international relations at SAIS and UBC and have worked in political-risk consulting and the Canadian government. Outside work, I follow whales, aviation, geography, and history. Those interests are the reason the portfolio takes place in an ocean rather than a conventional project grid.",
+        "I studied international relations at SAIS and UBC and have worked in political-risk consulting and the Canadian government. My interests outside of work are varied but primarily include marine mammals, aviation, hockey, geography, and history.",
+        "If you like what you see, please stay tuned to see more products of my late-night scatterbrain thoughts-turned-projects.",
       ],
       methodologySentence:
         "Every project links to its methodology and limits, so you can see how a result was reached and where it is uncertain.",
