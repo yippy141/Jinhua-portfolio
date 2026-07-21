@@ -30,7 +30,7 @@ import { useSeaIntroState } from "./use-sea-intro-state";
 type MapboxMap = import("mapbox-gl").Map;
 
 function isDiveTargetId(v: string | null): v is DiveTargetId {
-  return v === "potomac" || v === "chesapeake";
+  return v === "huangpu" || v === "yangtze";
 }
 
 // V2 orchestrator. One shared clock drives Mapbox (DawnGlobe) and the spatial

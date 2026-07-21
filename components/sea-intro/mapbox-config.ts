@@ -14,20 +14,20 @@ export const hasMapboxToken = MAPBOX_TOKEN.length > 0;
 
 // Satellite imagery so the descent reads as a real place. We grade it dark in
 // SurfaceGlobe rather than picking a pre-darkened vector style, because we want
-// the photoreal coastline of the Potomac to stay legible as we fly down.
+// the photoreal shoreline of the Huangpu to stay legible as we fly down.
 export const MAPBOX_STYLE = "mapbox://styles/mapbox/satellite-v9";
 
 type LngLat = [number, number];
 
-// Surface: high above Washington, D.C. on the globe. No label is ever shown;
+// Surface: high above Shanghai on the globe. No label is ever shown;
 // this is just where the camera silently rests.
-export const SURFACE_CENTER: LngLat = [-77.0369, 38.9072];
+export const SURFACE_CENTER: LngLat = [121.4737, 31.2304];
 export const SURFACE_ZOOM = 2.4;
 
-// Dive target: open Potomac water south of the National Mall, deliberately a
+// Dive target: open Huangpu water between the Bund and Lujiazui, deliberately a
 // public stretch of river and never a residence. At the final zoom the frame is
 // water, not rooftops.
-export const DIVE_TARGET: LngLat = [-77.045, 38.875];
+export const DIVE_TARGET: LngLat = [121.4933, 31.2452];
 export const DIVE_ZOOM = 15.5;
 export const DIVE_PITCH = 40;
 

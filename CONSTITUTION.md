@@ -18,7 +18,7 @@ The recurring form is the **atlas**: a public, source-traceable map of a hard do
 
 The standard for every product is one line: **confident presentation, humble architecture.** State findings clearly. Show the evidence and its limits honestly. Never blur a claim with a guess.
 
-Background, in case an agent needs the register: trained at SAIS in the intersection of emerging technology, governance, security, and climate. Currently in political risk. Moving toward AI safety, governance, and alignment. Lives in the DC area, grew up across Shanghai, Beijing, and Hong Kong.
+Background, in case an agent needs the register: trained at SAIS in the intersection of emerging technology, governance, security, and climate. Currently in political risk. Moving toward AI safety, governance, and alignment. Currently based in Shanghai, grew up across Shanghai, Beijing, and Hong Kong.
 
 The work is not decorative. It is not a SaaS landing page, a personality quiz, or a developer toy. The reader is a think-tank analyst, an AI governance hire, a journalist, or a curious professional. Earn their trust with rigor, not spectacle.
 

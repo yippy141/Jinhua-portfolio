@@ -46,10 +46,9 @@ export const places: Place[] = [
     coordinates: [-77.0369, 38.9072],
     kind: "life-anchor",
     summary:
-      "I completed my MA at SAIS and worked across several political-risk and technology-policy roles. It is my current base.",
+      "I completed my MA at SAIS and worked across several political-risk and technology-policy roles.",
     roles: ["MA, SAIS", "Political-risk and technology-policy roles"],
-    period: "Current base",
-    priority: 1,
+    priority: 2,
   },
   {
     id: "vancouver",
@@ -69,9 +68,10 @@ export const places: Place[] = [
     coordinates: [121.4737, 31.2304],
     kind: "life-anchor",
     summary:
-      "I spent much of my childhood and teenage years here and graduated from high school in the city.",
-    roles: ["Childhood and teenage years", "Graduated high school"],
-    priority: 2,
+      "I spent much of my childhood and teenage years here, graduated from high school in the city, and have returned. It is my current base.",
+    roles: ["Current base", "Childhood and teenage years", "Graduated high school"],
+    period: "Current base",
+    priority: 1,
   },
   {
     id: "hong-kong",

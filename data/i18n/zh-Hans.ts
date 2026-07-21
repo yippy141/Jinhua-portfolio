@@ -168,8 +168,7 @@ const projectContent = {
 const placeText = {
   "washington-dc": {
     name: "华盛顿特区",
-    summary:
-      "我在 SAIS 完成硕士学业，并在多个政治风险和科技政策岗位工作过。这里是我现在的常驻地。",
+    summary: "我在 SAIS 完成硕士学业，并在多个政治风险和科技政策岗位工作过。",
   },
   vancouver: {
     name: "温哥华",
@@ -177,7 +176,7 @@ const placeText = {
   },
   shanghai: {
     name: "上海",
-    summary: "童年和少年时代的大部分时间在这里度过，也在这里高中毕业。",
+    summary: "童年和少年时代的大部分时间在这里度过，也在这里高中毕业。现在又回到上海常驻。",
   },
   "hong-kong": {
     name: "香港",
