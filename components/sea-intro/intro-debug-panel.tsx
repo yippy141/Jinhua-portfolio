@@ -226,7 +226,7 @@ export function IntroDebugPanel({
       </div>
 
       <div className="mb-2 flex flex-wrap gap-1">
-        {(["potomac", "chesapeake"] as DiveTargetId[]).map((id) => (
+        {(["huangpu", "yangtze"] as DiveTargetId[]).map((id) => (
           <button
             key={id}
             type="button"

@@ -138,21 +138,21 @@ export interface IntroConfigOverrides {
   cameraPath?: CameraKeyframe[];
 }
 
-const DC: Vec2 = [-77.0369, 38.9072];
+const SHANGHAI: Vec2 = [121.4737, 31.2304];
 
-// Two debug-selectable public-water dive targets (?diveTarget=potomac|chesapeake).
-// Both are open-water coordinates, never land or a residence.
-export type DiveTargetId = "potomac" | "chesapeake";
+// Two debug-selectable public-water dive targets (?diveTarget=huangpu|yangtze).
+// Both are Shanghai-area open-water coordinates, never land or a residence.
+export type DiveTargetId = "huangpu" | "yangtze";
 export const DIVE_TARGETS: Record<
   DiveTargetId,
   { center: Vec2; label: string }
 > = {
-  // Broad tidal Potomac south of Washington.
-  potomac: { center: [-77.032, 38.785], label: "Potomac" },
-  // Open Chesapeake Bay water southeast of Washington (mid-bay).
-  chesapeake: { center: [-76.33, 38.5], label: "Chesapeake Bay" },
+  // Broad Huangpu water between the Bund and Lujiazui.
+  huangpu: { center: [121.4933, 31.2452], label: "Huangpu River" },
+  // Open Yangtze estuary water east of central Shanghai.
+  yangtze: { center: [121.78, 31.45], label: "Yangtze Estuary" },
 };
-export const DEFAULT_DIVE_TARGET: DiveTargetId = "potomac";
+export const DEFAULT_DIVE_TARGET: DiveTargetId = "huangpu";
 
 function mix2(a: Vec2, b: Vec2, t: number): Vec2 {
   return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
@@ -165,18 +165,18 @@ function mix2(a: Vec2, b: Vec2, t: number): Vec2 {
 export function buildCameraPath(target: Vec2, isMobile: boolean): CameraKeyframe[] {
   if (isMobile) {
     return [
-      { atProgress: 0.0, center: DC, zoom: 3.2, pitch: 0, bearing: 0, easing: "linear" },
-      { atProgress: 0.4, center: mix2(DC, target, 0.5), zoom: 8.4, pitch: 18, bearing: 12, easing: "easeInOut" },
+      { atProgress: 0.0, center: SHANGHAI, zoom: 3.2, pitch: 0, bearing: 0, easing: "linear" },
+      { atProgress: 0.4, center: mix2(SHANGHAI, target, 0.5), zoom: 8.4, pitch: 18, bearing: 12, easing: "easeInOut" },
       { atProgress: 0.74, center: target, zoom: 13.8, pitch: 40, bearing: 24, easing: "easeOut" },
       // Keeps rushing in through the crossing and past occlusion.
       { atProgress: 0.86, center: target, zoom: 15.8, pitch: 48, bearing: 28, easing: "easeOut" },
     ];
   }
   return [
-    { atProgress: 0.0, center: DC, zoom: 3.0, pitch: 0, bearing: 0, easing: "linear" },
-    { atProgress: 0.16, center: DC, zoom: 3.6, pitch: 4, bearing: 6, easing: "easeIn" },
-    { atProgress: 0.42, center: mix2(DC, target, 0.5), zoom: 7.8, pitch: 20, bearing: 16, easing: "easeInOut" },
-    { atProgress: 0.62, center: mix2(DC, target, 0.85), zoom: 11.6, pitch: 34, bearing: 24, easing: "easeInOut" },
+    { atProgress: 0.0, center: SHANGHAI, zoom: 3.0, pitch: 0, bearing: 0, easing: "linear" },
+    { atProgress: 0.16, center: SHANGHAI, zoom: 3.6, pitch: 4, bearing: 6, easing: "easeIn" },
+    { atProgress: 0.42, center: mix2(SHANGHAI, target, 0.5), zoom: 7.8, pitch: 20, bearing: 16, easing: "easeInOut" },
+    { atProgress: 0.62, center: mix2(SHANGHAI, target, 0.85), zoom: 11.6, pitch: 34, bearing: 24, easing: "easeInOut" },
     { atProgress: 0.74, center: target, zoom: 13.8, pitch: 44, bearing: 30, easing: "easeOut" },
     { atProgress: 0.82, center: target, zoom: 15.4, pitch: 52, bearing: 33, easing: "easeOut" },
     // Final keyframe past occlusion so motion never flatlines before map.remove().
@@ -196,7 +196,7 @@ export const INTRO_CONFIG: IntroConfig = {
     reducedMotionCrossfadeMs: 420,
   },
   surface: {
-    center: DC,
+    center: SHANGHAI,
     zoom: 3.0,
     pitch: 0,
     bearing: 0,
